@@ -61,7 +61,7 @@ A slide with *important information*.
 ```
 
 > [!NOTE]
-> The default font used by typst-unistra-slides is "Unistra A", a font that can only be downloaded by students and staff from the University of Strasbourg. If the font is not installed on your computer, Segoe UI or Roboto will be used as a fallback, in that specific order. You can change that behavior in the [settings][#Configuration].
+> The default font used by typst-unistra-slides is "Unistra A", a font that can only be downloaded by students and staff from the University of Strasbourg. If the font is not installed on your computer, Segoe UI or Roboto will be used as a fallback, in that specific order. You can change that behavior in the [settings](#Configuration).
 
 # Features
 
@@ -77,6 +77,9 @@ A slide with *important information*.
 The theme can be configured to your liking by editing the [settings.typ](settings.typ) file.
 
 The following settings are available:
+
 `SHOW_HEADER`: true to show, false to hide.
+
 `SHOW_FOOTER`: true to show, false to hide.
+
 `FONT`: font to use (Note: the default font is "Unistra A", a font that can only be downloaded by students and staff from the University of Strasbourg. If the font is not installed on your computer, Segoe UI or Roboto will be used as a fallback, in that specific order.)
