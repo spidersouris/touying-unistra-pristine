@@ -44,7 +44,27 @@
 #show strong: alert
 #show heading.where(level: 1): set text(size: 1.5em, weight: "bold")
 
+#set text(lang: settings.LANGUAGE)
 #set highlight(extent: 1pt)
+
+#show quote: it => {
+  box(
+    fill: luma(240),
+    outset: 1em,
+    width: 100%,
+    [
+      // smartquote() doesn't work properly here,
+      // probably because we're in a block
+      #settings.QUOTES.at("left") #it.body #settings.QUOTES.at("right")
+      #if it.attribution != none [
+        #set text(size: 0.8em)
+        #linebreak()
+        #h(1fr)
+        (#it.attribution)
+      ]
+    ],
+  )
+}
 
 #let (
   slide,
@@ -64,8 +84,6 @@
 
 A slide with *important information*.
 
-#lorem(50)
-
 #pause
 
 === Highlight
@@ -75,6 +93,15 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
   title: "Hero",
   subtitle: "Subtitle",
   img: "assets/unistra.svg",
+  img_height: 70%,
+)
+
+#hero(
+  img: "assets/cat1.jpg",
+  img_height: 100%,
+  text: "This is a " + highlight(fill: yellow-light)[hero with text and no title] + ".\n" + lorem(40),
+  direction: "rtl",
+  gap: 1em,
 )
 
 #gallery(
@@ -144,3 +171,8 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
 ==== Heading 4
 
 #lorem(99)
+
+#quote(attribution: [from the Henry Cary literal translation of 1897])[
+  ... I seem, then, in just this little thing to be wiser than this man at
+  any rate, that what I do not know I do not think I know either.
+]
