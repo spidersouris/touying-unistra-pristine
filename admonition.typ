@@ -140,3 +140,15 @@
   emoji: emoji.brain,
 )
 
+#let brainstorming = admonition.with(
+  title: context state(
+    "grape-suite-box-translations",
+    ADMONITION_TRANSLATIONS,
+  ).final().at("brainstorming").at(settings.LANGUAGE),
+  primary-color: orange,
+  secondary-color: orange.lighten(90%),
+  tertiary-color: orange,
+  figure-kind: "brainstorming",
+  counter: counter("grape-suite-element-brainstorming"),
+  emoji: emoji.lightbulb,
+)

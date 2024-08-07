@@ -560,6 +560,10 @@
     definition(it)
   }
 
+  self.methods.brainstorming = (self: none, it) => {
+    brainstorming(it)
+  }
+
   // init
   self.methods.init = (self: none, body) => {
     set heading(outlined: false)
