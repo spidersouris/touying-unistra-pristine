@@ -38,7 +38,7 @@
   )
 )
 
-#let (init, slides, alert, task, definition) = utils.methods(s)
+#let (init, slides, alert, task, definition, brainstorming) = utils.methods(s)
 #show: init
 
 #show strong: alert
@@ -49,7 +49,7 @@
 
 #show quote: it => {
   box(
-    fill: luma(240),
+    fill: luma(220),
     outset: 1em,
     width: 100%,
     [
@@ -99,8 +99,17 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
 #hero(
   img: "assets/cat1.jpg",
   img_height: 100%,
-  text: "This is a " + highlight(fill: yellow-light)[hero with text and no title] + ".\n" + lorem(40),
+  text: "This is an " + highlight(fill: yellow-light)[RTL#footnote[RTL = right to left. Oh, and here's a footnote!] hero with text and no title] + ".\n" + lorem(40),
+  rows: (80%),
   direction: "rtl",
+  gap: 1em,
+)
+
+#hero(
+  img: "assets/cat1.jpg",
+  img_height: 100%,
+  text: "This is an " + highlight(fill: yellow-light)[up-to-down hero with text and no title] + ".\n" + lorem(40),
+  direction: "utd",
   gap: 1em,
 )
 
@@ -175,4 +184,10 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
 #quote(attribution: [from the Henry Cary literal translation of 1897])[
   ... I seem, then, in just this little thing to be wiser than this man at
   any rate, that what I do not know I do not think I know either.
+]
+
+#slide[
+  First column.
+][
+  Second column.
 ]
