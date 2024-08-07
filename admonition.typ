@@ -1,7 +1,28 @@
 #import "colors.typ": *
+#import "settings.typ" as settings
 
 // Credit: piepert
 // https://github.com/piepert/grape-suite/blob/3be3e71a994bae82c9a9dedf41e918d7837ccc39/src/elements.typ
+
+#let ADMONITION_TRANSLATIONS = (
+  "task": (
+    "en": "Task",
+    "fr": "Tâche",
+  ),
+  "definition": (
+    "en": "Definition",
+    "fr": "Définition",
+  ),
+  "example": (
+    "en": "Example",
+    "fr": "Exemple",
+  ),
+  "brainstorming": (
+    "en": "Brainstorming",
+    "fr": "Remue-méninges",
+  ),
+)
+
 #let admonition(
   body,
   title: none,
@@ -94,7 +115,10 @@
 }
 
 #let task = admonition.with(
-  title: "Task",
+  title: context state(
+    "grape-suite-box-translations",
+    ADMONITION_TRANSLATIONS,
+  ).final().at("task").at(settings.LANGUAGE),
   primary-color: blue,
   secondary-color: blue.lighten(90%),
   tertiary-color: blue,
@@ -104,7 +128,10 @@
 )
 
 #let definition = admonition.with(
-  title: "Definition",
+  title: context state(
+    "grape-suite-box-translations",
+    ADMONITION_TRANSLATIONS,
+  ).final().at("definition").at(settings.LANGUAGE),
   primary-color: green,
   secondary-color: green.lighten(90%),
   tertiary-color: green,
@@ -112,3 +139,4 @@
   counter: counter("grape-suite-element-definition"),
   emoji: emoji.brain,
 )
+
