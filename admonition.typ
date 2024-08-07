@@ -33,7 +33,7 @@
   dotted: false,
   figured: false,
   counter: none,
-  show-numbering: true,
+  show-numbering: settings.ADMONITION_NUMBERING,
   numbering-format: (..n) => numbering("1.1", ..n),
   figure-supplement: none,
   figure-kind: none,
