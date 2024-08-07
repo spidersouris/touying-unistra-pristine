@@ -47,7 +47,7 @@
     }
 
     if figure-kind == none {
-      panic("once paramter 'figured' is true, parameter 'figure-kind' must be set!")
+      panic("once parameter 'figured' is true, parameter 'figure-kind' must be set!")
     }
   }
 
@@ -60,9 +60,6 @@
 
       counter.step()
     }
-
-    set par(justify: true)
-    show: align.with(left)
 
     block(
       width: 100%,

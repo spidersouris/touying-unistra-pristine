@@ -262,9 +262,10 @@
   img: none,
   caption: none,
   text: none,
+  text_alignment: top + center,
   img_height: auto,
   img_width: auto,
-  text_alignment: top + center,
+  rows: (1fr),
   direction: "ltr",
   gap: auto,
 ) = {
@@ -289,7 +290,7 @@
     first_cell,
     second_cell,
     columns: (1fr, 1fr),
-    rows: (1fr),
+    rows: rows,
     column_gutter: auto,
     row_gutter: auto,
   ) = {
@@ -375,28 +376,42 @@
 #let gallery(
   self: none,
   title: none,
-  images: array,
+  images: (),
   columns: int,
+  captions: (),
+  height: auto,
   fit: "cover",
+  gutter: 0.5em,
 ) = {
   let rows = (images.len() / columns)
   let body = {
     grid(
-      ..images.map(img => image(
-        img,
-        width: 100%,
-        height: 75%,
-        fit: fit,
-      )),
+      ..images.enumerate().map(((i, img)) => {
+        let caption = if i < captions.len() {
+          let cap = captions.at(i)
+          if cap != "" {
+            cap
+          } else {
+            none
+          }
+        } else {
+          none
+        }
+        figure(
+          image(img, height: height, width: 100%, fit: fit),
+          caption: caption,
+          numbering: none,
+        )
+      }),
       columns: columns,
       rows: (1fr) * rows,
-      gutter: 0.5em,
+      gutter: gutter,
     )
   }
 
   if title != none {
     body = {
-      heading(level: 1, title)
+      heading(level: 2, title)
       body
     }
   }
