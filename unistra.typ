@@ -271,22 +271,22 @@
       if (show_counter) {
         count_label = counter.display("I") + ". "
       }
-    gradientize(
-      self,
-      block(
-        width: 100%,
-        height: 100%,
-        grid.cell(
+      gradientize(
+        self,
+        block(
+          width: 100%,
+          height: 100%,
+          grid.cell(
             if (count_label != none) {
               count_label
             } + body,
-          align: text_alignment,
-          inset: padding,
+            align: text_alignment,
+            inset: padding,
+          ),
         ),
-      ),
-      c1: c1,
-      c2: c2,
-    )
+        c1: c1,
+        c2: c2,
+      )
     }
   }
   (self.methods.touying-slide)(self: self, repeat: none, body)

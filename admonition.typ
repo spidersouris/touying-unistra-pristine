@@ -21,6 +21,10 @@
     "en": "Brainstorming",
     "fr": "Remue-méninges",
   ),
+  "question": (
+    "en": "Question",
+    "fr": "Question",
+  ),
 )
 
 #let admonition(
@@ -148,4 +152,17 @@
   figure-kind: "brainstorming",
   counter: counter("grape-suite-element-brainstorming"),
   emoji: emoji.lightbulb,
+)
+
+#let question = admonition.with(
+  title: context state(
+    "grape-suite-box-translations",
+    ADMONITION_TRANSLATIONS,
+  ).final().at("question").at(settings.LANGUAGE),
+  primary-color: purple,
+  secondary-color: purple.lighten(90%),
+  tertiary-color: purple,
+  figure-kind: "question",
+  counter: counter("grape-suite-element-question"),
+  emoji: emoji.quest,
 )
