@@ -195,6 +195,8 @@
   text_color: none,
   theme: none,
   text_alignment: center + horizon,
+  counter: counter("focus-slide"),
+  show_counter: true,
   body,
 ) = {
   assert(
@@ -233,16 +235,28 @@
   }
 
   self = utils.empty-page(self)
+
   let body = {
     set text(fill: text_color, size: 2em, weight: "bold", tracking: 0.8pt)
 
+    if (show_counter) {
+      counter.step()
+    }
+
+    context {
+      let count_label = none
+      if (show_counter) {
+        count_label = counter.display("I") + ". "
+      }
     gradientize(
       self,
       block(
         width: 100%,
         height: 100%,
         grid.cell(
-          body,
+            if (count_label != none) {
+              count_label
+            } + body,
           align: text_alignment,
           inset: padding,
         ),
@@ -250,6 +264,7 @@
       c1: c1,
       c2: c2,
     )
+    }
   }
   (self.methods.touying-slide)(self: self, repeat: none, body)
 }
