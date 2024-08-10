@@ -141,7 +141,7 @@
         inset: (left: 2em, top: 1em),
         grid(
           columns: (1fr),
-          rows: (8em, 4em, 4em, 4em),
+          rows: (6em, 6em, 4em, 4em),
           cell([
             #align(
               left,
@@ -160,7 +160,7 @@
             )
             #linebreak()
             #text(
-              size: 2em,
+              size: 1.7em,
               weight: "regular",
               if (subtitle != "") {
                 subtitle
@@ -170,6 +170,9 @@
             )
           ]),
           cell([
+            #if ((none, "").all(x => x != info.subtitle)) {
+              linebreak()
+            }
             #set text(size: 1.5em, fill: self.colors.white)
             #text(weight: "bold", info.author)
           ]),
@@ -293,9 +296,12 @@
 #let hero(
   self: none,
   title: none,
+  heading_level: 1,
   subtitle: none,
   img: none,
   caption: none,
+  bold_caption: false,
+  numbering: none,
   text: none,
   text_alignment: top + center,
   img_height: auto,
@@ -305,9 +311,14 @@
   gap: auto,
 ) = {
   let create_figure() = {
+    if (bold_caption) {
+      caption = text(weight: "bold", caption)
+    }
+
     figure(
       image(img, height: img_height, width: img_width),
       caption: caption,
+      numbering: numbering,
     )
   }
 
@@ -399,12 +410,17 @@
 #let gallery(
   self: none,
   title: none,
+  subtitle: none,
   images: (),
   columns: int,
   captions: (),
+  bold_caption: true,
+  heading_level: 2,
   height: auto,
+  width: auto,
   fit: "cover",
   gutter: 0.5em,
+  gap: 0.65em,
 ) = {
   let rows = (images.len() / columns)
   let body = {
@@ -420,9 +436,15 @@
         } else {
           none
         }
+
+        if (bold_caption) {
+          caption = text(weight: "bold", caption)
+        }
+
         figure(
-          image(img, height: height, width: 100%, fit: fit),
+          image(img, height: height, width: width, fit: fit),
           caption: caption,
+          gap: gap,
           numbering: none,
         )
       }),
@@ -432,12 +454,13 @@
     )
   }
 
-  if title != none {
-    body = {
-      heading(level: 2, title)
-      body
-    }
-  }
+  body = title_and_sub(
+    body,
+    title,
+    subtitle: subtitle,
+    heading_level: heading_level,
+  )
+
   (self.methods.touying-slide)(self: self, repeat: none, body)
 }
 
