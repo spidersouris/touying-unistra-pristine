@@ -42,6 +42,26 @@
   rect(fill: gradient.linear(c1, c2.lighten(lighten_pct), angle: angle), body)
 }
 
+#let title_and_sub(body, title, subtitle: none, heading_level: 1) = {
+  grid(
+    cell(
+      heading(level: heading_level, title),
+      height: auto,
+      width: auto,
+    ),
+    if subtitle != none {
+      cell(
+        heading(level: heading_level + 1, subtitle),
+        height: auto,
+        width: auto,
+      )
+    },
+    columns: 1fr,
+    gutter: 0.6em,
+    body
+  )
+}
+
 // ===================================
 // ============= NAV BAR =============
 // ===================================
@@ -361,29 +381,17 @@
     }
   }
 
-  let add_title_and_subtitle(body) = {
-    grid(
-      cell(
-        heading(level: 1, title),
-        height: auto,
-        width: auto,
-      ),
-      cell(
-        heading(level: 2, subtitle),
-        height: auto,
-        width: auto,
-      ),
-      columns: 1fr,
-      gutter: 0.6em,
-      body
+  let body = create_body()
+
+  if (title != none) {
+    body = title_and_sub(
+      body,
+      title,
+      subtitle: subtitle,
+      heading_level: heading_level,
     )
   }
 
-  let body = create_body()
-
-  if (title, subtitle).all(x => x not in ("", none)) {
-    body = add_title_and_subtitle(body)
-  }
   (self.methods.touying-slide)(self: self, repeat: none, body)
 }
 
