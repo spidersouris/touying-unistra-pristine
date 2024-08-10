@@ -42,3 +42,7 @@
   hazy: (maroon, grey),
   smoke: (grey, black),
 )
+
+// ----
+
+#let link-color = rgb(118, 50, 55)
