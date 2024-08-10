@@ -582,6 +582,14 @@
     text(fill: blue-dark, it)
   }
 
+  self.methods.smaller = (self: none, it) => {
+    text(size: 25pt, it)
+  }
+
+  self.methods.smallest = (self: none, it) => {
+    text(size: 20pt, it)
+  }
+
   self.methods.task = (self: none, it) => {
     task(it)
   }
