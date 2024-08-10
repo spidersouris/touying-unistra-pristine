@@ -536,11 +536,13 @@
           cell(text(
             self.info.title,
             weight: "bold",
-          ) + if has_title_and_subtitle {
+          ) + if has_title_and_subtitle and settings.FOOTER_SHOW_SUBTITLE {
             settings.FOOTER_UPPER_SEP
           } else {
             ""
-          } + self.info.subtitle + linebreak() + utils.call-or-display(
+          } + if settings.FOOTER_SHOW_SUBTITLE {
+            self.info.subtitle
+          } + utils.call-or-display(
             self,
             footer-info-2,
           )),

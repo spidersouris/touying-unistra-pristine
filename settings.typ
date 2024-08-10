@@ -4,6 +4,8 @@
 #let FOOTER_UPPER_SEP = " | "
 #let FOOTER_LOWER_SEP = " | "
 
+#let FOOTER_SHOW_SUBTITLE = false
+
 #let ADMONITION_NUMBERING = false
 
 #let FONT = ("Unistra A", "Segoe UI", "Roboto")
