@@ -6,24 +6,54 @@
 
 #let ADMONITION_TRANSLATIONS = (
   "task": (
-    "en": "Task",
-    "fr": "Tâche",
+    "sg": (
+      "en": "Task",
+      "fr": "Tâche",
+    ),
+    "pl": (
+      "en": "Tasks",
+      "fr": "Tâches",
+    ),
   ),
   "definition": (
-    "en": "Definition",
-    "fr": "Définition",
+    "sg": (
+      "en": "Definition",
+      "fr": "Définition",
+    ),
+    "pl": (
+      "en": "Definitions",
+      "fr": "Définitions",
+    ),
   ),
   "example": (
-    "en": "Example",
-    "fr": "Exemple",
+    "sg": (
+      "en": "Example",
+      "fr": "Exemple",
+    ),
+    "pl": (
+      "en": "Examples",
+      "fr": "Exemples",
+    ),
   ),
   "brainstorming": (
-    "en": "Brainstorming",
-    "fr": "Remue-méninges",
+    "sg": (
+      "en": "Brainstorming",
+      "fr": "Remue-méninges",
+    ),
+    "pl": (
+      "en": "Brainstormings",
+      "fr": "Remue-méninges",
+    ),
   ),
   "question": (
-    "en": "Question",
-    "fr": "Question",
+    "sg": (
+      "en": "Question",
+      "fr": "Question",
+    ),
+    "pl": (
+      "en": "Questions",
+      "fr": "Questions",
+    ),
   ),
 )
 
@@ -115,54 +145,62 @@
   }
 }
 
-#let task = admonition.with(
-  title: context state(
-    "grape-suite-box-translations",
-    ADMONITION_TRANSLATIONS,
-  ).final().at("task").at(settings.LANGUAGE),
+#let task(body, plural: false) = admonition(
+  body,
+  title: (ADMONITION_TRANSLATIONS).at("task").at(if plural {
+    "pl"
+  } else {
+    "sg"
+  }).at(settings.LANGUAGE),
   primary-color: blue,
   secondary-color: blue.lighten(90%),
   tertiary-color: blue,
   figure-kind: "task",
-  counter: counter("grape-suite-element-task"),
+  counter: counter("admonition-task"),
   emoji: emoji.hand.write,
 )
 
-#let definition = admonition.with(
-  title: context state(
-    "grape-suite-box-translations",
-    ADMONITION_TRANSLATIONS,
-  ).final().at("definition").at(settings.LANGUAGE),
+#let definition(body, plural: false) = admonition(
+  body,
+  title: (ADMONITION_TRANSLATIONS).at("definition").at(if plural {
+    "pl"
+  } else {
+    "sg"
+  }).at(settings.LANGUAGE),
   primary-color: green,
   secondary-color: green.lighten(90%),
   tertiary-color: green,
   figure-kind: "definition",
-  counter: counter("grape-suite-element-definition"),
+  counter: counter("admonition-definition"),
   emoji: emoji.brain,
 )
 
-#let brainstorming = admonition.with(
-  title: context state(
-    "grape-suite-box-translations",
-    ADMONITION_TRANSLATIONS,
-  ).final().at("brainstorming").at(settings.LANGUAGE),
+#let brainstorming(body, plural: false) = admonition(
+  body,
+  title: (ADMONITION_TRANSLATIONS).at("brainstorming").at(if plural {
+    "pl"
+  } else {
+    "sg"
+  }).at(settings.LANGUAGE),
   primary-color: orange,
   secondary-color: orange.lighten(90%),
   tertiary-color: orange,
   figure-kind: "brainstorming",
-  counter: counter("grape-suite-element-brainstorming"),
+  counter: counter("admonition-brainstorming"),
   emoji: emoji.lightbulb,
 )
 
-#let question = admonition.with(
-  title: context state(
-    "grape-suite-box-translations",
-    ADMONITION_TRANSLATIONS,
-  ).final().at("question").at(settings.LANGUAGE),
+#let question(body, plural: false) = admonition(
+  body,
+  title: (ADMONITION_TRANSLATIONS).at("question").at(if plural {
+    "pl"
+  } else {
+    "sg"
+  }).at(settings.LANGUAGE),
   primary-color: purple,
   secondary-color: purple.lighten(90%),
   tertiary-color: purple,
   figure-kind: "question",
-  counter: counter("grape-suite-element-question"),
+  counter: counter("admonition-question"),
   emoji: emoji.quest,
 )

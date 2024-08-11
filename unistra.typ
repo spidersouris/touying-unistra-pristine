@@ -623,18 +623,6 @@
     text(size: 20pt, it)
   }
 
-  self.methods.task = (self: none, it) => {
-    task(it)
-  }
-
-  self.methods.definition = (self: none, it) => {
-    definition(it)
-  }
-
-  self.methods.brainstorming = (self: none, it) => {
-    brainstorming(it)
-  }
-
   // init
   self.methods.init = (self: none, body) => {
     set heading(outlined: false)
