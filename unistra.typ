@@ -230,14 +230,17 @@
   if (theme != none) {
     assert(
       theme in self.colorthemes,
-      message: "The theme " + theme + " is not defined.",
+      message: "The theme " + theme + " is not defined. Available themes are: " + self
+        .colorthemes
+        .keys()
+        .join(", "),
     )
     assert(
       self.colorthemes.at(theme).len() != 2 or self
         .colorthemes
         .at(theme)
         .len() != 3,
-      message: "The theme " + theme + " is not a valid color theme.",
+      message: "The theme " + theme + " is not a valid color theme. A valid color theme should have 2 or 3 colors.",
     )
 
     let theme_has_text_color = self.colorthemes.at(theme).len() == 3
