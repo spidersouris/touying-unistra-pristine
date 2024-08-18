@@ -16,12 +16,15 @@
   inset: 0mm,
   outset: 0mm,
   alignment: top + left,
+  fill: none,
   debug: settings.DEBUG,
 ) = rect(
   width: width,
   height: height,
   inset: inset,
   outset: outset,
+  fill: fill,
+  radius: 2em,
   stroke: if debug {
     1mm + red
   } else {
@@ -305,13 +308,16 @@
   caption: none,
   bold_caption: false,
   numbering: none,
-  text: none,
-  text_alignment: top + center,
+  txt: none,
+  enhanced_text: true,
+  text_fill: none,
+  text_alignment: horizon + center,
   img_height: auto,
   img_width: auto,
   rows: (1fr),
   direction: "ltr",
   gap: auto,
+  hide_footer: true,
 ) = {
   let create_figure() = {
     if (bold_caption) {
@@ -331,8 +337,18 @@
     )
   }
 
-  let create_text_cell() = {
-    cell(text, height: auto, width: 100%, alignment: text_alignment)
+  let create_text_cell(txt, text_fill) = {
+    if enhanced_text {
+      txt = text(size: 2em, weight: 900, txt)
+    }
+
+    cell(
+      txt,
+      height: 100%,
+      width: 100%,
+      alignment: text_alignment,
+      fill: text_fill,
+    )
   }
 
   let create_grid(
@@ -353,7 +369,7 @@
   }
 
   let create_body() = {
-    if (text == none) {
+    if (txt == none) {
       align(
         center,
         create_figure(),
@@ -361,27 +377,27 @@
     } else {
       if direction == "ltr" {
         create_grid(
-          create_text_cell(),
+          create_text_cell(txt, text_fill),
           create_image_cell(),
           column_gutter: gap,
         )
       } else if direction == "rtl" {
         create_grid(
           create_image_cell(),
-          create_text_cell(),
+          create_text_cell(txt, text_fill),
           column_gutter: gap,
         )
       } else if direction == "utd" {
         create_grid(
           create_image_cell(),
-          create_text_cell(),
+          create_text_cell(txt, text_fill),
           columns: (1fr),
           rows: (1fr, 1fr),
           row_gutter: gap,
         )
       } else if direction == "dtu" {
         create_grid(
-          create_text_cell(),
+          create_text_cell(txt, text_fill),
           create_image_cell(),
           columns: (1fr),
           rows: (1fr, 1fr),
@@ -403,6 +419,15 @@
       title,
       subtitle: subtitle,
       heading_level: heading_level,
+    )
+  }
+
+  if hide_footer {
+    self.page-args.footer = none
+    body = block(
+      body,
+      height: 100%,
+      width: 100%,
     )
   }
 
