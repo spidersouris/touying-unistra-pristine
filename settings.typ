@@ -4,7 +4,7 @@
 #let FOOTER-UPPER-SEP = " | "
 #let FOOTER-LOWER-SEP = " | "
 
-#let FOOTER-SHOW-SUBTITLE = false
+#let FOOTER-SHOW-SUBTITLE = true
 
 #let ADMONITION-NUMBERING = false
 
