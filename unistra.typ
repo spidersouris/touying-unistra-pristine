@@ -642,19 +642,24 @@
           rows: (1.4em, 1.4em),
           gutter: 3pt,
           cell(image("assets/unistra.svg", width: auto, height: 100%)),
-          cell(text(
-            self.info.title,
-            weight: "bold",
-          ) + if has-title-and-subtitle and settings.FOOTER-SHOW-SUBTITLE {
-            settings.FOOTER-UPPER-SEP
-          } else {
-            ""
-          } + if settings.FOOTER-SHOW-SUBTITLE {
-            self.info.subtitle
-          } + "\n" + utils.call-or-display(
-            self,
-            footer-info-2,
-          )),
+          cell(
+            box(
+              text(
+                self.info.title,
+                weight: "bold",
+              ) + if has-title-and-subtitle and settings.FOOTER-SHOW-SUBTITLE {
+                settings.FOOTER-UPPER-SEP
+              } else {
+                ""
+              } + if settings.FOOTER-SHOW-SUBTITLE {
+                self.info.subtitle
+              } + "\n" + utils.call-or-display(
+                self,
+                footer-info-2,
+              ),
+              width: 150%,
+            ),
+          ),
           cell(utils.call-or-display(self, footer-number)),
         )
       },
