@@ -429,6 +429,15 @@
       height: 100%,
       width: 100%,
     )
+
+    if (title, subtitle, caption, txt).all(x => x == none) {
+      body = block(
+        body,
+        // expand image as much as possible
+        // as it is the only content
+        inset: -25mm,
+      )
+    }
   }
 
   (self.methods.touying-slide)(self: self, repeat: none, body)
