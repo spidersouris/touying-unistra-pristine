@@ -65,6 +65,37 @@
   )
 }
 
+#let get-page-margin() = {
+  if settings.SHOW-HEADER and settings.SHOW-FOOTER {
+    (x: 2.8em, y: 2.5em)
+  } else if settings.SHOW-HEADER {
+    (x: 2.8em, bottom: 0em)
+  } else if settings.SHOW-FOOTER {
+    (top: 2em, left: 2.8em)
+  } else {
+    (x: 1em, y: 1em)
+  }
+}
+
+#let custom-quote() = {
+  box(
+    fill: luma(220),
+    outset: 1em,
+    width: 100%,
+    [
+      // smartquote() doesn't work properly here,
+      // probably because we're in a block
+      #settings.QUOTES.at("left") #it.body #settings.QUOTES.at("right")
+      #if it.attribution != none [
+        #set text(size: 0.8em)
+        #linebreak()
+        #h(1fr)
+        (#it.attribution)
+      ]
+    ],
+  )
+}
+
 // ===================================
 // ============= NAV BAR =============
 // ===================================
@@ -633,7 +664,12 @@
     } else {
       none
     },
-    footer-descent: 0.6em,
+    margin: get-page-margin(),
+    footer-descent: if get-page-margin().x != 1em {
+      0.2em
+    } else {
+      0.6em
+    },
     header-ascent: 1em,
   )
 
@@ -662,13 +698,33 @@
 
   // init
   self.methods.init = (self: none, body) => {
+    // sets
     set heading(outlined: false)
-    set text(fill: black, font: settings.FONT, size: 25pt)
-    show footnote.entry: set text(size: .6em)
-    show heading.where(level: 2): set block(below: 1.5em)
+    set text(
+      fill: black,
+      font: settings.FONT,
+      size: 25pt,
+      lang: settings.LANGUAGE,
+    )
     set outline(target: heading.where(level: 1), title: none, fill: none)
+    set enum(numbering: n => [*#n;.*])
+    set highlight(extent: 1pt)
+
+    // shows
+    show footnote.entry: set text(size: 18pt)
+    show table: set text(size: 22pt)
+    show heading.where(level: 1): set text(size: 1.5em, weight: "bold")
+    show heading.where(level: 2): set block(below: 1.5em)
+    // color links
+    show link: it => text(
+      link-color,
+      underline.with(offset: 3pt, extent: -1pt)(it),
+    )
+    // custom quote
+    show quote: custom-quote
     show outline.entry: it => it.body
     show outline: it => block(inset: (x: 1em), it)
+
     body
   }
   self
