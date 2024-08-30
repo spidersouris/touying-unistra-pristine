@@ -77,7 +77,7 @@
   }
 }
 
-#let custom-quote() = {
+#let custom-quote(it) = {
   box(
     fill: luma(220),
     outset: 1em,
@@ -721,7 +721,7 @@
       underline.with(offset: 3pt, extent: -1pt)(it),
     )
     // custom quote
-    show quote: custom-quote
+    show quote: it => custom-quote(it)
     show outline.entry: it => it.body
     show outline: it => block(inset: (x: 1em), it)
 
