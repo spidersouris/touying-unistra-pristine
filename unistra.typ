@@ -124,22 +124,32 @@
   let current-index = current-sections.len() - 1
 
   set text(size: 1.2em)
-  for (i, section) in final-sections.enumerate() {
-    set text(fill: if i != current-index {
-      gray
-    } else {
-      black
-    })
 
+  let header-link(i, current-index, loc, title) = {
+    link(
+      loc,
+      text(
+        fill: if i == current-index {
+          black
+        } else {
+          gray
+        },
+        underline.with(offset: 3pt, extent: -1pt)(title),
+      ),
+    )
+  }
+
+  for (i, section) in final-sections.enumerate() {
     if (i <= current-index) {
-      box(inset: 0.3em, stroke: (bottom: 0.5pt + self.colors.black))[#link(
+      box()[#header-link(
+          i,
+          current-index,
           section.loc,
-          utils.section-short-title(section.title + (
-            if (i < current-index) {
-              "  |"
-            }
-          )),
+          utils.section-short-title(section.title),
         )<touying-link>]
+      if (i < current-index) {
+        text(" | ", fill: black)
+      }
     }
   }
 })
@@ -641,7 +651,7 @@
             ""
           } + if settings.FOOTER-SHOW-SUBTITLE {
             self.info.subtitle
-          } + utils.call-or-display(
+          } + "\n" + utils.call-or-display(
             self,
             footer-info-2,
           )),
