@@ -1,12 +1,12 @@
-#let SHOW_HEADER = true
-#let SHOW_FOOTER = true
+#let SHOW-HEADER = true
+#let SHOW-FOOTER = true
 
-#let FOOTER_UPPER_SEP = " | "
-#let FOOTER_LOWER_SEP = " | "
+#let FOOTER-UPPER-SEP = " | "
+#let FOOTER-LOWER-SEP = " | "
 
-#let FOOTER_SHOW_SUBTITLE = false
+#let FOOTER-SHOW-SUBTITLE = false
 
-#let ADMONITION_NUMBERING = false
+#let ADMONITION-NUMBERING = false
 
 #let FONT = ("Unistra A", "Segoe UI", "Roboto")
 

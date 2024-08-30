@@ -39,22 +39,22 @@
   body,
   c1: blue-dark,
   c2: blue-dark,
-  lighten_pct: 20%,
+  lighten-pct: 20%,
   angle: 45deg,
 ) = {
-  rect(fill: gradient.linear(c1, c2.lighten(lighten_pct), angle: angle), body)
+  rect(fill: gradient.linear(c1, c2.lighten(lighten-pct), angle: angle), body)
 }
 
-#let title_and_sub(body, title, subtitle: none, heading_level: 1) = {
+#let title-and-sub(body, title, subtitle: none, heading-level: 1) = {
   grid(
     cell(
-      heading(level: heading_level, title),
+      heading(level: heading-level, title),
       height: auto,
       width: auto,
     ),
     if subtitle != none {
       cell(
-        heading(level: heading_level + 1, subtitle),
+        heading(level: heading-level + 1, subtitle),
         height: auto,
         width: auto,
       )
@@ -122,9 +122,9 @@
   self: none,
   title: "",
   subtitle: "",
-  logo_path: "assets/unistra.svg",
-  logo_width: 40%,
-  logo_height: auto,
+  logo-path: "assets/unistra.svg",
+  logo-width: 40%,
+  logo-height: auto,
   ..args,
 ) = {
   self = utils.empty-page(self)
@@ -148,7 +148,7 @@
           cell([
             #align(
               left,
-              image(logo_path, width: logo_width, height: logo_height),
+              image(logo-path, width: logo-width, height: logo-height),
             )
           ]),
           cell([
@@ -218,11 +218,11 @@
   self: none,
   c1: none,
   c2: none,
-  text_color: none,
+  text-color: none,
   theme: none,
-  text_alignment: center + horizon,
+  text-alignment: center + horizon,
   counter: counter("focus-slide"),
-  show_counter: true,
+  show-counter: true,
   body,
 ) = {
   assert(
@@ -246,12 +246,12 @@
       message: "The theme " + theme + " is not a valid color theme. A valid color theme should have 2 or 3 colors.",
     )
 
-    let theme_has_text_color = self.colorthemes.at(theme).len() == 3
+    let theme-has-text-color = self.colorthemes.at(theme).len() == 3
 
-    if (text_color == none and not theme_has_text_color) {
-      text_color = self.colors.white
+    if (text-color == none and not theme-has-text-color) {
+      text-color = self.colors.white
     } else {
-      text_color = self.colorthemes.at(theme).at(2)
+      text-color = self.colorthemes.at(theme).at(2)
     }
 
     c1 = self.colorthemes.at(theme).at(0)
@@ -259,23 +259,23 @@
   }
 
   let padding = auto
-  if text_alignment == left + horizon {
+  if text-alignment == left + horizon {
     padding = 2em
   }
 
   self = utils.empty-page(self)
 
   let body = {
-    set text(fill: text_color, size: 2em, weight: "bold", tracking: 0.8pt)
+    set text(fill: text-color, size: 2em, weight: "bold", tracking: 0.8pt)
 
-    if (show_counter) {
+    if (show-counter) {
       counter.step()
     }
 
     context {
-      let count_label = none
-      if (show_counter) {
-        count_label = counter.display("I") + ". "
+      let count-label = none
+      if (show-counter) {
+        count-label = counter.display("I") + ". "
       }
       gradientize(
         self,
@@ -283,10 +283,10 @@
           width: 100%,
           height: 100%,
           grid.cell(
-            if (count_label != none) {
-              count_label
+            if (count-label != none) {
+              count-label
             } + body,
-            align: text_alignment,
+            align: text-alignment,
             inset: padding,
           ),
         ),
@@ -302,43 +302,43 @@
 #let hero(
   self: none,
   title: none,
-  heading_level: 1,
+  heading-level: 1,
   subtitle: none,
   img: none,
   caption: none,
-  bold_caption: false,
+  bold-caption: false,
   numbering: none,
   txt: none,
-  enhanced_text: true,
-  text_fill: none,
-  text_alignment: horizon + center,
-  img_height: auto,
-  img_width: auto,
+  enhanced-text: true,
+  text-fill: none,
+  text-alignment: horizon + center,
+  img-height: auto,
+  img-width: auto,
   rows: (1fr),
   direction: "ltr",
   gap: auto,
-  hide_footer: true,
+  hide-footer: true,
 ) = {
-  let create_figure() = {
-    if (bold_caption) {
+  let create-figure() = {
+    if (bold-caption) {
       caption = text(weight: "bold", caption)
     }
 
     figure(
-      image(img, height: img_height, width: img_width),
+      image(img, height: img-height, width: img-width),
       caption: caption,
       numbering: numbering,
     )
   }
 
-  let create_image_cell() = {
+  let create-image-cell() = {
     cell(
-      create_figure(),
+      create-figure(),
     )
   }
 
-  let create_text_cell(txt, text_fill) = {
-    if enhanced_text {
+  let create-text-cell(txt, text-fill) = {
+    if enhanced-text {
       txt = text(size: 2em, weight: 900, txt)
     }
 
@@ -346,62 +346,62 @@
       txt,
       height: 100%,
       width: 100%,
-      alignment: text_alignment,
-      fill: text_fill,
+      alignment: text-alignment,
+      fill: text-fill,
     )
   }
 
-  let create_grid(
-    first_cell,
-    second_cell,
+  let create-grid(
+    first-cell,
+    second-cell,
     columns: (1fr, 1fr),
     rows: rows,
-    column_gutter: auto,
-    row_gutter: auto,
+    column-gutter: auto,
+    row-gutter: auto,
   ) = {
     grid(
       columns: columns,
       rows: rows,
-      column-gutter: column_gutter,
-      row-gutter: row_gutter,
-      first_cell, second_cell,
+      column-gutter: column-gutter,
+      row-gutter: row-gutter,
+      first-cell, second-cell,
     )
   }
 
-  let create_body() = {
+  let create-body() = {
     if (txt == none) {
       align(
         center,
-        create_figure(),
+        create-figure(),
       )
     } else {
       if direction == "ltr" {
-        create_grid(
-          create_text_cell(txt, text_fill),
-          create_image_cell(),
-          column_gutter: gap,
+        create-grid(
+          create-text-cell(txt, text-fill),
+          create-image-cell(),
+          column-gutter: gap,
         )
       } else if direction == "rtl" {
-        create_grid(
-          create_image_cell(),
-          create_text_cell(txt, text_fill),
-          column_gutter: gap,
+        create-grid(
+          create-image-cell(),
+          create-text-cell(txt, text-fill),
+          column-gutter: gap,
         )
       } else if direction == "utd" {
-        create_grid(
-          create_image_cell(),
-          create_text_cell(txt, text_fill),
+        create-grid(
+          create-image-cell(),
+          create-text-cell(txt, text-fill),
           columns: (1fr),
           rows: (1fr, 1fr),
-          row_gutter: gap,
+          row-gutter: gap,
         )
       } else if direction == "dtu" {
-        create_grid(
-          create_text_cell(txt, text_fill),
-          create_image_cell(),
+        create-grid(
+          create-text-cell(txt, text-fill),
+          create-image-cell(),
           columns: (1fr),
           rows: (1fr, 1fr),
-          row_gutter: if gap {
+          row-gutter: if gap {
             gap
           } else {
             -2em
@@ -411,18 +411,18 @@
     }
   }
 
-  let body = create_body()
+  let body = create-body()
 
   if (title != none) {
-    body = title_and_sub(
+    body = title-and-sub(
       body,
       title,
       subtitle: subtitle,
-      heading_level: heading_level,
+      heading-level: heading-level,
     )
   }
 
-  if hide_footer {
+  if hide-footer {
     self.page-args.footer = none
     body = block(
       body,
@@ -451,8 +451,8 @@
   images: (),
   columns: int,
   captions: (),
-  bold_caption: true,
-  heading_level: 2,
+  bold-caption: true,
+  heading-level: 2,
   height: auto,
   width: auto,
   fit: "cover",
@@ -474,7 +474,7 @@
           none
         }
 
-        if (bold_caption) {
+        if (bold-caption) {
           caption = text(weight: "bold", caption)
         }
 
@@ -491,11 +491,11 @@
     )
   }
 
-  body = title_and_sub(
+  body = title-and-sub(
     body,
     title,
     subtitle: subtitle,
-    heading_level: heading_level,
+    heading-level: heading-level,
   )
 
   (self.methods.touying-slide)(self: self, repeat: none, body)
@@ -585,7 +585,7 @@
 
     set align(center + horizon)
 
-    let has_title_and_subtitle = (
+    let has-title-and-subtitle = (
       self.info.title,
       self.info.subtitle,
     ).all(x => x not in ("", none))
@@ -604,11 +604,11 @@
           cell(text(
             self.info.title,
             weight: "bold",
-          ) + if has_title_and_subtitle and settings.FOOTER_SHOW_SUBTITLE {
-            settings.FOOTER_UPPER_SEP
+          ) + if has-title-and-subtitle and settings.FOOTER-SHOW-SUBTITLE {
+            settings.FOOTER-UPPER-SEP
           } else {
             ""
-          } + if settings.FOOTER_SHOW_SUBTITLE {
+          } + if settings.FOOTER-SHOW-SUBTITLE {
             self.info.subtitle
           } + utils.call-or-display(
             self,
@@ -623,12 +623,12 @@
   self.page-args += (
     paper: "presentation-" + aspect-ratio,
     fill: self.colors.white,
-    header: if settings.SHOW_HEADER {
+    header: if settings.SHOW-HEADER {
       header
     } else {
       none
     },
-    footer: if settings.SHOW_FOOTER {
+    footer: if settings.SHOW-FOOTER {
       footer
     } else {
       none

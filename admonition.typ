@@ -4,7 +4,7 @@
 // Credit: piepert
 // https://github.com/piepert/grape-suite/blob/3be3e71a994bae82c9a9dedf41e918d7837ccc39/src/elements.typ
 
-#let ADMONITION_TRANSLATIONS = (
+#let ADMONITION-TRANSLATIONS = (
   "task": (
     "sg": (
       "en": "Task",
@@ -67,7 +67,7 @@
   dotted: false,
   figured: false,
   counter: none,
-  show-numbering: settings.ADMONITION_NUMBERING,
+  show-numbering: settings.ADMONITION-NUMBERING,
   numbering-format: (..n) => numbering("1.1", ..n),
   figure-supplement: none,
   figure-kind: none,
@@ -147,7 +147,7 @@
 
 #let task(body, plural: false) = admonition(
   body,
-  title: (ADMONITION_TRANSLATIONS).at("task").at(if plural {
+  title: (ADMONITION-TRANSLATIONS).at("task").at(if plural {
     "pl"
   } else {
     "sg"
@@ -162,7 +162,7 @@
 
 #let definition(body, plural: false) = admonition(
   body,
-  title: (ADMONITION_TRANSLATIONS).at("definition").at(if plural {
+  title: (ADMONITION-TRANSLATIONS).at("definition").at(if plural {
     "pl"
   } else {
     "sg"
@@ -177,7 +177,7 @@
 
 #let brainstorming(body, plural: false) = admonition(
   body,
-  title: (ADMONITION_TRANSLATIONS).at("brainstorming").at(if plural {
+  title: (ADMONITION-TRANSLATIONS).at("brainstorming").at(if plural {
     "pl"
   } else {
     "sg"
@@ -192,7 +192,7 @@
 
 #let question(body, plural: false) = admonition(
   body,
-  title: (ADMONITION_TRANSLATIONS).at("question").at(if plural {
+  title: (ADMONITION-TRANSLATIONS).at("question").at(if plural {
     "pl"
   } else {
     "sg"
