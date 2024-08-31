@@ -1,3 +1,7 @@
+# v1.0.0 (2024-08-31)
+
+Initial release for publication as a Typst template package.
+
 # v0.2.0 (2024-08-30)
 
 ## General
