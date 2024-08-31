@@ -9,7 +9,8 @@
 // ============ UTILITIES ============
 // ===================================
 
-#let cell(
+/// Creates a custom rectangle cell
+#let _cell(
   body,
   width: 100%,
   height: 100%,
@@ -34,7 +35,7 @@
 )
 
 /// Adds gradient to body (used for slide-focus)
-#let gradientize(
+#let _gradientize(
   self,
   body,
   c1: blue-dark,
@@ -45,15 +46,16 @@
   rect(fill: gradient.linear(c1, c2.lighten(lighten-pct), angle: angle), body)
 }
 
-#let title-and-sub(body, title, subtitle: none, heading-level: 1) = {
+/// Creates a title and subtitle block
+#let _title-and-sub(body, title, subtitle: none, heading-level: 1) = {
   grid(
-    cell(
+    _cell(
       heading(level: heading-level, title),
       height: auto,
       width: auto,
     ),
     if subtitle != none {
-      cell(
+      _cell(
         heading(level: heading-level + 1, subtitle),
         height: auto,
         width: auto,
@@ -65,7 +67,8 @@
   )
 }
 
-#let get-page-margin() = {
+/// Calculates page margin based on header and footer settings
+#let _get-page-margin() = {
   if settings.SHOW-HEADER and settings.SHOW-FOOTER {
     (x: 2.8em, y: 2.5em)
   } else if settings.SHOW-HEADER {
@@ -77,7 +80,8 @@
   }
 }
 
-#let custom-quote(it) = {
+// Creates a custom quote element
+#let _custom-quote(it) = {
   box(
     fill: luma(220),
     outset: 1em,
@@ -163,7 +167,7 @@
   self: none,
   title: "",
   subtitle: "",
-  logo-path: "assets/unistra.svg",
+  logo-path: "../assets/unistra.svg",
   logo-width: 40%,
   logo-height: auto,
   ..args,
@@ -176,7 +180,7 @@
     set text(fill: self.colors.white)
     set block(inset: 0mm, outset: 0mm, spacing: 0em)
     set align(top + left)
-    gradientize(
+    _gradientize(
       self,
       block(
         fill: none,
@@ -186,13 +190,13 @@
         grid(
           columns: (1fr),
           rows: (6em, 6em, 4em, 4em),
-          cell([
+          _cell([
             #align(
               left,
               image(logo-path, width: logo-width, height: logo-height),
             )
           ]),
-          cell([
+          _cell([
             #text(
               size: 2em,
               weight: "bold",
@@ -213,14 +217,14 @@
               },
             )
           ]),
-          cell([
+          _cell([
             #if ((none, "").all(x => x != info.subtitle)) {
               linebreak()
             }
             #set text(size: 1.5em, fill: self.colors.white)
             #text(weight: "bold", info.author)
           ]),
-          cell([
+          _cell([
             #set text(fill: self.colors.white.transparentize(25%))
             #utils.info-date(self)
           ]),
@@ -318,7 +322,7 @@
       if (show-counter) {
         count-label = counter.display("I") + ". "
       }
-      gradientize(
+      _gradientize(
         self,
         block(
           width: 100%,
@@ -373,7 +377,7 @@
   }
 
   let create-image-cell() = {
-    cell(
+    _cell(
       create-figure(),
     )
   }
@@ -383,7 +387,7 @@
       txt = text(size: 2em, weight: 900, txt)
     }
 
-    cell(
+    _cell(
       txt,
       height: 100%,
       width: 100%,
@@ -455,7 +459,7 @@
   let body = create-body()
 
   if (title != none) {
-    body = title-and-sub(
+    body = _title-and-sub(
       body,
       title,
       subtitle: subtitle,
@@ -532,7 +536,7 @@
     )
   }
 
-  body = title-and-sub(
+  body = _title-and-sub(
     body,
     title,
     subtitle: subtitle,
@@ -641,7 +645,7 @@
           columns: (auto, auto, auto),
           rows: (1.4em, 1.4em),
           gutter: 3pt,
-          cell(image("assets/unistra.svg", width: auto, height: 100%)),
+          cell(image("../assets/unistra.svg", width: auto, height: 100%)),
           cell(
             box(
               text(
@@ -679,8 +683,8 @@
     } else {
       none
     },
-    margin: get-page-margin(),
-    footer-descent: if get-page-margin().x != 1em {
+    margin: _get-page-margin(),
+    footer-descent: if _get-page-margin().x != 1em {
       0.2em
     } else {
       0.6em
@@ -736,7 +740,7 @@
       underline.with(offset: 3pt, extent: -1pt)(it),
     )
     // custom quote
-    show quote: it => custom-quote(it)
+    show quote: it => _custom-quote(it)
     show outline.entry: it => it.body
     show outline: it => block(inset: (x: 1em), it)
 

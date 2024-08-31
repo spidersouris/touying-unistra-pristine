@@ -1,8 +1,8 @@
 #import "@preview/touying:0.4.2": *
-#import "../unistra.typ"
-#import "../colors.typ": *
-#import "../admonition.typ": *
-#import "../settings.typ" as settings
+#import "../src/unistra.typ"
+#import "../src/colors.typ": *
+#import "../src/admonition.typ": *
+#import "../src/settings.typ" as settings
 
 #let s = unistra.register(aspect-ratio: "16-9")
 #let s = (s.methods.info)(
@@ -44,13 +44,13 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
 #hero(
   title: "Hero",
   subtitle: "Subtitle",
-  img: "assets/unistra.svg",
+  img: "../assets/unistra.svg",
   img-height: 70%,
   hide-footer: false,
 )
 
 #hero(
-  img: "assets/cat1.jpg",
+  img: "../assets/cat1.jpg",
   img-height: 100%,
   txt: "This is an " + highlight(fill: yellow-light)[RTL#footnote[RTL = right to left. Oh, and here's a footnote!] hero with text and no title] + ".\n" + lorem(40),
   enhanced-text: false,
@@ -61,7 +61,7 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
 )
 
 #hero(
-  img: "assets/cat1.jpg",
+  img: "../assets/cat1.jpg",
   img-height: 100%,
   txt: "This is an " + highlight(fill: yellow-light)[up-to-down hero with text and no title] + ".\n" + lorem(40),
   direction: "utd",
@@ -73,10 +73,16 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
 #gallery(
   title: "Gallery",
   images: (
-    "assets/cat1.jpg",
-    "assets/cat2.jpg",
-    "assets/cat1.jpg",
-    "assets/cat2.jpg",
+    "../assets/cat1.jpg",
+    "../assets/cat2.jpg",
+    "../assets/cat1.jpg",
+    "../assets/cat2.jpg",
+  ),
+  captions: (
+    "Cat 1",
+    "Cat 2",
+    "Cat 1 again",
+    "Cat 2 again",
   ),
   columns: 4,
   height: 55%,
