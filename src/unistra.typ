@@ -1,4 +1,4 @@
-#import "@preview/touying:0.4.2": *
+#import "@preview/touying:0.5.2": *
 #import "colors.typ": *
 #import "admonition.typ": *
 #import "settings.typ" as settings
@@ -100,84 +100,141 @@
   )
 }
 
-// ===================================
-// ============= NAV BAR =============
-// ===================================
+#let smaller = it => {
+  text(size: 25pt, it)
+}
 
-//inspired from touying-buaa theme: https://github.com/Coekjan/touying-buaa/blob/a3fd8257328a80b7c7b74145a10a3984e26629a7/lib.typ
-#let unistra-nav-bar(
-  self: none,
-) = states.touying-progress-with-sections(dict => {
-  let (current-sections, final-sections) = dict
-  current-sections = current-sections
-    .filter(section => section.loc != none)
-    .map(section => (
-        section,
-        section.children,
-      ))
-    .flatten()
-    .filter(item => item.kind == "section")
-  final-sections = final-sections
-    .filter(section => section.loc != none)
-    .map(section => (
-        section,
-        section.children,
-      ))
-    .flatten()
-    .filter(item => item.kind == "section")
-  let current-index = current-sections.len() - 1
+#let smallest = it => {
+  text(size: 20pt, it)
+}
 
-  set text(size: 1.2em)
+#let unistra-nav-bar(self) = {
+  show: block.with(inset: (x: 7em))
+  set text(size: 1.4em)
+  grid(
+    components.mini-slides(display-section: true, display-subsection: false),
+  )
+}
 
-  let header-link(i, current-index, loc, title) = {
-    link(
-      loc,
-      text(
-        fill: if i == current-index {
-          black
-        } else {
-          gray
-        },
-        underline.with(offset: 3pt, extent: -1pt)(title),
-      ),
+/// Creates a normal slide with a title and body
+#let slide(
+  config: (:),
+  repeat: auto,
+  setting: body => body,
+  composer: auto,
+  ..bodies,
+) = touying-slide-wrapper(self => {
+  let footer(self) = {
+    let cell(body) = rect(
+      width: 100%,
+      height: 100%,
+      inset: 0mm,
+      outset: 0mm,
+      fill: none,
+      stroke: none,
+      align(horizon + center, text(size: 0.6em, fill: self.colors.black, body)),
+    )
+
+    set align(center + horizon)
+
+    let has-title-and-subtitle = (
+      self.info.title,
+      self.info.subtitle,
+    ).all(x => x not in ("", none))
+
+    block(
+      width: 125%,
+      height: 1.9em,
+      stroke: (top: 0.5pt + self.colors.black),
+      {
+        set text(size: 1.5em)
+        grid(
+          columns: (auto, auto, auto),
+          rows: (1.4em, 1.4em),
+          gutter: 3pt,
+          cell(image("../assets/unistra.svg", width: auto, height: 100%)),
+          cell(
+            box(
+              text(
+                self.info.title,
+                weight: "bold",
+              ) + if has-title-and-subtitle and settings.FOOTER-SHOW-SUBTITLE {
+                settings.FOOTER-UPPER-SEP
+              } else {
+                ""
+              } + if settings.FOOTER-SHOW-SUBTITLE {
+                self.info.subtitle
+              } + "\n" + utils.call-or-display(
+                self,
+                [#self.info.author | #self.info.date],
+              ),
+              width: 125%,
+            ),
+          ),
+          cell(
+            utils.call-or-display(
+              self,
+              context utils
+                .slide-counter
+                .display() + " / " + utils.last-slide-number,
+            ),
+          ),
+        )
+      },
     )
   }
 
-  for (i, section) in final-sections.enumerate() {
-    if (i <= current-index) {
-      box()[#header-link(
-          i,
-          current-index,
-          section.loc,
-          utils.section-short-title(section.title),
-        )<touying-link>]
-      if (i < current-index) {
-        text(" | ", fill: black)
-      }
-    }
-  }
+  let self = utils.merge-dicts(
+    self,
+    config-page(
+      header: unistra-nav-bar,
+      footer: footer,
+    ),
+  )
+
+  touying-slide(
+    self: self,
+    config: config,
+    repeat: repeat,
+    setting: setting,
+    composer: composer,
+    ..bodies,
+  )
 })
 
-// ================================
-// ============ SLIDES ============
-// ================================
-
-// Creates a title slide
+/// Creates a title slide with a logo, title, subtitle, author, and date.
+///
+/// Example:
+///
+/// ```typst
+/// #title-slide(title: "Override Title", logo-width: 60%)[]
+/// ```
+///
+/// If no title or subtitle is provided, will use the info object.
+///
+/// - `title` (str): The title of the slide. Default: "".
+///
+/// - `subtitle` (str): The subtitle of the slide. Default: "".
+///
+/// - `logo-path` (str): The path to the logo. Default: "../assets/unistra.svg".
+///
+/// - `logo-width` (str): The width of the logo. Default: "40%".
+///
+/// - `logo-height` (str): The height of the logo. Default: "auto".
+///
+/// - `..args`: Additional arguments to pass to the slide.
 #let title-slide(
-  self: none,
   title: "",
   subtitle: "",
   logo-path: "../assets/unistra.svg",
   logo-width: 40%,
   logo-height: auto,
   ..args,
-) = {
-  self = utils.empty-page(self)
-
+) = touying-slide-wrapper(self => {
   let info = self.info + args.named()
 
   let body = {
-    set text(fill: self.colors.white)
+    set text(fill: white)
     set block(inset: 0mm, outset: 0mm, spacing: 0em)
     set align(top + left)
     _gradientize(
@@ -226,7 +283,7 @@
           ]),
           _cell([
             #set text(fill: self.colors.white.transparentize(25%))
-            #utils.info-date(self)
+            #utils.display-info-date(self)
           ]),
         ),
       ),
@@ -235,32 +292,49 @@
     )
   }
 
-  (self.methods.touying-slide)(self: self, repeat: none, body)
-}
-
-// Creates a normal slide with a title and body
-#let slide(self: none, title: none, ..args) = {
-  if title != auto {
-    self.slide-title = title
-  }
-
-  (self.methods.touying-slide)(
-    self: self,
-    title: title,
-    setting: body => {
-      if self.auto-heading == true and title != none {
-        heading(level: 2, title)
-      }
-      set text(size: 30pt)
-      body
-    },
-    ..args,
+  self = utils.merge-dicts(
+    self,
+    config-common(freeze-slide-counter: true),
+    config-page(margin: 0em),
+    config-common(subslide-preamble: none),
   )
-}
 
-// Creates a focus slide with a gradient background
+  touying-slide(
+    self: self,
+    body,
+  )
+})
+
+/// Creates a focus slide with a gradient background.
+///
+/// If no colors are provided, will use the theme.
+///
+/// Examples:
+///
+/// ```typst
+/// #focus-slide(c1: blue, c2: cyan)[Title]
+/// ```
+///
+/// ```typst
+/// #focus-slide(theme: "smoke")[Title]
+/// ```
+///
+/// - `c1` (color): The first color of the gradient. Default: none.
+///
+/// - `c2` (color): The second color of the gradient. Default: none.
+///
+/// - `text-color` (color): The color of the text. Default: none.
+///
+/// - `theme` (str): The color theme to use. Themes are defined in src/colors.typ. Possible values: "lblue", "blue", "dblue", "yellow", "pink", "neon", "mandarine", "hazy", "smoke". Default: none.
+///
+/// - `text-alignment` (str): The text alignment.
+///
+/// - `counter` (counter): The counter to use for titles. Will show a count-label before the title. Default: counter("focus-slide").
+///
+/// - `show-counter` (bool): Whether to show the counter. Default: true.
+///
+/// - `body` (content): Content of the slide.
 #let focus-slide(
-  self: none,
   c1: none,
   c2: none,
   text-color: none,
@@ -269,38 +343,44 @@
   counter: counter("focus-slide"),
   show-counter: true,
   body,
-) = {
+) = touying-slide-wrapper(self => {
   assert(
     (c1 != none and c2 != none) or theme != none,
     message: "Please provide a color theme or two colors for the focus slide.",
   )
 
+  let new-text-color = text-color
+  let new-c1 = c1
+  let new-c2 = c2
+
   if (theme != none) {
     assert(
-      theme in self.colorthemes,
+      theme in self.store.colorthemes,
       message: "The theme " + theme + " is not defined. Available themes are: " + self
+        .store
         .colorthemes
         .keys()
         .join(", "),
     )
     assert(
-      self.colorthemes.at(theme).len() != 2 or self
+      self.store.colorthemes.at(theme).len() != 2 or self
+        .store
         .colorthemes
         .at(theme)
         .len() != 3,
       message: "The theme " + theme + " is not a valid color theme. A valid color theme should have 2 or 3 colors.",
     )
 
-    let theme-has-text-color = self.colorthemes.at(theme).len() == 3
+    let theme-has-text-color = self.store.colorthemes.at(theme).len() == 3
 
     if (text-color == none and not theme-has-text-color) {
-      text-color = self.colors.white
+      new-text-color = self.colors.white
     } else {
-      text-color = self.colorthemes.at(theme).at(2)
+      new-text-color = self.store.colorthemes.at(theme).at(2)
     }
 
-    c1 = self.colorthemes.at(theme).at(0)
-    c2 = self.colorthemes.at(theme).at(1)
+    new-c1 = self.store.colorthemes.at(theme).at(0)
+    new-c2 = self.store.colorthemes.at(theme).at(1)
   }
 
   let padding = auto
@@ -308,10 +388,8 @@
     padding = 2em
   }
 
-  self = utils.empty-page(self)
-
   let body = {
-    set text(fill: text-color, size: 2em, weight: "bold", tracking: 0.8pt)
+    set text(fill: new-text-color, size: 2em, weight: "bold", tracking: 0.8pt)
 
     if (show-counter) {
       counter.step()
@@ -335,17 +413,78 @@
             inset: padding,
           ),
         ),
-        c1: c1,
-        c2: c2,
+        c1: new-c1,
+        c2: new-c2,
       )
     }
   }
-  (self.methods.touying-slide)(self: self, repeat: none, body)
-}
 
-/// Creates a hero slide with a high width image, and optional title and subtitle
+  self = utils.merge-dicts(
+    self,
+    config-common(freeze-slide-counter: true),
+    config-page(margin: 0em),
+    config-common(subslide-preamble: none),
+  )
+
+  touying-slide(self: self, body)
+})
+
+/// Creates a hero slide with a high width image, and optional title, subtitle, caption and text. The image can take all the space, or be on the left or right side.
+///
+/// Examples:
+///
+/// ```typst
+/// #hero(
+/// title: "Hero",
+/// subtitle: "Subtitle",
+/// img: "../assets/unistra.svg",
+/// img-height: 70%,
+/// )
+/// ```
+///
+/// ```typst
+/// #hero(
+/// img: "../assets/cat1.jpg",
+/// img-height: 100%,
+/// txt: "Some Text Next to Image";
+/// enhanced-text: false,
+/// direction: "rtl",
+/// )
+///
+/// - `title` (str): The title of the slide. Default: none.
+///
+/// - `heading-level` (int): The heading level of the title. Default: 1.
+///
+/// - `subtitle` (str): The subtitle of the slide. Default: none.
+///
+/// - `img` (str): The path to the image. Default: none.
+///
+/// - `caption` (str): The caption of the image. Default: none.
+///
+/// - `bold-caption` (bool): Whether to make the caption bold. Default: false.
+///
+/// - `numbering` (str): The numbering of the caption (figure). Default: none.
+///
+/// - `txt` (str): The text to show with the image. Default: none.
+///
+/// - `enhanced-text` (bool): Whether to enhance the text. Enhanced text has size 2em and weight 900. Default: true.
+///
+/// - `text-fill` (color): The fill color of the text. Default: none.
+///
+/// - `text-alignment` (str): The alignment of the text. Default: horizon + center.
+///
+/// - `img-height` (str): The height of the image. Default: auto.
+///
+/// - `img-width` (str): The width of the image. Default: auto.
+///
+/// - `rows` (list): The rows of the grid. Default: (1fr).
+///
+/// - `direction` (str): The direction of the image and text. Possible values: "ltr", "rtl", "utd", "dtu". Default: "ltr".
+///
+/// - `gap` (str): The gap between the image and text. Default: auto.
+///
+/// - `hide-footer` (bool): Whether to hide the footer. Default: true.
 #let hero(
-  self: none,
   title: none,
   heading-level: 1,
   subtitle: none,
@@ -363,7 +502,7 @@
   direction: "ltr",
   gap: auto,
   hide-footer: true,
-) = {
+) = touying-slide-wrapper(self => {
   let create-figure() = {
     if (bold-caption) {
       caption = text(weight: "bold", caption)
@@ -485,25 +624,69 @@
     }
   }
 
-  (self.methods.touying-slide)(self: self, repeat: none, body)
-}
+  let self = utils.merge-dicts(
+    self,
+    config-common(subslide-preamble: none),
+  )
 
-// Creates a gallery slide with a title and images
+  touying-slide(self: self, body)
+})
+
+/// Creates a gallery slide with a title and images.
+///
+/// Example:
+///
+/// ```typst
+/// #gallery(
+///  title: "Gallery",
+/// images: (
+///   "../assets/cat1.jpg",
+///   "../assets/cat2.jpg",
+/// ),
+/// captions: (
+///   "Cat 1",
+///   "Cat 2",
+/// ),
+/// columns: 2
+/// ```
+///
+/// - `title` (str): The title of the gallery. Default: none.
+///
+/// - `heading-level` (int): The heading level of the title. Default: 2.
+///
+/// - `subtitle` (str): The subtitle of the gallery. Default: none.
+///
+/// - `images` (list[str]): The list of image paths. Default: ().
+///
+/// - `columns` (int): The number of columns. Default: auto.
+///
+/// - `captions` (list[str]): The list of captions. Default: ().
+///
+/// - `bold-caption` (bool): Whether to make the captions bold. Default: true.
+///
+/// - `height` (str): The height of the images. Default: auto.
+///
+/// - `width` (str): The width of the images. Default: auto.
+///
+/// - `fit` (str): The fit of the images. Can be "cover", "stretch" or "contain". Default: "cover".
+///
+/// - `gutter` (str): The gutter between the images. Default: 0.5em.
+///
+/// - `gap` (str): The gap between the images. Default: 0.65em.
 #let gallery(
-  self: none,
   title: none,
+  heading-level: 2,
   subtitle: none,
   images: (),
-  columns: int,
+  columns: auto,
   captions: (),
   bold-caption: true,
-  heading-level: 2,
   height: auto,
   width: auto,
   fit: "cover",
   gutter: 0.5em,
   gap: 0.65em,
-) = {
+) = touying-slide-wrapper(self => {
   let rows = (images.len() / columns)
   let body = {
     grid(
@@ -543,208 +726,129 @@
     heading-level: heading-level,
   )
 
-  (self.methods.touying-slide)(self: self, repeat: none, body)
-}
+  let self = utils.merge-dicts(
+    self,
+    config-common(subslide-preamble: none),
+  )
 
-// ====================================
-// ============ REGISTER ==============
-// == (incl. header, footer, colors) ==
-// ====================================
+  touying-slide(self: self, body)
+})
 
-#let register(
-  self: themes.default.register(),
+/// Registers the Unistra theme.
+#let unistra-theme(
   aspect-ratio: "16-9",
   header: [],
   footer: [],
-  footer-info-1: self => {
-    [
-      #self.info.title – #self.info.subtitle]
-  },
   footer-info-2: self => {
     [
       #self.info.author | #utils.info-date(self)]
   },
-  footer-number: self => {
-    states.slide-counter.display() + " / " + states.last-slide-number
-  },
-  primary: aqua.darken(50%),
   ..args,
+  body,
 ) = {
-  let deco-format(it) = text(size: .6em, fill: gray, it)
-  // color theme
-  self = (self.methods.colors)(
-    self: self,
-    white: white,
-    black: black,
-    grey: grey,
-    maroon: maroon,
-    brown: brown,
-    orange: orange,
-    orange-bright: orange-bright,
-    pink: pink,
-    pink-bright: pink-bright,
-    purple: purple,
-    blue-dark: blue-dark,
-    blue: blue,
-    cyan: cyan,
-    green: green,
-    yellow: yellow,
-    yellow-light: yellow-light,
-    primary: primary,
-  )
-  // save the variables for later use
-  self.unistra-nav = self => {
-    grid(
-      align: center + horizon,
-      columns: (1fr, auto, auto),
-      rows: 1.8em,
-      components.cell(
-        unistra-nav-bar(self: self),
-      ),
-    )
-  }
-  self.colorthemes = colorthemes
-  self.slide-title = []
-  self.simple-header = header
-  self.simple-footer = footer
-  self.auto-heading = true
-  // set page
-  let header(self) = {
-    set align(top)
-    grid(
-      rows: (auto, auto),
-      utils.call-or-display(self, self.unistra-nav),
-    )
-  }
+  set text(size: 20pt)
 
-  let footer(self) = {
-    let cell(body) = rect(
-      width: 100%,
-      height: 100%,
-      inset: 0mm,
-      outset: 0mm,
-      fill: none,
-      stroke: none,
-      align(horizon + center, text(size: 0.6em, fill: self.colors.black, body)),
-    )
+  show: touying-slides.with(
+    config-colors(
+      white: white,
+      black: black,
+      grey: grey,
+      maroon: maroon,
+      brown: brown,
+      orange: orange,
+      orange-bright: orange-bright,
+      pink: pink,
+      pink-bright: pink-bright,
+      purple: purple,
+      blue-dark: blue-dark,
+      blue: blue,
+      cyan: cyan,
+      green: green,
+      yellow: yellow,
+      yellow-light: yellow-light,
+      primary: blue-dark,
+    ),
 
-    set align(center + horizon)
-
-    let has-title-and-subtitle = (
-      self.info.title,
-      self.info.subtitle,
-    ).all(x => x not in ("", none))
-
-    block(
-      width: 150%,
-      height: 1.9em,
-      stroke: (top: 0.5pt + self.colors.black),
-      {
-        set text(size: 1.5em)
-        grid(
-          columns: (auto, auto, auto),
-          rows: (1.4em, 1.4em),
-          gutter: 3pt,
-          cell(image("../assets/unistra.svg", width: auto, height: 100%)),
-          cell(
-            box(
-              text(
-                self.info.title,
-                weight: "bold",
-              ) + if has-title-and-subtitle and settings.FOOTER-SHOW-SUBTITLE {
-                settings.FOOTER-UPPER-SEP
-              } else {
-                ""
-              } + if settings.FOOTER-SHOW-SUBTITLE {
-                self.info.subtitle
-              } + "\n" + utils.call-or-display(
-                self,
-                footer-info-2,
-              ),
-              width: 150%,
-            ),
-          ),
-          cell(utils.call-or-display(self, footer-number)),
-        )
+    config-page(
+      paper: "presentation-" + aspect-ratio,
+      header: if settings.SHOW-HEADER {
+        header
+      } else {
+        none
       },
-    )
-  }
+      footer: if settings.SHOW-FOOTER {
+        footer
+      } else {
+        none
+      },
+      margin: _get-page-margin(),
+      footer-descent: if _get-page-margin().x != 1em {
+        0.2em
+      } else {
+        0.6em
+      },
+      header-ascent: 1em,
+    ),
 
-  self.page-args += (
-    paper: "presentation-" + aspect-ratio,
-    fill: self.colors.white,
-    header: if settings.SHOW-HEADER {
-      header
-    } else {
-      none
-    },
-    footer: if settings.SHOW-FOOTER {
-      footer
-    } else {
-      none
-    },
-    margin: _get-page-margin(),
-    footer-descent: if _get-page-margin().x != 1em {
-      0.2em
-    } else {
-      0.6em
-    },
-    header-ascent: 1em,
+    config-common(
+      slide-fn: slide,
+      title-slide: title-slide,
+      focus-slide: focus-slide,
+      gallery: gallery,
+      hero: hero,
+      subslide-preamble: self => text(
+        1.5em,
+        weight: "bold",
+        utils.display-current-heading(depth: self.slide-level) + "\n",
+      ),
+    ),
+
+    config-methods(
+      alert: utils.alert-with-primary-color,
+      smaller: smaller,
+      smallest: smallest,
+
+      // init
+      init: (self: none, body) => {
+        // sets
+        set text(
+          fill: black,
+          font: settings.FONT,
+          size: 25pt,
+          lang: settings.LANGUAGE,
+        )
+        set outline(target: heading.where(level: 1), title: none, fill: none)
+        set enum(numbering: n => [*#n;.*])
+        set highlight(extent: 1pt)
+
+        // shows
+        show strong: self.methods.alert.with(self: self)
+        show footnote.entry: set text(size: 18pt)
+        show table: set text(size: 22pt)
+        show heading.where(level: 1): set text(size: 1.5em, weight: "bold")
+        show heading.where(level: 2): set block(below: 1.5em)
+        // color links
+        show link: it => text(
+          link-color,
+          underline.with(offset: 3pt, extent: -1pt)(it),
+        )
+        // custom quote
+        show quote: it => _custom-quote(it)
+        show outline.entry: it => it.body
+        show outline: it => block(inset: (x: 1em), it)
+
+        body
+      },
+    ),
+
+    config-store(
+      colorthemes: colorthemes,
+      slide-title: [],
+      auto-heading: true,
+    ),
+
+    ..args,
   )
 
-  self.full-header = false
-  self.full-footer = false
-
-  // slides methods
-  self.methods.slide = slide
-  self.methods.title-slide = title-slide
-  self.methods.focus-slide = focus-slide
-  self.methods.gallery = gallery
-  self.methods.hero = hero
-
-  // other methods
-  self.methods.alert = (self: none, it) => {
-    text(fill: blue-dark, it)
-  }
-
-  self.methods.smaller = (self: none, it) => {
-    text(size: 25pt, it)
-  }
-
-  self.methods.smallest = (self: none, it) => {
-    text(size: 20pt, it)
-  }
-
-  // init
-  self.methods.init = (self: none, body) => {
-    // sets
-    set heading(outlined: false)
-    set text(
-      fill: black,
-      font: settings.FONT,
-      size: 25pt,
-      lang: settings.LANGUAGE,
-    )
-    set outline(target: heading.where(level: 1), title: none, fill: none)
-    set enum(numbering: n => [*#n;.*])
-    set highlight(extent: 1pt)
-
-    // shows
-    show footnote.entry: set text(size: 18pt)
-    show table: set text(size: 22pt)
-    show heading.where(level: 1): set text(size: 1.5em, weight: "bold")
-    show heading.where(level: 2): set block(below: 1.5em)
-    // color links
-    show link: it => text(
-      link-color,
-      underline.with(offset: 3pt, extent: -1pt)(it),
-    )
-    // custom quote
-    show quote: it => _custom-quote(it)
-    show outline.entry: it => it.body
-    show outline: it => block(inset: (x: 1em), it)
-
-    body
-  }
-  self
+  body
 }
