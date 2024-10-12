@@ -217,7 +217,7 @@
 /// Example:
 ///
 /// ```typst
-/// #title-slide(title: "Override Title", logo-width: 60%)[]
+/// #title-slide(title: "Override Title", logo: image("../assets/unistra.svg", width: 60%))
 /// ```
 ///
 /// If no title or subtitle is provided, will use the info object.
@@ -226,10 +226,7 @@
 ///
 /// - `subtitle` (str): The subtitle of the slide. Default: "".
 ///
-/// - `logo-width` (str): The width of the logo. Default: "40%".
-///
-/// - `logo-height` (str): The height of the logo. Default: "auto".
-///
+/// - `logo` (content): Path to the logo shown in the upper left corner of the slide. Default: "".
 /// - `..args`: Additional arguments to pass to the slide.
 #let title-slide(
   title: "",
