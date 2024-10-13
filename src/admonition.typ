@@ -167,9 +167,9 @@
   } else {
     "sg"
   }).at(settings.LANGUAGE),
-  primary-color: green.E,
-  secondary-color: green.E.lighten(90%),
-  tertiary-color: green.E,
+  primary-color: ngreen.C,
+  secondary-color: ngreen.C.lighten(90%),
+  tertiary-color: ngreen.B,
   figure-kind: "definition",
   counter: counter("admonition-definition"),
   emoji: emoji.brain,
