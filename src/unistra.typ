@@ -127,13 +127,13 @@
 ) = touying-slide-wrapper(self => {
   let footer(self) = {
     let cell(body) = rect(
-      width: 150%,
+      width: 100%,
       height: 100%,
       inset: 0mm,
       outset: 0mm,
       fill: none,
       stroke: none,
-      align(horizon + center, text(size: 0.5em, fill: self.colors.black, body)),
+      text(size: 0.5em, fill: self.colors.black, body),
     )
 
     set align(center + horizon)
@@ -144,17 +144,15 @@
     ).all(x => x not in ("", none))
 
     block(
-      width: 125%,
-      height: 1.8em,
-      outset: 2mm,
+      width: 100%,
+      height: 100%,
       stroke: (top: 0.5pt + self.colors.black),
       {
         set text(size: 1.5em)
         grid(
-          columns: (auto, auto, auto),
-          rows: (1.4em, 1.4em),
-          gutter: 3pt,
-          cell(self.info.logo),
+          columns: (20%, 60%, 20%),
+          rows: 1.5em,
+          cell(box(self.info.logo, height: 100%, fill: none)),
           cell(
             box(
               text(
@@ -170,7 +168,7 @@
                 self,
                 [#self.info.author | #self.info.date],
               ),
-              width: 125%,
+              width: 100%,
             ),
           ),
           cell(
@@ -555,7 +553,7 @@
   let create-grid(
     first-cell,
     second-cell,
-    columns: (1fr, 1fr),
+    columns: (1fr, 2fr),
     rows: rows,
     column-gutter: auto,
     row-gutter: auto,
@@ -796,7 +794,7 @@
       paper: "presentation-" + aspect-ratio,
       margin: _get-page-margin(),
       footer-descent: if (_get-page-margin().at("x")) != 1em {
-        0.2em
+        0em
       } else {
         0.6em
       },
@@ -827,7 +825,7 @@
         set text(
           fill: black,
           font: settings.FONT,
-          size: 22pt,
+          size: 25pt,
           lang: settings.LANGUAGE,
         )
         set outline(target: heading.where(level: 1), title: none, fill: none)
