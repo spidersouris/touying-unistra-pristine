@@ -493,6 +493,7 @@
   hide-footer: true,
   fill: none,
   inset: -25mm,
+  footnote: false,
   ..args,
 ) = touying-slide-wrapper(self => {
   let fig = args.pos().at(0)
@@ -625,31 +626,35 @@
     )
   }
 
-  if hide-footer {
+  if hide-footer or footnote {
     body = block(
       body,
       fill: fill,
-      height: 100%,
+      height: if (footnote) {
+        80%
+      } else {
+        100%
+      },
       width: 100%,
     )
+  }
 
-    if (title, subtitle, caption).all(x => x == none) {
-      body = block(
+  if (title, subtitle, caption).all(x => x == none) {
+    body = block(
         body,
         // expand image as much as possible
         // as it is the only content
         // todo: calculate this automatically
         inset: inset,
       )
-    }
-
-    let self = utils.merge-dicts(
-      self,
-      config-common(subslide-preamble: none),
-    )
-
-    touying-slide(self: self, body)
   }
+
+  let self = utils.merge-dicts(
+    self,
+    config-common(subslide-preamble: none),
+  )
+
+  touying-slide(self: self, body)
 })
 
 /// Creates a gallery slide with a title and images.
