@@ -534,6 +534,8 @@
     let new-txt = merged-txt.text
     if type(merged-txt.enhanced) == "boolean" and merged-txt.enhanced {
       new-txt = text(size: 2em, weight: 900, merged-txt.text)
+    } else if type(merged-txt.enhanced) == "boolean" and not merged-txt.enhanced {
+      new-txt = merged-txt.text
     } else if type(merged-txt.enhanced) == "function" {
       new-txt = (merged-txt.enhanced)(merged-txt.text)
     } else {
