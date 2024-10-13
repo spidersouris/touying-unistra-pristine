@@ -585,6 +585,8 @@
           create-image-cell(),
           create-text-cell(),
           column-gutter: gap,
+          // columns are reversed in this direction
+          columns: (2fr, 1fr),
         )
       } else if direction == "utd" {
         create-grid(
