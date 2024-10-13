@@ -1,5 +1,5 @@
 #import "@preview/touying:0.5.2": *
-#import "@preview/touying-unistra-pristine:1.0.0": *
+#import "@preview/touying-unistra-pristine:1.0.1": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -8,10 +8,11 @@
     subtitle: [_Subtitle_],
     author: [Author],
     date: datetime.today().display("[month repr:long] [day], [year repr:full]"),
+    logo: image("../assets/unistra.svg"),
   ),
 )
 
-#title-slide[]
+#title-slide(logo: image("../assets/unistra.svg"))
 
 = Example Section Title
 
@@ -22,45 +23,31 @@ A slide with *important information*.
 #pause
 
 === Highlight
-This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: yellow)[highlighted in yellow]. This is #highlight(fill: green)[highlighted in green]. This is #highlight(fill: red)[highlighted in red].
+This is #highlight(fill: blue.C)[highlighted in blue]. This is #highlight(fill: yellow.C)[highlighted in yellow]. This is #highlight(fill: green.C)[highlighted in green]. This is #highlight(fill: red.C)[highlighted in red].
 
 #hero(
+  image("../assets/unistra.svg"),
   title: "Hero",
   subtitle: "Subtitle",
-  img: "../assets/unistra.svg",
-  img-height: 70%,
   hide-footer: false,
 )
 
 #hero(
-  img: "../assets/cat1.jpg",
-  img-height: 100%,
-  txt: "This is an " + highlight(fill: yellow-light)[RTL#footnote[RTL = right to left. Oh, and here's a footnote!] hero with text and no title] + ".\n" + lorem(40),
-  enhanced-text: false,
-  rows: (80%),
+  image("../assets/cat1.jpg", width: 100%, height: 100%),
+  txt: (
+    text: "This is an " + highlight(fill: yellow.C)[RTL#footnote[RTL = right to left. Oh, and here's a footnote!] hero with text and no title] + ".\n",
+    enhanced: false,
+  ),
   direction: "rtl",
-  gap: 1em,
-  hide-footer: false,
-)
-
-#hero(
-  img: "../assets/cat1.jpg",
-  img-height: 100%,
-  txt: "This is an " + highlight(fill: yellow-light)[up-to-down hero with text and no title] + ".\n" + lorem(40),
-  direction: "utd",
-  enhanced-text: false,
-  hide-footer: false,
-  gap: 1em,
+  footnote: true,
 )
 
 #gallery(
+  image("../assets/cat1.jpg", width: auto, height: 50%),
+  image("../assets/cat2.jpg", width: auto, height: 50%),
+  image("../assets/cat1.jpg", width: auto, height: 50%),
+  image("../assets/cat2.jpg", width: auto, height: 50%),
   title: "Gallery",
-  images: (
-    "../assets/cat1.jpg",
-    "../assets/cat2.jpg",
-    "../assets/cat1.jpg",
-    "../assets/cat2.jpg",
-  ),
   captions: (
     "Cat 1",
     "Cat 2",
@@ -68,7 +55,6 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
     "Cat 2 again",
   ),
   columns: 4,
-  height: 55%,
 )
 
 #focus-slide(
@@ -77,6 +63,8 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
     This is a focus slide \ with theme "smoke"
   ],
 )
+
+== Admonitions
 
 #slide[
   This is a normal slide with *admonitions*:
@@ -111,7 +99,7 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
     This is a focus slide \ with custom colors
     \ Next: Section 2
   ],
-  text-color: yellow-light,
+  text-color: yellow.D,
 )
 
 = Section 2
@@ -126,7 +114,7 @@ This is #highlight(fill: blue)[highlighted in blue]. This is #highlight(fill: ye
 
 ==== Heading 4
 
-#lorem(99)
+#lorem(80)
 
 #quote(attribution: [from the Henry Cary literal translation of 1897])[
   ... I seem, then, in just this little thing to be wiser than this man at
