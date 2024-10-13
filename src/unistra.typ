@@ -466,9 +466,9 @@
 ///
 /// - `txt` (dict): The text to display next to the image, along with its style. Contains the following keys: text, enhanced, fill, align.
 ///   - `text` (content): The text to display. Default: none.
-///   - `enhanced` (bool or function): Whether to enhance the text. Can pass a custom function that will act as a callback to enhance the text. Default: true.
+///   - `enhanced` (bool | function): Whether to enhance the text. Can pass a custom function that will act as a callback to enhance the text. Default: true.
 ///   - `fill` (color): The fill color of the text. Default: none.
-///   - `align` (str): The alignment of the text. Default: horizon + center.
+///   - `align` (alignment): The alignment of the text. Default: horizon + center.
 ///
 /// - `direction` (str): The direction of the image and text. Possible values: "ltr", "rtl", "utd", "dtu". Default: "ltr".
 ///
