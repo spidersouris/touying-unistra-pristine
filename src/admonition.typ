@@ -61,9 +61,9 @@
   body,
   title: none,
   time: none,
-  primary-color: pink,
-  secondary-color: pink.lighten(90%),
-  tertiary-color: pink,
+  primary-color: pink.E,
+  secondary-color: pink.E.lighten(90%),
+  tertiary-color: pink.E,
   dotted: false,
   figured: false,
   counter: none,
@@ -152,9 +152,9 @@
   } else {
     "sg"
   }).at(settings.LANGUAGE),
-  primary-color: blue,
-  secondary-color: blue.lighten(90%),
-  tertiary-color: blue,
+  primary-color: blue.E,
+  secondary-color: blue.E.lighten(90%),
+  tertiary-color: blue.E,
   figure-kind: "task",
   counter: counter("admonition-task"),
   emoji: emoji.hand.write,
@@ -167,9 +167,9 @@
   } else {
     "sg"
   }).at(settings.LANGUAGE),
-  primary-color: green,
-  secondary-color: green.lighten(90%),
-  tertiary-color: green,
+  primary-color: green.E,
+  secondary-color: green.E.lighten(90%),
+  tertiary-color: green.E,
   figure-kind: "definition",
   counter: counter("admonition-definition"),
   emoji: emoji.brain,
@@ -182,9 +182,9 @@
   } else {
     "sg"
   }).at(settings.LANGUAGE),
-  primary-color: orange,
-  secondary-color: orange.lighten(90%),
-  tertiary-color: orange,
+  primary-color: orange.E,
+  secondary-color: orange.E.lighten(90%),
+  tertiary-color: orange.E,
   figure-kind: "brainstorming",
   counter: counter("admonition-brainstorming"),
   emoji: emoji.lightbulb,
@@ -197,9 +197,9 @@
   } else {
     "sg"
   }).at(settings.LANGUAGE),
-  primary-color: purple,
-  secondary-color: purple.lighten(90%),
-  tertiary-color: purple,
+  primary-color: violet.E,
+  secondary-color: violet.E.lighten(90%),
+  tertiary-color: violet.E,
   figure-kind: "question",
   counter: counter("admonition-question"),
   emoji: emoji.quest,

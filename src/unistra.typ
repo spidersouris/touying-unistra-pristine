@@ -38,8 +38,8 @@
 #let _gradientize(
   self,
   body,
-  c1: blue-dark,
-  c2: blue-dark,
+  c1: nblue.E,
+  c2: nblue.E,
   lighten-pct: 20%,
   angle: 45deg,
 ) = {
@@ -290,8 +290,8 @@
           ]),
         ),
       ),
-      c1: self.colors.blue-dark,
-      c2: self.colors.cyan,
+      c1: self.colors.nblue.E,
+      c2: self.colors.cyan.E,
     )
   }
 
@@ -761,17 +761,18 @@
       maroon: maroon,
       brown: brown,
       orange: orange,
-      orange-bright: orange-bright,
+      red: red,
       pink: pink,
-      pink-bright: pink-bright,
       purple: purple,
-      blue-dark: blue-dark,
+      violet: violet,
+      nblue: nblue,
       blue: blue,
       cyan: cyan,
+      ngreen: ngreen,
       green: green,
+      camo: camo,
       yellow: yellow,
-      yellow-light: yellow-light,
-      primary: blue-dark,
+      primary: nblue.E,
     ),
 
     config-page(
