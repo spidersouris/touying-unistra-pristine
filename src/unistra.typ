@@ -604,7 +604,7 @@
           create-image-cell(),
           columns: (1fr),
           rows: (1fr, 1fr),
-          row-gutter: if gap {
+          row-gutter: if gap != auto {
             gap
           } else {
             -2em
