@@ -479,6 +479,8 @@
 /// - `fill` (color): The fill color of the slide. Only works when `hide-footer` is true. Default: none.
 ///
 /// - `inset` (length): How much negative inset should be applied to the slide to make the image take all the space. Only works when `hide-footer` is true and there is no title, subtitle or caption. Default: -25mm.
+///
+/// - `footnote` (bool): Whether to leave some width to accomodate for a footnote. Default: false.
 #let hero(
   title: none,
   heading-level: 1,
