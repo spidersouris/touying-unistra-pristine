@@ -445,10 +445,10 @@
 /// ```
 ///
 /// ```typst
+/// #let custom-enhance = txt => text(size: 2em, weight: 900, fill: orange, txt)
 /// #hero(
 /// image("../assets/cat1.jpg", height: 100%, width: 100%),
-/// txt: "Some Text Next to Image";
-/// enhanced-text: false,
+/// txt: (text: "Some text next to the image", enhanced: custom-enhance),
 /// direction: "rtl",
 /// )
 ///
@@ -464,21 +464,23 @@
 ///
 /// - `numbering` (str): The numbering of the caption (figure). Default: none.
 ///
-/// - `txt` (str): The text to show with the image. Default: none.
-///
-/// - `enhanced-text` (bool): Whether to enhance the text. Enhanced text has size 2em and weight 900. Default: true.
-///
-/// - `text-fill` (color): The fill color of the text. Default: none.
-///
-/// - `text-alignment` (str): The alignment of the text. Default: horizon + center.
-///
 /// - `rows` (list): The rows of the grid. Default: (1fr).
+///
+/// - `txt` (dict): The text to display next to the image, along with its style. Contains the following keys: text, enhanced, fill, align.
+///   - `text` (content): The text to display. Default: none.
+///   - `enhanced` (bool or function): Whether to enhance the text. Can pass a custom function that will act as a callback to enhance the text. Default: true.
+///   - `fill` (color): The fill color of the text. Default: none.
+///   - `align` (str): The alignment of the text. Default: horizon + center.
 ///
 /// - `direction` (str): The direction of the image and text. Possible values: "ltr", "rtl", "utd", "dtu". Default: "ltr".
 ///
 /// - `gap` (str): The gap between the image and text. Default: auto.
 ///
 /// - `hide-footer` (bool): Whether to hide the footer. Default: true.
+///
+/// - `fill` (color): The fill color of the slide. Only works when `hide-footer` is true. Default: none.
+///
+/// - `inset` (length): How much negative inset should be applied to the slide to make the image take all the space. Only works when `hide-footer` is true and there is no title, subtitle or caption. Default: -25mm.
 #let hero(
   title: none,
   heading-level: 1,
@@ -486,20 +488,27 @@
   caption: none,
   bold-caption: false,
   numbering: none,
-  txt: none,
-  enhanced-text: true,
-  text-fill: none,
-  text-alignment: horizon + center,
-  img-height: auto,
-  img-width: auto,
   rows: (1fr),
+  txt: (:),
   direction: "ltr",
   gap: auto,
   hide-footer: true,
-  img: none,
+  fill: none,
+  inset: -25mm,
   ..args,
 ) = touying-slide-wrapper(self => {
   let fig = args.pos().at(0)
+
+  // merge with default values
+  let merged-txt = utils.merge-dicts(
+    (
+      text: none,
+      enhanced: true,
+      fill: none,
+      align: horizon + center,
+    ),
+    txt,
+  )
 
   if (fig == none) {
     panic("A hero slide requires an inline image such as image('path/to/image.jpg')")
@@ -523,17 +532,23 @@
     )
   }
 
-  let create-text-cell(txt, text-fill) = {
-    if enhanced-text {
-      txt = text(size: 2em, weight: 900, txt)
+  let create-text-cell() = {
+    let new-txt = merged-txt.text
+    if type(merged-txt.enhanced) == "boolean" and merged-txt.enhanced {
+      new-txt = text(size: 2em, weight: 900, merged-txt.text)
+    } else if type(merged-txt.enhanced) == "function" {
+      new-txt = (merged-txt.enhanced)(merged-txt.text)
+    } else {
+      panic("Value of enhanced key must be a boolean or a function")
     }
 
     _cell(
-      txt,
+      new-txt,
       height: 100%,
       width: 100%,
-      alignment: text-alignment,
-      fill: text-fill,
+      inset: 20mm,
+      alignment: merged-txt.align,
+      fill: merged-txt.fill,
     )
   }
 
@@ -555,7 +570,7 @@
   }
 
   let create-body() = {
-    if (txt == none) {
+    if (merged-txt.text == none) {
       align(
         center,
         create-figure(),
@@ -563,27 +578,27 @@
     } else {
       if direction == "ltr" {
         create-grid(
-          create-text-cell(txt, text-fill),
+          create-text-cell(),
           create-image-cell(),
           column-gutter: gap,
         )
       } else if direction == "rtl" {
         create-grid(
           create-image-cell(),
-          create-text-cell(txt, text-fill),
+          create-text-cell(),
           column-gutter: gap,
         )
       } else if direction == "utd" {
         create-grid(
           create-image-cell(),
-          create-text-cell(txt, text-fill),
+          create-text-cell(),
           columns: (1fr),
           rows: (1fr, 1fr),
           row-gutter: gap,
         )
       } else if direction == "dtu" {
         create-grid(
-          create-text-cell(txt, text-fill),
+          create-text-cell(),
           create-image-cell(),
           columns: (1fr),
           rows: (1fr, 1fr),
@@ -611,26 +626,28 @@
   if hide-footer {
     body = block(
       body,
+      fill: fill,
       height: 100%,
       width: 100%,
     )
 
-    if (title, subtitle, caption, txt).all(x => x == none) {
+    if (title, subtitle, caption).all(x => x == none) {
       body = block(
         body,
         // expand image as much as possible
         // as it is the only content
-        inset: -25mm,
+        // todo: calculate this automatically
+        inset: inset,
       )
     }
+
+    let self = utils.merge-dicts(
+      self,
+      config-common(subslide-preamble: none),
+    )
+
+    touying-slide(self: self, body)
   }
-
-  let self = utils.merge-dicts(
-    self,
-    config-common(subslide-preamble: none),
-  )
-
-  touying-slide(self: self, body)
 })
 
 /// Creates a gallery slide with a title and images.
