@@ -1,4 +1,4 @@
-#import "@preview/touying:0.5.2": *
+#import "@preview/touying:0.5.3": *
 #import "colors.typ": *
 #import "admonition.typ": *
 #import "settings.typ" as settings
@@ -499,6 +499,10 @@
   ..args,
 ) = touying-slide-wrapper(self => {
   let fig = args.pos().at(0)
+
+  if (txt != (:) and "text" not in txt) {
+    panic("The txt argument value must contain a text key")
+  }
 
   // merge with default values
   let merged-txt = utils.merge-dicts(

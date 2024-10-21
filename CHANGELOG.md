@@ -1,3 +1,41 @@
+# v1.1.0 (2024-10-16)
+
+## General
+
+- Updated to Touying 0.5.3.
+
+### Slides
+
+- **Hero Slides**:
+  - Added the following parameters: `fill`, `inset`, `footnote`.
+    - `fill` (color): allows to fill the entire slide with a color. It can be used to achieve a better result if an image with a fixed background color different from the default one does not properly cover the entire slide, leaving some parts of the default background color visible.
+    - `inset` (length): allows to specify the negative inset value for the image to take the most space possible on the slide.
+    - `footnote` (bool): allows to specify whether there is a footnote. If true, gives some width to accommodate the footnote. Experimental feature. Default: false.
+  - Removed the following parameters: `img-height`, `img-width`, `text-fill`, `text-alignment`, `enhanced-text`.
+  - The `txt` parameter, used to show text next to the image, is now a dictionary accepting the following optional keys: `text`, `enhanced`, `fill`, `align`.
+    - `text` (str): the text to display. Default: none.
+    - `enhanced` (bool | function): whether to enhance the text. Can pass a custom function that will act as a callback to enhance the text. Default: true.
+    - `fill` (color): the fill color of the text. Default: none.
+    - `align` (alignment): the alignment of the text. Default: horizon + center.
+
+### Colors
+
+- Added all the colors from the [official color palette of the University of Strasbourg](https://langagevisuel.unistra.fr/index.php?id=396) to `colors.typ`.
+  - Every color is defined as a dictionary with its different shades as keys (A: dark (_foncée_), B: vivid (_vive_), C: pale (_layette_), D: light (_claire_), E: Web colors (_Web_)).
+    - The following colors and their shades are included: `grey`, `maroon`, `brown`, `orange`, `red`, `pink`, `purple`, `violet`, `nblue`, `cyan`, `ngreen`, `green`, `camo`, `yellow`.
+      - Example use: `grey.A` for the dark shade of grey, `maroon.B` for the vivid shade of maroon, etc.
+  - Standard colors `black`, `white`, and `link-color` remain available without dictionary use.
+- Added the following colorthemes: `forest`, `berry`, `ocean`, `lavender`, `moss`, `clay`, `mint`, `lemon`, `wine`.
+
+## Fixes
+
+- The image on hero slides now takes double the space of the text box width on the main axis (LTR, RTL) when text is provided.
+- Increased font size from 22pt to 25pt.
+- Fixed template title slide missing logo.
+- Fixed outdated `title-slide` function docstring.
+- Fixed logo in footer not positioning correctly.
+- Fixed other footer positioning issues.
+
 # v1.0.0 (2024-09-18)
 
 Initial release for publication as a Typst template package.
