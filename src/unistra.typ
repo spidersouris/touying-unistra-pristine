@@ -225,14 +225,37 @@
 /// - `subtitle` (str): The subtitle of the slide. Default: "".
 ///
 /// - `logo` (content): Path to the logo shown in the upper left corner of the slide. Default: "".
+///
+/// - `logos` (array): List of logos to display in a row in the upper left corner of the slide. Default: ().
+///
 /// - `..args`: Additional arguments to pass to the slide.
 #let title-slide(
   title: "",
   subtitle: "",
   logo: "",
+  logos: (),
   ..args,
 ) = touying-slide-wrapper(self => {
   let info = self.info + args.named()
+
+  let nb-logos = logos.len()
+
+  if logo != "" and nb-logos > 0 {
+    panic("'logo' and 'logos' cannot be set at the same time.")
+  }
+
+  let logo-body = none
+  if nb-logos == 0 {
+    logo-body = logo
+  } else {
+    logo-body = grid(columns: if nb-logos > 0 {
+        nb-logos
+      } else {
+        1
+      },
+      ..(logos).map(logo => logo),
+    )
+  }
 
   let body = {
     set text(fill: white)
@@ -248,12 +271,7 @@
         grid(
           columns: (1fr),
           rows: (6em, 6em, 4em, 4em),
-          _cell([
-            #align(
-              left,
-              logo,
-            )
-          ]),
+          logo-body,
           _cell([
             #text(
               size: 2em,
@@ -275,6 +293,7 @@
               },
             )
           ]),
+
           _cell([
             #if ((none, "").all(x => x != info.subtitle)) {
               linebreak()
