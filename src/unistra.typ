@@ -1,7 +1,6 @@
 #import "@preview/touying:0.5.3": *
 #import "colors.typ": *
 #import "admonition.typ": *
-#import "settings.typ" as settings
 
 //todo (low prio): add material symbols
 
@@ -18,19 +17,15 @@
   outset: 0mm,
   alignment: top + left,
   fill: none,
-  debug: settings.DEBUG,
+  stroke: none,
 ) = rect(
   width: width,
   height: height,
   inset: inset,
   outset: outset,
   fill: fill,
+  stroke: stroke,
   radius: 2em,
-  stroke: if debug {
-    1mm + red
-  } else {
-    none
-  },
   align(alignment, body),
 )
 
@@ -68,12 +63,12 @@
 }
 
 /// Calculates page margin based on header and footer settings
-#let _get-page-margin() = {
-  if settings.SHOW-HEADER and settings.SHOW-FOOTER {
+#let _get-page-margin(self) = {
+  if self.store.show-header and self.store.show-footer {
     (x: 2.8em, y: 2.5em)
-  } else if settings.SHOW-HEADER {
+  } else if self.store.show-header {
     (x: 2.8em, bottom: 0em)
-  } else if settings.SHOW-FOOTER {
+  } else if self.store.show-footer {
     (x: 2em, left: 2.8em)
   } else {
     (x: 1em, y: 1em)
@@ -90,7 +85,7 @@
     [
       // smartquote() doesn't work properly here,
       // probably because we're in a block
-      #settings.QUOTES.at("left") #it.body #settings.QUOTES.at("right")
+      #self.store.quotes.at("left") #it.body #self.store.quotes.at("right")
       #if it.attribution != none [
         #set text(size: 0.8em)
         #linebreak()
@@ -138,10 +133,17 @@
 
     set align(center + horizon)
 
-    let has-title-and-subtitle = (
-      self.info.title,
-      self.info.subtitle,
-    ).all(x => x not in ("", none))
+    let has-title-and-subtitle = {
+      if (self.info.short-title == auto or self.info.short-subtitle == auto) {
+        false
+      } else {
+        (
+          self.info.title,
+          self.info.subtitle,
+        ).all(x => x not in ("", none, auto))
+      }
+    }
+
 
     block(
       width: 100%,
@@ -149,6 +151,10 @@
       stroke: (top: 0.5pt + self.colors.black),
       {
         set text(size: 1.5em)
+        let title = self.info.title
+        if (self.info.short-title != auto) {
+          title = self.info.short-title
+        }
         grid(
           columns: (20%, 60%, 20%),
           rows: 1.5em,
@@ -156,18 +162,25 @@
           cell(
             box(
               text(
-                self.info.title,
+                title,
                 weight: "bold",
-              ) + if has-title-and-subtitle and settings.FOOTER-SHOW-SUBTITLE {
-                settings.FOOTER-UPPER-SEP
+              ) + if self
+                .store
+                .footer-show-subtitle and has-title-and-subtitle {
+                self.store.footer-upper-sep
               } else {
                 ""
-              } + if settings.FOOTER-SHOW-SUBTITLE {
-                self.info.subtitle
-              } + "\n" + utils.call-or-display(
-                self,
-                [#self.info.author | #self.info.date],
-              ),
+              } + if self.store.footer-show-subtitle {
+                if self.info.short-subtitle != auto {
+                  self.info.short-subtitle
+                } else {
+                  self.info.subtitle
+                }
+              } + "\n" + self.info.author + if self.info.date != none {
+                self.store.footer-lower-sep + self.info.date
+              } else {
+                ""
+              },
               width: 100%,
             ),
           ),
@@ -187,12 +200,12 @@
   let self = utils.merge-dicts(
     self,
     config-page(
-      header: if settings.SHOW-HEADER {
+      header: if self.store.show-header {
         unistra-nav-bar(self)
       } else {
         none
       },
-      footer: if settings.SHOW-FOOTER {
+      footer: if self.store.show-footer {
         footer
       } else {
         none
@@ -826,12 +839,13 @@
 
     config-page(
       paper: "presentation-" + aspect-ratio,
-      margin: _get-page-margin(),
-      footer-descent: if (_get-page-margin().at("x")) != 1em {
-        0em
-      } else {
-        0.6em
-      },
+      //margin: self => _get-page-margin(self),
+      // footer-descent: if (_get-page-margin().at("x")) != 1em {
+      //   0em
+      // } else {
+      //   0.6em
+      // },
+      footer-descent: 0.6em,
       header-ascent: 1em,
     ),
 
@@ -848,6 +862,22 @@
       ),
     ),
 
+    config-store(
+      colorthemes: colorthemes,
+      show-header: false,
+      show-footer: true,
+      footer-upper-sep: " | ",
+      footer-lower-sep: " | ",
+      footer-show-subtitle: true,
+      admonition-numbering: false,
+      font: ("Unistra A", "Segoe UI", "Roboto"),
+      quotes: (
+        left: "«",
+        right: "»",
+      ),
+      language: "fr",
+    ),
+
     config-methods(
       alert: utils.alert-with-primary-color,
       smaller: smaller,
@@ -858,12 +888,12 @@
         // sets
         set text(
           fill: black,
-          font: settings.FONT,
+          font: self.store.font,
           size: 25pt,
-          lang: settings.LANGUAGE,
         )
         set outline(target: heading.where(level: 1), title: none, fill: none)
         set enum(numbering: n => [*#n;.*])
+        set list(spacing: 1em)
         set highlight(extent: 1pt)
 
         // shows
@@ -877,19 +907,18 @@
           link-color,
           underline.with(offset: 3pt, extent: -1pt)(it),
         )
+
         // custom quote
         show quote: it => _custom-quote(it)
         show outline.entry: it => it.body
         show outline: it => block(inset: (x: 1em), it)
 
+        // bibliography
+        show bibliography: set text(size: 15pt)
+        show bibliography: set par(spacing: 0.5em, leading: 0.4em)
+
         body
       },
-    ),
-
-    config-store(
-      colorthemes: colorthemes,
-      slide-title: [],
-      auto-heading: true,
     ),
 
     ..args,

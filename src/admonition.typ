@@ -1,5 +1,4 @@
 #import "colors.typ": *
-#import "settings.typ" as settings
 
 // Credit: piepert
 // https://github.com/piepert/grape-suite/blob/3be3e71a994bae82c9a9dedf41e918d7837ccc39/src/elements.typ
@@ -67,13 +66,29 @@
   dotted: false,
   figured: false,
   counter: none,
-  show-numbering: settings.ADMONITION-NUMBERING,
   numbering-format: (..n) => numbering("1.1", ..n),
   figure-supplement: none,
   figure-kind: none,
   text-color: black,
   emoji: none,
+  ..args,
 ) = {
+  let lang = args.named().at("lang", default: "fr")
+  let plural = args.named().at("plural", default: false)
+  let show-numbering = args.named().at("show-numbering", default: false)
+
+  let title = if title == none {
+    (ADMONITION-TRANSLATIONS)
+      .at(figure-kind)
+      .at(if plural {
+          "pl"
+        } else {
+          "sg"
+        })
+      .at(lang)
+  } else {
+    title
+  }
 
   if figured {
     if figure-supplement == none {
@@ -145,62 +160,46 @@
   }
 }
 
-#let task(body, plural: false) = admonition(
+#let task(body, ..args) = admonition(
   body,
-  title: (ADMONITION-TRANSLATIONS).at("task").at(if plural {
-    "pl"
-  } else {
-    "sg"
-  }).at(settings.LANGUAGE),
   primary-color: blue.E,
   secondary-color: blue.E.lighten(90%),
   tertiary-color: blue.E,
   figure-kind: "task",
   counter: counter("admonition-task"),
   emoji: emoji.hand.write,
+  ..args,
 )
 
-#let definition(body, plural: false) = admonition(
+#let definition(body, ..args) = admonition(
   body,
-  title: (ADMONITION-TRANSLATIONS).at("definition").at(if plural {
-    "pl"
-  } else {
-    "sg"
-  }).at(settings.LANGUAGE),
   primary-color: ngreen.C,
   secondary-color: ngreen.C.lighten(90%),
   tertiary-color: ngreen.B,
   figure-kind: "definition",
   counter: counter("admonition-definition"),
   emoji: emoji.brain,
+  ..args,
 )
 
-#let brainstorming(body, plural: false) = admonition(
+#let brainstorming(body, ..args) = admonition(
   body,
-  title: (ADMONITION-TRANSLATIONS).at("brainstorming").at(if plural {
-    "pl"
-  } else {
-    "sg"
-  }).at(settings.LANGUAGE),
   primary-color: orange.E,
   secondary-color: orange.E.lighten(90%),
   tertiary-color: orange.E,
   figure-kind: "brainstorming",
   counter: counter("admonition-brainstorming"),
   emoji: emoji.lightbulb,
+  ..args,
 )
 
-#let question(body, plural: false) = admonition(
+#let question(body, ..args) = admonition(
   body,
-  title: (ADMONITION-TRANSLATIONS).at("question").at(if plural {
-    "pl"
-  } else {
-    "sg"
-  }).at(settings.LANGUAGE),
   primary-color: violet.E,
   secondary-color: violet.E.lighten(90%),
   tertiary-color: violet.E,
   figure-kind: "question",
   counter: counter("admonition-question"),
   emoji: emoji.quest,
+  ..args,
 )
