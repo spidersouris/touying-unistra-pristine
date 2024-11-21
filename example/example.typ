@@ -1,5 +1,5 @@
 #import "@preview/touying:0.5.3": *
-#import "@preview/touying-unistra-pristine:1.1.0": *
+#import "@preview/touying-unistra-pristine:1.2.0": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -10,6 +10,10 @@
     date: datetime.today().display("[month repr:long] [day], [year repr:full]"),
     logo: image("../assets/unistra.svg"),
   ),
+  config-store(quotes: (
+    left: "‘",
+    right: "’",
+  )),
 )
 
 #title-slide(logo: image("../assets/unistra.svg"))
@@ -69,8 +73,8 @@ This is #highlight(fill: blue.C)[highlighted in blue]. This is #highlight(fill: 
 #slide[
   This is a normal slide with *admonitions*:
 
-  #brainstorming[
-    This is a brainstorming (in French).
+  #brainstorming(lang: "en")[
+    This is a brainstorming (in English).
   ]
 
   #definition[
@@ -116,7 +120,7 @@ This is #highlight(fill: blue.C)[highlighted in blue]. This is #highlight(fill: 
 
 #lorem(80)
 
-#quote(attribution: [from the Henry Cary literal translation of 1897])[
+#quote(attribution: [from the Henry Cary literal translation of 1897 | *Noticed the custom quotes?*])[
   ... I seem, then, in just this little thing to be wiser than this man at
   any rate, that what I do not know I do not think I know either.
 ]

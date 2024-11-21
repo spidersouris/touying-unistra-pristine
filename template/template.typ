@@ -20,7 +20,6 @@
 
 A slide with *important information*.
 
-
 #focus-slide(
   theme: "neon",
   [
