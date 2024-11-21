@@ -76,23 +76,21 @@
 }
 
 // Creates a custom quote element
-#let _custom-quote(it) = {
+#let _custom-quote(it, lquote, rquote) = {
   v(1em)
   box(
     fill: luma(220),
     outset: 1em,
     width: 100%,
-    [
       // smartquote() doesn't work properly here,
       // probably because we're in a block
-      #self.store.quotes.at("left") #it.body #self.store.quotes.at("right")
-      #if it.attribution != none [
-        #set text(size: 0.8em)
-        #linebreak()
-        #h(1fr)
-        (#it.attribution)
-      ]
-    ],
+      lquote + it.body + rquote +
+      if it.attribution != none {
+        set text(size: 0.8em)
+        linebreak()
+        h(1fr)
+        (it.attribution)
+      }
   )
 }
 
@@ -107,8 +105,14 @@
 #let unistra-nav-bar(self) = {
   show: block.with(inset: (x: 5em))
   set text(size: 1.4em)
-  grid(
-    components.mini-slides(display-section: true, display-subsection: false),
+  place(
+    grid(
+      components.mini-slides(
+        display-section: true,
+        display-subsection: false,
+      )
+    ),
+    dy: -1.4em,
   )
 }
 
@@ -134,13 +138,12 @@
     set align(center + horizon)
 
     let has-title-and-subtitle = {
-      if (self.info.short-title == auto or self.info.short-subtitle == auto) {
-        false
+      if (
+        self.info.short-title != auto and self.info.short-subtitle != auto
+      ) or (self.info.title != auto and self.info.subtitle != auto) {
+        true
       } else {
-        (
-          self.info.title,
-          self.info.subtitle,
-        ).all(x => x not in ("", none, auto))
+        false
       }
     }
 
@@ -839,12 +842,6 @@
 
     config-page(
       paper: "presentation-" + aspect-ratio,
-      //margin: self => _get-page-margin(self),
-      // footer-descent: if (_get-page-margin().at("x")) != 1em {
-      //   0em
-      // } else {
-      //   0.6em
-      // },
       footer-descent: 0.6em,
       header-ascent: 1em,
     ),
@@ -863,19 +860,23 @@
     ),
 
     config-store(
+      // colorthemes from colors.typ
       colorthemes: colorthemes,
       show-header: false,
       show-footer: true,
+      // footer upper separator
       footer-upper-sep: " | ",
+      // footer lower separator
       footer-lower-sep: " | ",
       footer-show-subtitle: true,
+      // show a number before custom admonitions?
       admonition-numbering: false,
       font: ("Unistra A", "Segoe UI", "Roboto"),
+      //  type of left/right quote to use for the custom "Quote" element
       quotes: (
-        left: "«",
-        right: "»",
+        left: "« ",
+        right: " »",
       ),
-      language: "fr",
     ),
 
     config-methods(
@@ -907,12 +908,10 @@
           link-color,
           underline.with(offset: 3pt, extent: -1pt)(it),
         )
-
         // custom quote
-        show quote: it => _custom-quote(it)
+        show quote: it => _custom-quote(it, self.store.quotes.at("left"), self.store.quotes.at("right"))
         show outline.entry: it => it.body
         show outline: it => block(inset: (x: 1em), it)
-
         // bibliography
         show bibliography: set text(size: 15pt)
         show bibliography: set par(spacing: 0.5em, leading: 0.4em)
