@@ -93,6 +93,6 @@ A slide with *important information*.
 
 # Configuration
 
-The theme can be configured to your liking by adding the `config-store()` object when initializing `unistra-theme`. An example with the `quotes` setting can be found in [template/template.typ].
+The theme can be configured to your liking by adding the `config-store()` object when initializing `unistra-theme`. An example with the `quotes` setting can be found in [example/example.typ](example/example.typ).
 
-A complete list of settings can be found in the `config-store` object in [src/unistra.typ].
+A complete list of settings can be found in the `config-store` object in [src/unistra.typ](src/unistra.typ).
