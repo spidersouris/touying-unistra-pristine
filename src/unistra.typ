@@ -869,8 +869,6 @@
       // footer lower separator
       footer-lower-sep: " | ",
       footer-show-subtitle: true,
-      // show a number before custom admonitions?
-      admonition-numbering: false,
       font: ("Unistra A", "Segoe UI", "Roboto"),
       //  type of left/right quote to use for the custom "Quote" element
       quotes: (
