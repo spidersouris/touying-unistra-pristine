@@ -1,3 +1,37 @@
+# v1.2.0 (2024-11-21)
+
+## General
+
+- Updated to Typst 0.12.0.
+
+### Slides
+
+- **Title Slides**:
+  - Added multiple logo support.
+    - Use the `logos` parameter to specify several logos to be shown side-by-side. `logos` takes an array of images as input. Both `logo` and `logos` cannot be set at the same time.
+
+### Settings
+
+- Reworked how settings are handled to allow full compatibility with Typst Universe.
+  - Settings should now be specified by adding the `config-store()` object when initializing `unistra-theme`, as it is standard to do with Touying themes.
+  - The following settings are available: `show-header` (bool), `show-footer` (bool), `footer-upper-sep` (str), `footer-lower-sep` (str), `font` (array[str]), `quotes` (dict[str]).
+
+### Admonitions
+
+- Admonitions now allow the following optional arguments:
+  - `lang` (str, default: "fr"): the language to show the admonition title in. Accepts one of the langs in the `ADMONITION-TRANSLATIONS` dict.
+  - `plural` (bool, default: false): whether the admonition title should be plural.
+  - `show-numbering` (bool, default: false): whether the admonition number should be appended before the title. This replaces the old `ADMONITION-NUMBERING` setting in `settings.typ`, and allows for individual admonition customization.
+
+### Other
+
+- Added support for `short-title` and `short-subtitle` parameters in `config-info` object.
+- Reduced list item spacing to `1em`.
+
+### Fixes
+
+- Minor fixes to positioning.
+
 # v1.1.0 (2024-10-16)
 
 ## General
