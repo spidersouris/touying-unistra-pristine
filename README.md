@@ -28,7 +28,7 @@ These steps assume that you already have [Typst](https://typst.app/) installed a
 
 ```typst
 #import "@preview/touying:0.5.3": *
-#import "@preview/touying-unistra-pristine:1.1.0": *
+#import "@preview/touying-unistra-pristine:1.2.0": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -64,7 +64,6 @@ See [example/example.typ](example/example.typ) for a complete example with confi
 ```typst
 #import "@preview/touying:0.5.3": *
 #import "src/unistra.typ": *
-#import "src/settings.typ" as settings
 #import "src/colors.typ": *
 #import "src/admonition.typ": *
 
@@ -94,6 +93,6 @@ A slide with *important information*.
 
 # Configuration
 
-The theme can be configured to your liking by editing the [settings.typ](settings.typ) file.
+The theme can be configured to your liking by adding the `config-store()` object when initializing `unistra-theme`. An example with the `quotes` setting can be found in [template/template.typ].
 
-A complete list of settings can be found in the [wiki](https://github.com/spidersouris/touying-unistra-pristine/wiki/Settings).
+A complete list of settings can be found in the `config-store` object in [src/unistra.typ].
