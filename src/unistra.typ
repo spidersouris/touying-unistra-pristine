@@ -186,9 +186,20 @@
           cell(
             utils.call-or-display(
               self,
-              context utils
-                .slide-counter
-                .display() + " / " + utils.last-slide-number,
+              context {
+                let current = int(utils.slide-counter.display())
+                let last = int(utils.last-slide-counter.display())
+                if current > last {
+                  (
+                    text(self.store.footer-appendix-label, style: "italic")
+                      + str(current)
+                  )
+                } else {
+                  str(current)
+                }
+              }
+                + " / "
+                + utils.last-slide-number,
             ),
           ),
         )
@@ -866,6 +877,7 @@
       // footer lower separator
       footer-lower-sep: " | ",
       footer-show-subtitle: true,
+      footer-appendix-label: "A-",
       font: ("Unistra A", "Segoe UI", "Roboto"),
       //  type of left/right quote to use for the custom "Quote" element
       quotes: (
