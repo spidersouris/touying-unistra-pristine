@@ -62,19 +62,6 @@
   )
 }
 
-/// Calculates page margin based on header and footer settings
-#let _get-page-margin(self) = {
-  if self.store.show-header and self.store.show-footer {
-    (x: 2.8em, y: 2.5em)
-  } else if self.store.show-header {
-    (x: 2.8em, bottom: 0em)
-  } else if self.store.show-footer {
-    (x: 2em, left: 2.8em)
-  } else {
-    (x: 1em, y: 1em)
-  }
-}
-
 // Creates a custom quote element
 #let _custom-quote(it, lquote, rquote) = {
   v(1em)
