@@ -1,5 +1,5 @@
-#import "@preview/touying:0.5.3": *
-#import "@preview/touying-unistra-pristine:1.2.0": *
+#import "@preview/touying:0.5.5": *
+#import "@preview/touying-unistra-pristine:1.3.0": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -10,10 +10,12 @@
     date: datetime.today().display("[month repr:long] [day], [year repr:full]"),
     logo: image("../assets/unistra.svg"),
   ),
-  config-store(quotes: (
-    left: "‘",
-    right: "’",
-  )),
+  config-store(
+    quotes: (
+      left: "‘",
+      right: "’",
+    ),
+  ),
 )
 
 #title-slide(logo: image("../assets/unistra.svg"))
@@ -39,7 +41,11 @@ This is #highlight(fill: blue.C)[highlighted in blue]. This is #highlight(fill: 
 #hero(
   image("../assets/cat1.jpg", width: 100%, height: 100%),
   txt: (
-    text: "This is an " + highlight(fill: yellow.C)[RTL#footnote[RTL = right to left. Oh, and here's a footnote!] hero with text and no title] + ".\n",
+    text: "This is an "
+      + highlight(
+        fill: yellow.C,
+      )[RTL#footnote[RTL = right to left. Oh, and here's a footnote!] hero with text and no title]
+      + ".\n",
     enhanced: false,
   ),
   direction: "rtl",
@@ -120,7 +126,9 @@ This is #highlight(fill: blue.C)[highlighted in blue]. This is #highlight(fill: 
 
 #lorem(80)
 
-#quote(attribution: [from the Henry Cary literal translation of 1897 | *Noticed the custom quotes?*])[
+#quote(
+  attribution: [from the Henry Cary literal translation of 1897 | *Noticed the custom quotes?*],
+)[
   ... I seem, then, in just this little thing to be wiser than this man at
   any rate, that what I do not know I do not think I know either.
 ]
