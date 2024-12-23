@@ -1,3 +1,41 @@
+# v1.3.0 (2024-12-23)
+
+## General
+
+- Updated to Touying 0.5.5.
+
+### Slides
+
+- **Outline Slides**:
+  - New slide type.
+    - Invoked using the `outline-slide()` function.
+    - Automatically generates a table of contents that lists focus slides from the presentation.
+      - Set the new `outline` parameter to `false` in the `focus-slide()` function to exclude a slide from the table of contents.
+    - Takes the following parameters:
+      - `title` (str): The title of the slide. Default: "Outline".
+      - `title-size` (length): The size of the title. Default: 1.5em.
+      - `content-size` (length): The size of the content. Default: 1.2em.
+      - `fill` (color): The fill color of the outline block. Default: nblue.D.
+      - `outset` (length): The outset of the outline block. Default: 30pt.
+      - `height` (ratio): The height of the outline block. Default: 80%.
+      - `radius` (ratio): The radius of the outline block. Default: 7%.
+      - `..args`: Additional arguments to pass to the outline.
+- **Appendix Slides**:
+  - Added custom footer label support for appendix slides (slides that appear after `#show: appendix`, e.g. bibliography).
+    - By default, an italic "A-" label will be shown in the footer right before the slide number. The content of the label can be changed using the settings (see below).
+
+### Settings
+
+- Added new settings to further customize the custom `quote` element:
+  - `margin-top` (relative | fraction): The top margin of the quote. Default: 0em.
+  - `outset` (relative | dictionary): The outset of the quote box. Default: 0.5em.
+  - These settings should be specified in the `config-store()` object under the `quote` key, when initializing `unistra-theme`.
+- Added `footer-appendix-label` (str) setting to customize the label shown in the footer for appendix slides. Default: "A-".
+
+### Other
+
+- Replaced the default [‣] first-child item list marker with [--] to fix alignment issues.
+
 # v1.2.0 (2024-11-21)
 
 ## General
@@ -18,7 +56,7 @@
 
 ### Admonitions
 
-- Admonitions now allow the following optional arguments:
+- Admonitions now allow the following optional parameters:
   - `lang` (str, default: "fr"): the language to show the admonition title in. Accepts one of the langs in the `ADMONITION-TRANSLATIONS` dict.
   - `plural` (bool, default: false): whether the admonition title should be plural.
   - `show-numbering` (bool, default: false): whether the admonition number should be appended before the title. This replaces the old `ADMONITION-NUMBERING` setting in `settings.typ`, and allows for individual admonition customization.
@@ -28,7 +66,7 @@
 - Added support for `short-title` and `short-subtitle` parameters in `config-info` object.
 - Reduced list item spacing to `1em`.
 
-### Fixes
+## Fixes
 
 - Minor fixes to positioning.
 
