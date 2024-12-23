@@ -63,21 +63,23 @@
 }
 
 // Creates a custom quote element
-#let _custom-quote(it, lquote, rquote) = {
-  v(1em)
+#let _custom-quote(it, lquote, rquote, outset, margin-top) = {
+  v(margin-top)
   box(
     fill: luma(220),
-    outset: 1em,
+    outset: outset,
     width: 100%,
-      // smartquote() doesn't work properly here,
-      // probably because we're in a block
-      lquote + it.body + rquote +
-      if it.attribution != none {
+    // smartquote() doesn't work properly here,
+    // probably because we're in a block
+    lquote
+      + it.body
+      + rquote
+      + if it.attribution != none {
         set text(size: 0.8em)
         linebreak()
         h(1fr)
         (it.attribution)
-      }
+      },
   )
 }
 
@@ -869,6 +871,8 @@
       quotes: (
         left: "« ",
         right: " »",
+        outset: 0.5em,
+        margin-top: 0em,
       ),
     ),
 
@@ -902,7 +906,13 @@
           underline.with(offset: 3pt, extent: -1pt)(it),
         )
         // custom quote
-        show quote: it => _custom-quote(it, self.store.quotes.at("left"), self.store.quotes.at("right"))
+        show quote: it => _custom-quote(
+          it,
+          self.store.quotes.at("left"),
+          self.store.quotes.at("right"),
+          self.store.quotes.at("outset"),
+          self.store.quotes.at("margin-top"),
+        )
         show outline.entry: it => it.body
         show outline: it => block(inset: (x: 1em), it)
         // bibliography
