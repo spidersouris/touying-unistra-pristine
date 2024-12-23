@@ -233,6 +233,39 @@
   )
 })
 
+#let outline-slide(
+  title: utils.i18n-outline-title,
+  title-size: 1.5em,
+  content-size: 1.2em,
+  fill: nblue.D,
+  outset: 30pt,
+  height: 80%,
+  radius: 7%,
+  ..args,
+) = {
+  let body = {
+    text(
+      title-size,
+      weight: "bold",
+      title,
+    )
+    text(
+      content-size,
+      outline(
+        target: selector.or(..range(99, 100).map(l => heading.where(level: l))),
+        ..args,
+      ),
+    )
+  }
+
+  body = place(
+    block(body, fill: fill, outset: outset, height: height, radius: radius),
+    dy: -0.5em,
+  )
+
+  slide(body)
+}
+
 /// Creates a title slide with a logo, title, subtitle, author, and date.
 ///
 /// Example:
@@ -386,6 +419,7 @@
   text-alignment: center + horizon,
   counter: counter("focus-slide"),
   show-counter: true,
+  outlined: true,
   body,
 ) = touying-slide-wrapper(self => {
   assert(
@@ -448,9 +482,14 @@
           width: 100%,
           height: 100%,
           grid.cell(
-            if (count-label != none) {
-              count-label
-            } + body,
+            heading(
+              level: 99,
+              outlined: outlined,
+              if (count-label != none) {
+                count-label
+              }
+                + body,
+            ),
             align: text-alignment,
             inset: padding,
           ),
