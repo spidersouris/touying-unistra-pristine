@@ -139,8 +139,11 @@
 
     let has-title-and-subtitle = {
       if (
-        self.info.short-title != auto and self.info.short-subtitle != auto
-      ) or (self.info.title != auto and self.info.subtitle != auto) {
+        (
+          self.info.short-title != auto and self.info.short-subtitle != auto
+        )
+          or (self.info.title != auto and self.info.subtitle != auto)
+      ) {
         true
       } else {
         false
@@ -167,23 +170,27 @@
               text(
                 title,
                 weight: "bold",
-              ) + if self
-                .store
-                .footer-show-subtitle and has-title-and-subtitle {
-                self.store.footer-upper-sep
-              } else {
-                ""
-              } + if self.store.footer-show-subtitle {
-                if self.info.short-subtitle != auto {
-                  self.info.short-subtitle
+              )
+                + if self.store.footer-show-subtitle
+                  and has-title-and-subtitle {
+                  self.store.footer-upper-sep
                 } else {
-                  self.info.subtitle
+                  ""
                 }
-              } + "\n" + self.info.author + if self.info.date != none {
-                self.store.footer-lower-sep + self.info.date
-              } else {
-                ""
-              },
+                + if self.store.footer-show-subtitle {
+                  if self.info.short-subtitle != auto {
+                    self.info.short-subtitle
+                  } else {
+                    self.info.subtitle
+                  }
+                }
+                + "\n"
+                + self.info.author
+                + if self.info.date != none {
+                  self.store.footer-lower-sep + self.info.date
+                } else {
+                  ""
+                },
               width: 100%,
             ),
           ),
@@ -264,7 +271,8 @@
   if nb-logos == 0 {
     logo-body = logo
   } else {
-    logo-body = grid(columns: if nb-logos > 0 {
+    logo-body = grid(
+      columns: if nb-logos > 0 {
         nb-logos
       } else {
         1
@@ -285,7 +293,7 @@
         height: 100%,
         inset: (left: 2em, top: 1em),
         grid(
-          columns: (1fr),
+          columns: 1fr,
           rows: (6em, 6em, 4em, 4em),
           logo-body,
           _cell([
@@ -392,19 +400,17 @@
   if (theme != none) {
     assert(
       theme in self.store.colorthemes,
-      message: "The theme " + theme + " is not defined. Available themes are: " + self
-        .store
-        .colorthemes
-        .keys()
-        .join(", "),
+      message: "The theme "
+        + theme
+        + " is not defined. Available themes are: "
+        + self.store.colorthemes.keys().join(", "),
     )
     assert(
-      self.store.colorthemes.at(theme).len() != 2 or self
-        .store
-        .colorthemes
-        .at(theme)
-        .len() != 3,
-      message: "The theme " + theme + " is not a valid color theme. A valid color theme should have 2 or 3 colors.",
+      self.store.colorthemes.at(theme).len() != 2
+        or self.store.colorthemes.at(theme).len() != 3,
+      message: "The theme "
+        + theme
+        + " is not a valid color theme. A valid color theme should have 2 or 3 colors.",
     )
 
     let theme-has-text-color = self.store.colorthemes.at(theme).len() == 3
@@ -523,7 +529,7 @@
   caption: none,
   bold-caption: false,
   numbering: none,
-  rows: (1fr),
+  rows: 1fr,
   txt: (:),
   direction: "ltr",
   gap: auto,
@@ -567,16 +573,16 @@
   }
 
   let create-image-cell() = {
-    _cell(
-      create-figure(),
-    )
+    _cell(create-figure())
   }
 
   let create-text-cell() = {
     let new-txt = merged-txt.text
     if type(merged-txt.enhanced) == "boolean" and merged-txt.enhanced {
       new-txt = text(size: 2em, weight: 900, merged-txt.text)
-    } else if type(merged-txt.enhanced) == "boolean" and not merged-txt.enhanced {
+    } else if (
+      type(merged-txt.enhanced) == "boolean" and not merged-txt.enhanced
+    ) {
       new-txt = merged-txt.text
     } else if type(merged-txt.enhanced) == "function" {
       new-txt = (merged-txt.enhanced)(merged-txt.text)
@@ -636,7 +642,7 @@
         create-grid(
           create-image-cell(),
           create-text-cell(),
-          columns: (1fr),
+          columns: 1fr,
           rows: (1fr, 1fr),
           row-gutter: gap,
         )
@@ -644,7 +650,7 @@
         create-grid(
           create-text-cell(),
           create-image-cell(),
-          columns: (1fr),
+          columns: 1fr,
           rows: (1fr, 1fr),
           row-gutter: if gap != auto {
             gap
@@ -682,12 +688,12 @@
 
   if (title, subtitle, caption).all(x => x == none) {
     body = block(
-        body,
-        // expand image as much as possible
-        // as it is the only content
-        // todo: calculate this automatically
-        inset: inset,
-      )
+      body,
+      // expand image as much as possible
+      // as it is the only content
+      // todo: calculate this automatically
+      inset: inset,
+    )
   }
 
   let self = utils.merge-dicts(
@@ -760,31 +766,33 @@
   let body = {
     set align(center + horizon)
     grid(
-      ..figs.enumerate().map(((i, fig)) => {
-        let caption = if i < captions.len() {
-          let cap = captions.at(i)
-          if cap != "" {
-            cap
+      ..figs
+        .enumerate()
+        .map(((i, fig)) => {
+          let caption = if i < captions.len() {
+            let cap = captions.at(i)
+            if cap != "" {
+              cap
+            } else {
+              none
+            }
           } else {
             none
           }
-        } else {
-          none
-        }
 
-        if (bold-caption) {
-          caption = text(weight: "bold", caption)
-        }
+          if (bold-caption) {
+            caption = text(weight: "bold", caption)
+          }
 
-        figure(
-          fig,
-          caption: caption,
-          gap: gap,
-          numbering: none,
-        )
-      }),
+          figure(
+            fig,
+            caption: caption,
+            gap: gap,
+            numbering: none,
+          )
+        }),
       columns: columns,
-      rows: (1fr) * rows,
+      rows: 1fr * rows,
       gutter: gutter,
     )
   }
