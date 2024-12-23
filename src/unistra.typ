@@ -891,7 +891,9 @@
         )
         set outline(target: heading.where(level: 1), title: none, fill: none)
         set enum(numbering: n => [*#n;.*])
-        set list(spacing: 1em)
+        //set list(spacing: 1em)
+        // the default [‣] icon does not align properly
+        set list(marker: ([•], [--]))
         set highlight(extent: 1pt)
 
         // shows
