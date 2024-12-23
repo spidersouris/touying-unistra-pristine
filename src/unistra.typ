@@ -1,4 +1,4 @@
-#import "@preview/touying:0.5.3": *
+#import "@preview/touying:0.5.5": *
 #import "colors.typ": *
 #import "admonition.typ": *
 
@@ -233,6 +233,29 @@
   )
 })
 
+/// Creates a outline slide with outlined headings.
+///
+/// Example:
+///
+/// ```typst
+/// #outline-slide(title: "Outline")
+/// ```
+///
+/// - `title` (str): The title of the slide. Default: "Outline".
+///
+/// - `title-size` (length): The size of the title. Default: 1.5em.
+///
+/// - `content-size` (length): The size of the content. Default: 1.2em.
+///
+/// - `fill` (color): The fill color of the outline block. Default: nblue.D.
+///
+/// - `outset` (length): The outset of the outline block. Default: 30pt.
+///
+/// - `height` (ratio): The height of the outline block. Default: 80%.
+///
+/// - `radius` (ratio): The radius of the outline block. Default: 7%.
+///
+/// - `..args`: Additional arguments to pass to the outline.
 #let outline-slide(
   title: utils.i18n-outline-title,
   title-size: 1.5em,
@@ -404,11 +427,13 @@
 ///
 /// - `theme` (str): The color theme to use. Themes are defined in src/colors.typ. Possible values: "lblue", "blue", "dblue", "yellow", "pink", "neon", "mandarine", "hazy", "smoke". Default: none.
 ///
-/// - `text-alignment` (str): The text alignment.
+/// - `text-alignment` (alignment): The text alignment.
 ///
 /// - `counter` (counter): The counter to use for titles. Will show a count-label before the title. Default: counter("focus-slide").
 ///
 /// - `show-counter` (bool): Whether to show the counter. Default: true.
+///
+/// - `outlined` (bool): Whether to outline the heading and make it appear in an outline slide. Default: true.
 ///
 /// - `body` (content): Content of the slide.
 #let focus-slide(
@@ -483,6 +508,9 @@
           height: 100%,
           grid.cell(
             heading(
+              // we define a high level to avoid the outline slide
+              // displaying other types of headings
+              // that would be outlined by default
               level: 99,
               outlined: outlined,
               if (count-label != none) {
@@ -552,7 +580,7 @@
 ///
 /// - `direction` (str): The direction of the image and text. Possible values: "ltr", "rtl", "utd", "dtu". Default: "ltr".
 ///
-/// - `gap` (str): The gap between the image and text. Default: auto.
+/// - `gap` (int | relative | fraction | array): The gap between the image and text. Default: auto.
 ///
 /// - `hide-footer` (bool): Whether to hide the footer. Default: true.
 ///
@@ -771,15 +799,15 @@
 ///
 /// - `bold-caption` (bool): Whether to make the captions bold. Default: true.
 ///
-/// - `height` (str): The height of the images. Default: auto.
+/// - `height` (length): The height of the images. Default: auto.
 ///
-/// - `width` (str): The width of the images. Default: auto.
+/// - `width` (length): The width of the images. Default: auto.
 ///
 /// - `fit` (str): The fit of the images. Can be "cover", "stretch" or "contain". Default: "cover".
 ///
-/// - `gutter` (str): The gutter between the images. Default: 0.5em.
+/// - `gutter` (int | relative | fraction | array): The gutter between the images. Default: 0.5em.
 ///
-/// - `gap` (str): The gap between the images. Default: 0.65em.
+/// - `gap` (int | relative | fraction | array): The gap between the images. Default: 0.65em.
 #let gallery(
   title: none,
   heading-level: 2,
@@ -918,7 +946,7 @@
       footer-show-subtitle: true,
       footer-appendix-label: "A-",
       font: ("Unistra A", "Segoe UI", "Roboto"),
-      //  type of left/right quote to use for the custom "Quote" element
+      // type of left/right quote to use for the custom "Quote" element
       quotes: (
         left: "« ",
         right: " »",
