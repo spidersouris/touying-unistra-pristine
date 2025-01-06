@@ -1,4 +1,4 @@
-#import "@preview/touying:0.5.3": *
+#import "@preview/touying:0.5.5": *
 #import "colors.typ": *
 #import "admonition.typ": *
 
@@ -62,35 +62,24 @@
   )
 }
 
-/// Calculates page margin based on header and footer settings
-#let _get-page-margin(self) = {
-  if self.store.show-header and self.store.show-footer {
-    (x: 2.8em, y: 2.5em)
-  } else if self.store.show-header {
-    (x: 2.8em, bottom: 0em)
-  } else if self.store.show-footer {
-    (x: 2em, left: 2.8em)
-  } else {
-    (x: 1em, y: 1em)
-  }
-}
-
 // Creates a custom quote element
-#let _custom-quote(it, lquote, rquote) = {
-  v(1em)
+#let _custom-quote(it, lquote, rquote, outset, margin-top) = {
+  v(margin-top)
   box(
     fill: luma(220),
-    outset: 1em,
+    outset: outset,
     width: 100%,
-      // smartquote() doesn't work properly here,
-      // probably because we're in a block
-      lquote + it.body + rquote +
-      if it.attribution != none {
+    // smartquote() doesn't work properly here,
+    // probably because we're in a block
+    lquote
+      + it.body
+      + rquote
+      + if it.attribution != none {
         set text(size: 0.8em)
         linebreak()
         h(1fr)
         (it.attribution)
-      }
+      },
   )
 }
 
@@ -139,8 +128,11 @@
 
     let has-title-and-subtitle = {
       if (
-        self.info.short-title != auto and self.info.short-subtitle != auto
-      ) or (self.info.title != auto and self.info.subtitle != auto) {
+        (
+          self.info.short-title != auto and self.info.short-subtitle != auto
+        )
+          or (self.info.title != auto and self.info.subtitle != auto)
+      ) {
         true
       } else {
         false
@@ -167,32 +159,47 @@
               text(
                 title,
                 weight: "bold",
-              ) + if self
-                .store
-                .footer-show-subtitle and has-title-and-subtitle {
-                self.store.footer-upper-sep
-              } else {
-                ""
-              } + if self.store.footer-show-subtitle {
-                if self.info.short-subtitle != auto {
-                  self.info.short-subtitle
+              )
+                + if self.store.footer-show-subtitle
+                  and has-title-and-subtitle {
+                  self.store.footer-upper-sep
                 } else {
-                  self.info.subtitle
+                  ""
                 }
-              } + "\n" + self.info.author + if self.info.date != none {
-                self.store.footer-lower-sep + self.info.date
-              } else {
-                ""
-              },
+                + if self.store.footer-show-subtitle {
+                  if self.info.short-subtitle != auto {
+                    self.info.short-subtitle
+                  } else {
+                    self.info.subtitle
+                  }
+                }
+                + "\n"
+                + self.info.author
+                + if self.info.date != none {
+                  self.store.footer-lower-sep + self.info.date
+                } else {
+                  ""
+                },
               width: 100%,
             ),
           ),
           cell(
             utils.call-or-display(
               self,
-              context utils
-                .slide-counter
-                .display() + " / " + utils.last-slide-number,
+              context {
+                let current = int(utils.slide-counter.display())
+                let last = int(utils.last-slide-counter.display())
+                if current > last {
+                  (
+                    text(self.store.footer-appendix-label, style: "italic")
+                      + str(current)
+                  )
+                } else {
+                  str(current)
+                }
+              }
+                + " / "
+                + utils.last-slide-number,
             ),
           ),
         )
@@ -225,6 +232,62 @@
     ..bodies,
   )
 })
+
+/// Creates a outline slide with outlined headings.
+///
+/// Example:
+///
+/// ```typst
+/// #outline-slide(title: "Outline")
+/// ```
+///
+/// - `title` (str): The title of the slide. Default: "Outline".
+///
+/// - `title-size` (length): The size of the title. Default: 1.5em.
+///
+/// - `content-size` (length): The size of the content. Default: 1.2em.
+///
+/// - `fill` (color): The fill color of the outline block. Default: nblue.D.
+///
+/// - `outset` (length): The outset of the outline block. Default: 30pt.
+///
+/// - `height` (ratio): The height of the outline block. Default: 80%.
+///
+/// - `radius` (ratio): The radius of the outline block. Default: 7%.
+///
+/// - `..args`: Additional arguments to pass to the outline.
+#let outline-slide(
+  title: utils.i18n-outline-title,
+  title-size: 1.5em,
+  content-size: 1.2em,
+  fill: nblue.D,
+  outset: 30pt,
+  height: 80%,
+  radius: 7%,
+  ..args,
+) = {
+  let body = {
+    text(
+      title-size,
+      weight: "bold",
+      title,
+    )
+    text(
+      content-size,
+      outline(
+        target: selector.or(..range(99, 100).map(l => heading.where(level: l))),
+        ..args,
+      ),
+    )
+  }
+
+  body = place(
+    block(body, fill: fill, outset: outset, height: height, radius: radius),
+    dy: -0.5em,
+  )
+
+  slide(body)
+}
 
 /// Creates a title slide with a logo, title, subtitle, author, and date.
 ///
@@ -264,7 +327,8 @@
   if nb-logos == 0 {
     logo-body = logo
   } else {
-    logo-body = grid(columns: if nb-logos > 0 {
+    logo-body = grid(
+      columns: if nb-logos > 0 {
         nb-logos
       } else {
         1
@@ -285,7 +349,7 @@
         height: 100%,
         inset: (left: 2em, top: 1em),
         grid(
-          columns: (1fr),
+          columns: 1fr,
           rows: (6em, 6em, 4em, 4em),
           logo-body,
           _cell([
@@ -363,11 +427,13 @@
 ///
 /// - `theme` (str): The color theme to use. Themes are defined in src/colors.typ. Possible values: "lblue", "blue", "dblue", "yellow", "pink", "neon", "mandarine", "hazy", "smoke". Default: none.
 ///
-/// - `text-alignment` (str): The text alignment.
+/// - `text-alignment` (alignment): The text alignment.
 ///
 /// - `counter` (counter): The counter to use for titles. Will show a count-label before the title. Default: counter("focus-slide").
 ///
 /// - `show-counter` (bool): Whether to show the counter. Default: true.
+///
+/// - `outlined` (bool): Whether to outline the heading and make it appear in an outline slide. Default: true.
 ///
 /// - `body` (content): Content of the slide.
 #let focus-slide(
@@ -378,6 +444,7 @@
   text-alignment: center + horizon,
   counter: counter("focus-slide"),
   show-counter: true,
+  outlined: true,
   body,
 ) = touying-slide-wrapper(self => {
   assert(
@@ -392,19 +459,17 @@
   if (theme != none) {
     assert(
       theme in self.store.colorthemes,
-      message: "The theme " + theme + " is not defined. Available themes are: " + self
-        .store
-        .colorthemes
-        .keys()
-        .join(", "),
+      message: "The theme "
+        + theme
+        + " is not defined. Available themes are: "
+        + self.store.colorthemes.keys().join(", "),
     )
     assert(
-      self.store.colorthemes.at(theme).len() != 2 or self
-        .store
-        .colorthemes
-        .at(theme)
-        .len() != 3,
-      message: "The theme " + theme + " is not a valid color theme. A valid color theme should have 2 or 3 colors.",
+      self.store.colorthemes.at(theme).len() != 2
+        or self.store.colorthemes.at(theme).len() != 3,
+      message: "The theme "
+        + theme
+        + " is not a valid color theme. A valid color theme should have 2 or 3 colors.",
     )
 
     let theme-has-text-color = self.store.colorthemes.at(theme).len() == 3
@@ -442,9 +507,17 @@
           width: 100%,
           height: 100%,
           grid.cell(
-            if (count-label != none) {
-              count-label
-            } + body,
+            heading(
+              // we define a high level to avoid the outline slide
+              // displaying other types of headings
+              // that would be outlined by default
+              level: 99,
+              outlined: outlined,
+              if (count-label != none) {
+                count-label
+              }
+                + body,
+            ),
             align: text-alignment,
             inset: padding,
           ),
@@ -507,7 +580,7 @@
 ///
 /// - `direction` (str): The direction of the image and text. Possible values: "ltr", "rtl", "utd", "dtu". Default: "ltr".
 ///
-/// - `gap` (str): The gap between the image and text. Default: auto.
+/// - `gap` (int | relative | fraction | array): The gap between the image and text. Default: auto.
 ///
 /// - `hide-footer` (bool): Whether to hide the footer. Default: true.
 ///
@@ -523,7 +596,7 @@
   caption: none,
   bold-caption: false,
   numbering: none,
-  rows: (1fr),
+  rows: 1fr,
   txt: (:),
   direction: "ltr",
   gap: auto,
@@ -567,16 +640,16 @@
   }
 
   let create-image-cell() = {
-    _cell(
-      create-figure(),
-    )
+    _cell(create-figure())
   }
 
   let create-text-cell() = {
     let new-txt = merged-txt.text
     if type(merged-txt.enhanced) == "boolean" and merged-txt.enhanced {
       new-txt = text(size: 2em, weight: 900, merged-txt.text)
-    } else if type(merged-txt.enhanced) == "boolean" and not merged-txt.enhanced {
+    } else if (
+      type(merged-txt.enhanced) == "boolean" and not merged-txt.enhanced
+    ) {
       new-txt = merged-txt.text
     } else if type(merged-txt.enhanced) == "function" {
       new-txt = (merged-txt.enhanced)(merged-txt.text)
@@ -636,7 +709,7 @@
         create-grid(
           create-image-cell(),
           create-text-cell(),
-          columns: (1fr),
+          columns: 1fr,
           rows: (1fr, 1fr),
           row-gutter: gap,
         )
@@ -644,7 +717,7 @@
         create-grid(
           create-text-cell(),
           create-image-cell(),
-          columns: (1fr),
+          columns: 1fr,
           rows: (1fr, 1fr),
           row-gutter: if gap != auto {
             gap
@@ -682,12 +755,12 @@
 
   if (title, subtitle, caption).all(x => x == none) {
     body = block(
-        body,
-        // expand image as much as possible
-        // as it is the only content
-        // todo: calculate this automatically
-        inset: inset,
-      )
+      body,
+      // expand image as much as possible
+      // as it is the only content
+      // todo: calculate this automatically
+      inset: inset,
+    )
   }
 
   let self = utils.merge-dicts(
@@ -726,15 +799,15 @@
 ///
 /// - `bold-caption` (bool): Whether to make the captions bold. Default: true.
 ///
-/// - `height` (str): The height of the images. Default: auto.
+/// - `height` (length): The height of the images. Default: auto.
 ///
-/// - `width` (str): The width of the images. Default: auto.
+/// - `width` (length): The width of the images. Default: auto.
 ///
 /// - `fit` (str): The fit of the images. Can be "cover", "stretch" or "contain". Default: "cover".
 ///
-/// - `gutter` (str): The gutter between the images. Default: 0.5em.
+/// - `gutter` (int | relative | fraction | array): The gutter between the images. Default: 0.5em.
 ///
-/// - `gap` (str): The gap between the images. Default: 0.65em.
+/// - `gap` (int | relative | fraction | array): The gap between the images. Default: 0.65em.
 #let gallery(
   title: none,
   heading-level: 2,
@@ -760,31 +833,33 @@
   let body = {
     set align(center + horizon)
     grid(
-      ..figs.enumerate().map(((i, fig)) => {
-        let caption = if i < captions.len() {
-          let cap = captions.at(i)
-          if cap != "" {
-            cap
+      ..figs
+        .enumerate()
+        .map(((i, fig)) => {
+          let caption = if i < captions.len() {
+            let cap = captions.at(i)
+            if cap != "" {
+              cap
+            } else {
+              none
+            }
           } else {
             none
           }
-        } else {
-          none
-        }
 
-        if (bold-caption) {
-          caption = text(weight: "bold", caption)
-        }
+          if (bold-caption) {
+            caption = text(weight: "bold", caption)
+          }
 
-        figure(
-          fig,
-          caption: caption,
-          gap: gap,
-          numbering: none,
-        )
-      }),
+          figure(
+            fig,
+            caption: caption,
+            gap: gap,
+            numbering: none,
+          )
+        }),
       columns: columns,
-      rows: (1fr) * rows,
+      rows: 1fr * rows,
       gutter: gutter,
     )
   }
@@ -869,11 +944,14 @@
       // footer lower separator
       footer-lower-sep: " | ",
       footer-show-subtitle: true,
+      footer-appendix-label: "A-",
       font: ("Unistra A", "Segoe UI", "Roboto"),
-      //  type of left/right quote to use for the custom "Quote" element
+      // type of left/right quote to use for the custom "Quote" element
       quotes: (
         left: "« ",
         right: " »",
+        outset: 0.5em,
+        margin-top: 0em,
       ),
     ),
 
@@ -892,7 +970,9 @@
         )
         set outline(target: heading.where(level: 1), title: none, fill: none)
         set enum(numbering: n => [*#n;.*])
-        set list(spacing: 1em)
+        //set list(spacing: 1em)
+        // the default [‣] icon does not align properly
+        set list(marker: ([•], [--]))
         set highlight(extent: 1pt)
 
         // shows
@@ -907,7 +987,13 @@
           underline.with(offset: 3pt, extent: -1pt)(it),
         )
         // custom quote
-        show quote: it => _custom-quote(it, self.store.quotes.at("left"), self.store.quotes.at("right"))
+        show quote: it => _custom-quote(
+          it,
+          self.store.quotes.at("left"),
+          self.store.quotes.at("right"),
+          self.store.quotes.at("outset"),
+          self.store.quotes.at("margin-top"),
+        )
         show outline.entry: it => it.body
         show outline: it => block(inset: (x: 1em), it)
         // bibliography
