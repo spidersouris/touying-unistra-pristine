@@ -38,14 +38,9 @@
       text(size: 0.5em, fill: self.colors.black, body),
     )
 
-    set align(center + horizon)
-
-    let has-title-and-subtitle = {
+    let has-title-and-subtitle(title, subtitle) = {
       if (
-        (
-          self.info.short-title != auto and self.info.short-subtitle != auto
-        )
-          or (self.info.title != auto and self.info.subtitle != auto)
+        _is(title) and _is(subtitle)
       ) {
         true
       } else {
@@ -53,6 +48,7 @@
       }
     }
 
+    set align(center + horizon)
 
     block(
       width: 100%,
@@ -60,41 +56,44 @@
       stroke: (top: 0.5pt + self.colors.black),
       {
         set text(size: 1.5em)
+
+        // give priority to short, since long is also used in title slide
         let title = self.info.title
         if (self.info.short-title != auto) {
           title = self.info.short-title
         }
+
+        let subtitle = self.info.subtitle
+        if (self.info.short-subtitle != auto) {
+          subtitle = self.info.short-subtitle
+        }
+
         grid(
           columns: (20%, 60%, 20%),
           rows: 1.5em,
           cell(box(self.info.logo, height: 100%, fill: none)),
           cell(
             box(
+              width: 100%,
               text(
-                title,
+                title, // either title or short-title
                 weight: "bold",
               )
                 + if self.store.footer-show-subtitle
-                  and has-title-and-subtitle {
+                  and has-title-and-subtitle(title, subtitle) {
                   self.store.footer-upper-sep
                 } else {
                   ""
                 }
                 + if self.store.footer-show-subtitle {
-                  if self.info.short-subtitle != auto {
-                    self.info.short-subtitle
-                  } else {
-                    self.info.subtitle
-                  }
+                  subtitle // either subtitle or short-subtitle
                 }
                 + "\n"
                 + self.info.author
-                + if self.info.date != none {
-                  self.store.footer-lower-sep + self.info.date
-                } else {
-                  ""
-                },
-              width: 100%,
+                + if _is(self.info.date) and _is(self.info.author) {
+                  self.store.footer-lower-sep
+                } else { "" }
+                + self.info.date,
             ),
           ),
           cell(
