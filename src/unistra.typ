@@ -1,95 +1,9 @@
-#import "@preview/touying:0.5.5": *
+#import "@preview/touying:0.6.0": *
 #import "colors.typ": *
 #import "admonition.typ": *
+#import "utils.typ": *
 
 //todo (low prio): add material symbols
-
-// ===================================
-// ============ UTILITIES ============
-// ===================================
-
-/// Creates a custom rectangle cell
-#let _cell(
-  body,
-  width: 100%,
-  height: 100%,
-  inset: 0mm,
-  outset: 0mm,
-  alignment: top + left,
-  fill: none,
-  stroke: none,
-) = rect(
-  width: width,
-  height: height,
-  inset: inset,
-  outset: outset,
-  fill: fill,
-  stroke: stroke,
-  radius: 2em,
-  align(alignment, body),
-)
-
-/// Adds gradient to body (used for slide-focus)
-#let _gradientize(
-  self,
-  body,
-  c1: nblue.E,
-  c2: nblue.E,
-  lighten-pct: 20%,
-  angle: 45deg,
-) = {
-  rect(fill: gradient.linear(c1, c2.lighten(lighten-pct), angle: angle), body)
-}
-
-/// Creates a title and subtitle block
-#let _title-and-sub(body, title, subtitle: none, heading-level: 1) = {
-  grid(
-    _cell(
-      heading(level: heading-level, title),
-      height: auto,
-      width: auto,
-    ),
-    if subtitle != none {
-      _cell(
-        heading(level: heading-level + 1, subtitle),
-        height: auto,
-        width: auto,
-      )
-    },
-    columns: 1fr,
-    gutter: 0.6em,
-    body
-  )
-}
-
-// Creates a custom quote element
-#let _custom-quote(it, lquote, rquote, outset, margin-top) = {
-  v(margin-top)
-  box(
-    fill: luma(220),
-    outset: outset,
-    width: 100%,
-    // smartquote() doesn't work properly here,
-    // probably because we're in a block
-    lquote
-      + it.body
-      + rquote
-      + if it.attribution != none {
-        set text(size: 0.8em)
-        linebreak()
-        h(1fr)
-        (it.attribution)
-      },
-  )
-}
-
-#let smaller = it => {
-  text(size: 25pt, it)
-}
-
-#let smallest = it => {
-  text(size: 20pt, it)
-}
 
 #let unistra-nav-bar(self) = {
   show: block.with(inset: (x: 5em))
@@ -124,14 +38,9 @@
       text(size: 0.5em, fill: self.colors.black, body),
     )
 
-    set align(center + horizon)
-
-    let has-title-and-subtitle = {
+    let has-title-and-subtitle(title, subtitle) = {
       if (
-        (
-          self.info.short-title != auto and self.info.short-subtitle != auto
-        )
-          or (self.info.title != auto and self.info.subtitle != auto)
+        _is(title) and _is(subtitle)
       ) {
         true
       } else {
@@ -139,6 +48,7 @@
       }
     }
 
+    set align(center + horizon)
 
     block(
       width: 100%,
@@ -146,41 +56,44 @@
       stroke: (top: 0.5pt + self.colors.black),
       {
         set text(size: 1.5em)
+
+        // give priority to short, since long is also used in title slide
         let title = self.info.title
         if (self.info.short-title != auto) {
           title = self.info.short-title
         }
+
+        let subtitle = self.info.subtitle
+        if (self.info.short-subtitle != auto) {
+          subtitle = self.info.short-subtitle
+        }
+
         grid(
           columns: (20%, 60%, 20%),
           rows: 1.5em,
           cell(box(self.info.logo, height: 100%, fill: none)),
           cell(
             box(
+              width: 100%,
               text(
-                title,
+                title, // either title or short-title
                 weight: "bold",
               )
                 + if self.store.footer-show-subtitle
-                  and has-title-and-subtitle {
+                  and has-title-and-subtitle(title, subtitle) {
                   self.store.footer-upper-sep
                 } else {
                   ""
                 }
                 + if self.store.footer-show-subtitle {
-                  if self.info.short-subtitle != auto {
-                    self.info.short-subtitle
-                  } else {
-                    self.info.subtitle
-                  }
+                  subtitle // either subtitle or short-subtitle
                 }
                 + "\n"
                 + self.info.author
-                + if self.info.date != none {
-                  self.store.footer-lower-sep + self.info.date
-                } else {
-                  ""
-                },
-              width: 100%,
+                + if _is(self.info.date) and _is(self.info.author) {
+                  self.store.footer-lower-sep
+                } else { "" }
+                + self.info.date,
             ),
           ),
           cell(
@@ -303,7 +216,7 @@
 ///
 /// - `subtitle` (str): The subtitle of the slide. Default: "".
 ///
-/// - `logo` (content): Path to the logo shown in the upper left corner of the slide. Default: "".
+/// - `logo` (content): Logo to display in the upper left corner of the slide. Default: "".
 ///
 /// - `logos` (array): List of logos to display in a row in the upper left corner of the slide. Default: ().
 ///
@@ -513,6 +426,7 @@
               // that would be outlined by default
               level: 99,
               outlined: outlined,
+              bookmarked: outlined,
               if (count-label != none) {
                 count-label
               }
@@ -968,7 +882,8 @@
           font: self.store.font,
           size: 25pt,
         )
-        set outline(target: heading.where(level: 1), title: none, fill: none)
+        set outline(target: heading.where(level: 1), title: none)
+        set outline.entry(fill: none)
         set enum(numbering: n => [*#n;.*])
         //set list(spacing: 1em)
         // the default [‣] icon does not align properly
