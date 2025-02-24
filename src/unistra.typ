@@ -216,7 +216,7 @@
 ///
 /// - `subtitle` (str): The subtitle of the slide. Default: "".
 ///
-/// - `logo` (content): Path to the logo shown in the upper left corner of the slide. Default: "".
+/// - `logo` (content): Logo to display in the upper left corner of the slide. Default: "".
 ///
 /// - `logos` (array): List of logos to display in a row in the upper left corner of the slide. Default: ().
 ///
