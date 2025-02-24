@@ -881,7 +881,8 @@
           font: self.store.font,
           size: 25pt,
         )
-        set outline(target: heading.where(level: 1), title: none, fill: none)
+        set outline(target: heading.where(level: 1), title: none)
+        set outline.entry(fill: none)
         set enum(numbering: n => [*#n;.*])
         //set list(spacing: 1em)
         // the default [‣] icon does not align properly
