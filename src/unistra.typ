@@ -426,6 +426,7 @@
               // that would be outlined by default
               level: 99,
               outlined: outlined,
+              bookmarked: outlined,
               if (count-label != none) {
                 count-label
               }
