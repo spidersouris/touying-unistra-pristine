@@ -126,4 +126,15 @@ Icon function definitions and character-to-string mapping in [src/icons.typ](src
 
 The theme can be configured to your liking by adding the `config-store()` object when initializing `unistra-theme`. An example with the `quotes` setting can be found in [example/example.typ](example/example.typ).
 
-A complete list of settings can be found in the `config-store` object in [src/unistra.typ](src/unistra.typ).
+A complete list of settings can be found below.
+
+|          Name         |                                                      Description                                                     |     Value Type    | Default                                                             |
+|:---------------------:|:--------------------------------------------------------------------------------------------------------------------:|:-----------------:|---------------------------------------------------------------------|
+| show-header           | Whether to show the header.                                                                                          | bool              | `false`                                                             |
+| show-footer           | Whether to show the footer.                                                                                          | bool              | `true`                                                              |
+| footer-first-sep      | First separator in the footer.                                                                                       | str               | `" \| "`                                                            |
+| footer-second-sep     | Second separator in the footer.                                                                                      | str               | `" \| "`                                                            |
+| footer-appendix-label | Label to be shown before slide number in the Appendix.                                                               | str               | `"A-"`                                                              |
+| font                  | Font to be used.                                                                                                     | str \| array[str] | `("Unistra A", "Segoe UI", "Roboto")`                               |
+| quotes                | Settings to be used for the custom `#quote()` element. Dict with parameters `left`, `right`, `outset`, `margin-top`. | dict[str \| int]  | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
+| footer-hide           | Elements from the footer to hide (can include "author" or "date").                                                   | array[str]        | `()`                                                                |
