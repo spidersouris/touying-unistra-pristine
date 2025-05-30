@@ -47,10 +47,9 @@
     }
 
     set align(center + horizon)
-
     block(
-      width: 100%,
-      height: 100%,
+      width: 101%,
+      height: -25%,
       stroke: (top: 0.5pt + self.colors.black),
       {
         set text(size: 1.5em)
@@ -67,8 +66,8 @@
         }
 
         grid(
-          columns: (20%, 60%, 20%),
-          rows: 1.5em,
+          columns: (19%, 70%, 10%),
+          rows: 0.5em,
           cell(box(self.info.logo, height: 100%, fill: none)),
           cell(
             box(
@@ -131,6 +130,8 @@
       } else {
         none
       },
+      // todo: change if no footer/header, etc.
+      margin: (x: 3em, y: 2em),
     ),
   )
 
@@ -842,7 +843,7 @@
 
     config-page(
       paper: "presentation-" + aspect-ratio,
-      footer-descent: 0.6em,
+      footer-descent: 0em,
       header-ascent: 1em,
     ),
 
