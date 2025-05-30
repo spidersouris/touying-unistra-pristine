@@ -15,7 +15,7 @@ This theme was partly created using components from [tud-slides](https://github.
 - **Icons** (see [Icons](#Icons)).
 - **Better Citations** (see [Citations](#Citations)).
 - **Universally Toggleable Header/Footer** (see [Configuration](#Configuration)).
-- Subset of predefined colors taken from the [style guide of the University of Strasbourg](https://langagevisuel.unistra.fr/index.php?id=396) (see [colors.typ](colors.typ)).
+- Subset of predefined colors taken from the [style guide of the University of Strasbourg](https://langagevisuel.unistra.fr/index.php?id=396) (see [colors.typ](src/colors.typ)).
 
 # Example
 
