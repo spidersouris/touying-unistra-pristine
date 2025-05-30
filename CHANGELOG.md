@@ -12,8 +12,8 @@
 
 ### Icons
 
-- Added support for icon fonts _Unistra Symbol_ and _Nova Icons_. The _Unistra Symbol_ font can only be downloaded by students and staff from the University of Strasbourg, while the _Nova Icons_ font is available publicly. The full list of icons for both fonts is available [here](https://di.pages.unistra.fr/pictogrammes/).
-- Added `#us-icon()` and `#nv-icon()` functions to display _Unistra Symbol_ and _Nova Icons_ icons, respectively. Both functions take the icon string ID without the prefix as an argument (e.g., `#us-icon("plant")`). These functions can also be used as argument of the new `icon` parameter for focus slides.
+- Added support for icon fonts _Unistra Symbol_ and _Nova Icons_. The _Unistra Symbol_ font can only be downloaded by students and staff from the University of Strasbourg, while the _Nova Icons_ font is available publicly. The full list of icons for both fonts is available [here](https://di.pages.unistra.fr/pictogrammes/). More information is available in the README.
+- Added `#us-icon()` and `#nv-icon()` functions to display _Unistra Symbol_ and _Nova Icons_ icons, respectively. Both functions take the icon string ID without the prefix as an argument (e.g., `#us-icon("plant")`). These functions can also be used as arguments of the new `icon` parameter for focus slides.
 
 ### Admonitions
 
