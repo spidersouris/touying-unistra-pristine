@@ -1,9 +1,7 @@
 #import "@preview/touying:0.6.1": *
 #import "colors.typ": *
-#import "admonition.typ": *
+#import "icons.typ": *
 #import "utils.typ": *
-
-//todo (low prio): add material symbols
 
 #let unistra-nav-bar(self) = {
   show: block.with(inset: (x: 5em))
@@ -353,8 +351,10 @@
   c1: none,
   c2: none,
   text-color: none,
+  text-size: 2em,
   theme: none,
-  text-alignment: center + horizon,
+  icon: none,
+  icon-size: 1.7em,
   counter: counter("focus-slide"),
   show-counter: true,
   outlined: true,
@@ -397,13 +397,13 @@
     new-c2 = self.store.colorthemes.at(theme).at(1)
   }
 
-  let padding = auto
-  if text-alignment == left + horizon {
-    padding = 2em
-  }
-
   let body = {
-    set text(fill: new-text-color, size: 2em, weight: "bold", tracking: 0.8pt)
+    set text(
+      fill: new-text-color,
+      size: text-size,
+      weight: "bold",
+      tracking: 0.8pt,
+    )
 
     if (show-counter) {
       counter.step()
@@ -419,21 +419,32 @@
         block(
           width: 100%,
           height: 100%,
-          grid.cell(
-            heading(
-              // we define a high level to avoid the outline slide
-              // displaying other types of headings
-              // that would be outlined by default
-              level: 99,
-              outlined: outlined,
-              bookmarked: outlined,
-              if (count-label != none) {
-                count-label
-              }
-                + body,
+          grid(
+            grid.cell(
+              if (_is(icon)) {
+                move(text(size: icon-size)[#icon], dy: -0.3em)
+              },
+              align: center + bottom,
             ),
-            align: text-alignment,
-            inset: padding,
+            grid.cell(
+              heading(
+                // we define a high level to avoid the outline slide
+                // displaying other types of headings
+                // that would be outlined by default
+                level: 99,
+                outlined: outlined,
+                bookmarked: outlined,
+                if (count-label != none) {
+                  count-label
+                }
+                  + body,
+              ),
+              align: center + top,
+            ),
+            columns: 1fr,
+            rows: (45%, 55%),
+            //row-gutter: 0.5em,
+            align: center + horizon,
           ),
         ),
         c1: new-c1,
