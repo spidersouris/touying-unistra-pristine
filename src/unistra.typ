@@ -176,6 +176,7 @@
   fill: nblue.D,
   outset: 30pt,
   height: 80%,
+  width: 100%,
   radius: 7%,
   ..args,
 ) = {
@@ -185,17 +186,28 @@
       weight: "bold",
       title,
     )
+
+
+    let outline-content = outline(
+      target: selector.or(..range(99, 100).map(l => heading.where(level: l))),
+      ..args,
+    )
+
     text(
       content-size,
-      outline(
-        target: selector.or(..range(99, 100).map(l => heading.where(level: l))),
-        ..args,
-      ),
+      outline-content,
     )
   }
 
   body = place(
-    block(body, fill: fill, outset: outset, height: height, radius: radius),
+    block(
+      body,
+      fill: fill,
+      outset: outset,
+      height: height,
+      width: width,
+      radius: radius,
+    ),
     dy: -0.5em,
   )
 
@@ -923,7 +935,7 @@
           self.store.quotes.at("outset"),
           self.store.quotes.at("margin-top"),
         )
-        show outline.entry: it => it.body
+        show outline.entry: it => it.body() + linebreak()
         show outline: it => block(inset: (x: 1em), it)
         // bibliography
         show bibliography: set text(size: 15pt)
