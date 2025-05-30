@@ -456,7 +456,7 @@
               align: center + top,
             ),
             columns: 1fr,
-            rows: (45%, 55%),
+            rows: (40%, auto),
             //row-gutter: 0.5em,
             align: center + horizon,
           ),
