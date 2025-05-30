@@ -86,10 +86,10 @@
                 title, // either title or short-title
                 weight: "bold",
               )
-                + self.store.footer-upper-sep
+                + self.store.footer-first-sep
                 + if _is(author) { author }
                 + if _is(date) and _is(author) {
-                  self.store.footer-lower-sep
+                  self.store.footer-second-sep
                 } else { "" }
                 + if _is(date) { date },
             ),
@@ -882,11 +882,10 @@
       colorthemes: colorthemes,
       show-header: false,
       show-footer: true,
-      // footer upper separator
-      footer-upper-sep: " | ",
-      // footer lower separator
-      footer-lower-sep: " | ",
-      footer-show-subtitle: true,
+      // footer first separator
+      footer-first-sep: " | ",
+      // footer second separator
+      footer-second-sep: " | ",
       footer-appendix-label: "A-",
       font: ("Unistra A", "Segoe UI", "Roboto"),
       // type of left/right quote to use for the custom "Quote" element
@@ -896,6 +895,7 @@
         outset: 0.5em,
         margin-top: 0em,
       ),
+      // elements to hide from footer ("author", "date")
       footer-hide: (),
     ),
 
