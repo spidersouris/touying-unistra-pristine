@@ -9,6 +9,11 @@
 - **Focus Slides**
   - Added support for icons (see below).
     - Use the `icon` parameter for an icon to be shown above the title.
+  - Added the following parameters: `text-size`, `icon`, `icon-size`.
+    - `text-size` (length): The size of the text. Default: 2em.
+    - `icon` (function): The icon to show above the text. Should be `us-icon()` or `nv-icon()`.
+    - `icon-size` (length): The size of the icon. Default: 1.7em.
+  - Removed the `text-alignment` parameter.
 
 ### Icons
 

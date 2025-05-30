@@ -350,9 +350,13 @@
 ///
 /// - `text-color` (color): The color of the text. Default: none.
 ///
+/// - `text-size` (length): The size of the text. Default: 2em.
+///
 /// - `theme` (str): The color theme to use. Themes are defined in src/colors.typ. Possible values: "lblue", "blue", "dblue", "yellow", "pink", "neon", "mandarine", "hazy", "smoke". Default: none.
 ///
-/// - `text-alignment` (alignment): The text alignment.
+/// - `icon` (function): The icon to show above the text. Should be `us-icon()` or `nv-icon()`.
+///
+/// - `icon-size` (length): The size of the icon. Default: 1.7em.
 ///
 /// - `counter` (counter): The counter to use for titles. Will show a count-label before the title. Default: counter("focus-slide").
 ///
