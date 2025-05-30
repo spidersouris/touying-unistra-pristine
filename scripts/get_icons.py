@@ -1,5 +1,5 @@
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 
 url = "https://di.pages.unistra.fr/pictogrammes/"
 escape_chars = [
@@ -42,15 +42,15 @@ def extract_typst_icon_map(soup, icon_pack):
 
     icon_map = {}
     for icon_div in icon_divs:
-        un_icon = icon_div.select_one(classes[icon_pack]["icon_class"])
-        un_class = icon_div.select_one(classes[icon_pack]["class_class"])
-        if un_icon and un_class:
+        icon = icon_div.select_one(classes[icon_pack]["icon_class"])
+        class_name = icon_div.select_one(classes[icon_pack]["class_class"])
+        if icon and class_name:
             key = (
-                un_class.get_text(strip=True)
+                class_name.get_text(strip=True)
                 .replace(prefix_hyphen, "", 1)
                 .split(" ")[0]
             )
-            value = un_icon.get_text(strip=True)
+            value = icon.get_text(strip=True)
             icon_map[key] = value
 
     typst_lines = [f"#let _{prefix}_icons = ("]
