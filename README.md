@@ -1,7 +1,7 @@
 # touying-unistra-pristine
 
 > [!WARNING]
-> This theme is **NOT** affiliated with the University of Strasbourg. The logo and the fonts are the property of the University of Strasbourg.
+> This theme is **NOT** affiliated with the University of Strasbourg. The logo, fonts and icons are the property of the University of Strasbourg.
 
 **touying-unistra-pristine** is a [Touying](https://github.com/touying-typ/touying) theme for creating presentation slides in [Typst](https://github.com/typst/typst), adhering to the core principles of the [style guide of the University of Strasbourg, France](https://langagevisuel.unistra.fr) (French). It is an **unofficial** theme and it is **NOT** affiliated with the University of Strasbourg.
 
@@ -12,7 +12,7 @@ This theme was partly created using components from [tud-slides](https://github.
 - **Focus Slides**, with predefined themes and custom colors support.
 - **Hero Slides**.
 - **Gallery Slides**.
-- **Admonitions** (with localization and plural support).
+- **Icons** (see [Icons](#Icons)).
 - **Universally Toggleable Header/Footer** (see [Configuration](#Configuration)).
 - Subset of predefined colors taken from the [style guide of the University of Strasbourg](https://langagevisuel.unistra.fr/index.php?id=396) (see [colors.typ](colors.typ)).
 
@@ -28,7 +28,7 @@ These steps assume that you already have [Typst](https://typst.app/) installed a
 
 ```typst
 #import "@preview/touying:0.6.1": *
-#import "@preview/touying-unistra-pristine:1.3.1": *
+#import "@preview/touying-unistra-pristine:1.4.0": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -65,7 +65,7 @@ See [example/example.typ](example/example.typ) for a complete example with confi
 #import "@preview/touying:0.6.1": *
 #import "src/unistra.typ": *
 #import "src/colors.typ": *
-#import "src/admonition.typ": *
+#import "src/icons.typ": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -89,7 +89,30 @@ A slide with *important information*.
 ```
 
 > [!NOTE]
-> The default font used by touying-unistra-pristine is "Unistra A", a font that can only be downloaded by students and staff from the University of Strasbourg. If the font is not installed on your computer, Segoe UI or Roboto will be used as a fallback, in that specific order. You can change that behavior in the [settings](#Configuration).
+> The default font used by touying-unistra-pristine is "Unistra A", a font that can only be downloaded by students and staff from the University of Strasbourg from [here](https://langagevisuel.unistra.fr/index.php?id=402). If the font is not installed on your computer, Segoe UI or Roboto will be used as a fallback, in that specific order. You can change that behavior in the [settings](#Configuration).
+
+# Icons
+
+**touying-unistra-pristine** supports icons from the University of Strasbourg (_Unistra Symbol_). These icons can only be downloaded by students and staff from the University of Strasbourg from [here](https://langagevisuel.unistra.fr/index.php?id=402).
+
+As an alternative, or in addition to these icons, you can also use _Nova Icons_, based on Font Awesome 4.7, which can be downloaded freely from [here](https://s3.unistra.fr/master/common/assets/fonts/nova-icons/1.0.1/fonts/novaicons.ttf?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&Signature=QzVHDIlE0dxe7NsiXplv969Bkuc%3D&Expires=1870941573&v=1.0.0) (.ttf format).
+
+The full list of _Unistra Symbol_ and _Nova Icons_ is available [here](https://di.pages.unistra.fr/pictogrammes/).
+
+Once these fonts are installed in your environment, they can be used with the `us-icon()` (_Unistra Symbol_) and the `nv-icon()` (_Nova Icons_) functions. Both functions take the icon string ID (which can be found in the list linked above) without the prefix as an argument. For example:
+
+```typst
+#nv-icon("coins") // original name is "nv-coins", but no need for the prefix
+#us-icon("plant") // original name is "us-plant", but no need for the prefix
+```
+
+Icons are also supported for focus slides. An icon can be defined using the `icon` parameter to be shown above the title:
+
+```typst
+#focus-slide(theme: "berry", icon: us-icon("edit-done"))[Focus Slide Title]
+```
+
+Icon function definitions and character-to-string mapping in [src/icons.typ](src/icons.typ) are generated automatically using [scripts/get_icons.py](scripts/get_icons.py).
 
 # Configuration
 
