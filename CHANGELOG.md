@@ -1,3 +1,34 @@
+# v1.4.0 (2025-05-30)
+
+## General
+
+- Restyled the footer to make it more compact.
+
+### Slides
+
+- **Focus Slides**
+  - Added support for icons (see below).
+    - Use the `icon` parameter for an icon to be shown above the title.
+
+### Icons
+
+- Added support for icon fonts _Unistra Symbol_ and _Nova Icons_. The _Unistra Symbol_ font can only be downloaded by students and staff from the University of Strasbourg, while the _Nova Icons_ font is available publicly. The full list of icons for both fonts is available [here](https://di.pages.unistra.fr/pictogrammes/).
+- Added `#us-icon()` and `#nv-icon()` functions to display _Unistra Symbol_ and _Nova Icons_ icons, respectively. Both functions take the icon string ID without the prefix as an argument (e.g., `#us-icon("plant")`). These functions can also be used as argument of the new `icon` parameter for focus slides.
+
+### Admonitions
+
+- Deprecated. Users should switch to [typst-theorion](https://github.com/OrangeX4/typst-theorion) instead.
+
+### Settings
+
+- Added setting `footer-hide` (str) to hide specific elements from the footer.
+  - Currently, two values are accepted: "author" and "date".
+
+## Fixes
+
+- Fixed outline footer entries not being linebroken properly.
+- Fixed type/str comparison for future Typst 0.14 compatibility.
+
 # v1.3.1 (2025-02-24)
 
 ## General
