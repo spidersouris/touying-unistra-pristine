@@ -1,3 +1,47 @@
+# v1.4.0 (2025-05-30)
+
+## General
+
+- Updated to Typst 0.13.1.
+- Restyled the footer to make it more compact.
+
+### Slides
+
+- **Focus Slides**
+  - Added support for icons (see below).
+    - Use the `icon` parameter for an icon to be shown above the title.
+  - Added the following parameters: `text-size`, `icon`, `icon-size`.
+    - `text-size` (length): The size of the text. Default: 2em.
+    - `icon` (function): The icon to show above the text. Should be `us-icon()` or `nv-icon()`.
+    - `icon-size` (length): The size of the icon. Default: 1.7em.
+  - Removed the `text-alignment` parameter.
+
+### Icons
+
+- Added support for icon fonts _Unistra Symbol_ and _Nova Icons_. The _Unistra Symbol_ font can only be downloaded by students and staff from the University of Strasbourg, while the _Nova Icons_ font is available publicly. The full list of icons for both fonts is available [here](https://di.pages.unistra.fr/pictogrammes/). More information is available in the README.
+- Added `#us-icon(name)` and `#nv-icon(name)` functions to display _Unistra Symbol_ and _Nova Icons_ icons, respectively. Both functions take the icon string ID without the prefix as an argument (e.g., `#us-icon("plant")`). These functions can also be used as arguments of the new `icon` parameter for focus slides.
+
+### Citations
+
+- Added specific functions to better handle how citations appear in slides: `#pcite(label, ..args)` and `#mcite(..args)`.
+  - `#pcite()` creates a citation with the format `[author] ([year])`. Supplement can be specified as an additional argument (str or int) to show as `[author] ([year]:[page])`. Example: `#pcite(<a>, 5)`.
+  - `#mcite()` takes an array of (author, page) arrays to display multiple citations with the format `[author], [year]:[page] ; [author], [year]:[page]`, etc. Like `#pcite()`, supplement is optional. Example: `#mcite((<a>, 5), (<b>, "24-25"))`.
+- It is recommended to use the corresponding `apa.csl` file (available in the `assets` folder) and specify it as the value of the `style` argument when invoking `#bibliography()` so that citations appear with the correct format.
+
+### Admonitions
+
+- Deprecated. Users should switch to [typst-theorion](https://github.com/OrangeX4/typst-theorion) instead.
+
+### Settings
+
+- Added setting `footer-hide` (str) to hide specific elements from the footer.
+  - Currently, two values are accepted: "author" and "date".
+
+## Fixes
+
+- Fixed outline entries not being linebroken properly.
+- Fixed type/str comparison for future Typst 0.14 compatibility.
+
 # v1.3.1 (2025-02-24)
 
 ## General

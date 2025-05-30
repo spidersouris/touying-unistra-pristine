@@ -1,5 +1,5 @@
 #import "@preview/touying:0.6.1": *
-#import "@preview/touying-unistra-pristine:1.3.1": *
+#import "@preview/touying-unistra-pristine:1.4.0": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -8,7 +8,7 @@
     subtitle: [_Subtitle_],
     author: [Author],
     date: datetime.today().display("[month repr:long] [day], [year repr:full]"),
-    logo: image("../assets/unistra.svg"),
+    logo: image("../assets/unistrafooter.svg"),
   ),
   config-store(
     quotes: (
@@ -74,39 +74,28 @@ This is #highlight(fill: blue.C)[highlighted in blue]. This is #highlight(fill: 
   ],
 )
 
-== Admonitions
-
-#slide[
-  This is a normal slide with *admonitions*:
-
-  #brainstorming(lang: "en")[
-    This is a brainstorming (in English).
-  ]
-
-  #definition[
-    This is a definition (in French).
-  ]
-]
-
 #focus-slide(
   theme: "neon",
+  icon: nv-icon("text-undo"),
   [
-    This is a focus slide \ with theme "neon"
+    This is a focus slide \ with theme "neon" and Nova icon "text-undo"
   ],
 )
 
 #focus-slide(
   theme: "yellow",
+  icon: us-icon("book-open"),
   [
-    This is a focus slide \ with theme "yellow"
+    This is a focus slide \ with theme "yellow" and Unistra icon "book-open"
   ],
 )
 
 #focus-slide(
   c1: black,
   c2: white,
+  icon: us-icon("plant"),
   [
-    This is a focus slide \ with custom colors
+    This is a focus slide \ with custom colors \ and Unistra icon "plant"
     \ Next: Section 2
   ],
   text-color: yellow.D,

@@ -1,6 +1,6 @@
 [package]
 name = "touying-unistra-pristine"
-version = "1.3.1"
+version = "1.4.0"
 entrypoint = "src/lib.typ"
 authors = [
   "Enzo Doyen <https://edoyen.com/>"
@@ -12,7 +12,7 @@ repository = "https://github.com/spidersouris/touying-unistra-pristine"
 keywords = ["touying", "unistra", "strasbourg", "presentation", "slides", "diaporama", "lecture", "university", "theme"]
 categories = ["presentation"]
 disciplines = []
-compiler = "0.13.0"
+compiler = "0.13.1"
 exclude = []
 
 [template]
