@@ -36,6 +36,16 @@
       text(size: 0.5em, fill: self.colors.black, body),
     )
 
+    let author = self.info.author
+    let date = self.info.date
+    if self.store.footer-hide.contains("author") {
+      author = none
+    }
+
+    if self.store.footer-hide.contains("date") {
+      date = none
+    }
+
     let has-title-and-subtitle(title, subtitle) = {
       if (
         _is(title) and _is(subtitle)
@@ -76,21 +86,12 @@
                 title, // either title or short-title
                 weight: "bold",
               )
-                + if self.store.footer-show-subtitle
-                  and has-title-and-subtitle(title, subtitle) {
-                  self.store.footer-upper-sep
-                } else {
-                  ""
-                }
-                + if self.store.footer-show-subtitle {
-                  subtitle // either subtitle or short-subtitle
-                }
-                + "\n"
-                + self.info.author
-                + if _is(self.info.date) and _is(self.info.author) {
+                + self.store.footer-upper-sep
+                + if _is(author) { author }
+                + if _is(date) and _is(author) {
                   self.store.footer-lower-sep
                 } else { "" }
-                + self.info.date,
+                + if _is(date) { date },
             ),
           ),
           cell(
@@ -879,6 +880,7 @@
         outset: 0.5em,
         margin-top: 0em,
       ),
+      footer-hide: (),
     ),
 
     config-methods(
