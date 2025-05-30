@@ -2,6 +2,7 @@
 
 ## General
 
+- Updated to Typst 0.13.1.
 - Restyled the footer to make it more compact.
 
 ### Slides
