@@ -36,6 +36,8 @@
 
 - Added setting `footer-hide` (str) to hide specific elements from the footer.
   - Currently, two values are accepted: "author" and "date".
+- Renamed settings `footer-upper-sep` and `footer-lower-sep` to `footer-first-sep` and `footer-second-sep` to accomodate for footer changes.
+- Removed setting `footer-show-subtitle`.
 
 ## Fixes
 
