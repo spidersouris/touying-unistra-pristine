@@ -13,6 +13,7 @@ This theme was partly created using components from [tud-slides](https://github.
 - **Hero Slides**.
 - **Gallery Slides**.
 - **Icons** (see [Icons](#Icons)).
+- **Better Citations** (see [Citations](#Citations)).
 - **Universally Toggleable Header/Footer** (see [Configuration](#Configuration)).
 - Subset of predefined colors taken from the [style guide of the University of Strasbourg](https://langagevisuel.unistra.fr/index.php?id=396) (see [colors.typ](colors.typ)).
 
@@ -113,6 +114,13 @@ Icons are also supported for focus slides. An icon can be defined using the `ico
 ```
 
 Icon function definitions and character-to-string mapping in [src/icons.typ](src/icons.typ) are generated automatically using [scripts/get_icons.py](scripts/get_icons.py).
+
+# Citations
+
+**touying-unistra-pristine** improves on the handling of citations for French users by adding functions that formats citations in accordance with standard academic styling. These should be used along the `assets/apa.csl` file, which should be specified as the value of the `style` argument when invoking `#bibliography()`. When using this style:
+- `@label` acts as a prose citation (e.g., "Astley et Morris (2020)"). Supplements are accepted and will show as "Astley et Morris (2020:[supplement]).
+- `#pcite(label, ..args)` acts as a parenthesis citation for a single label. E.g., "(Astley et Morris, 2020)". Supplement can be specified as an additional argument to the function. Example: `#pcite(<a>, 5)`.
+- `#mcite(..args)` acts as a parenthesis citation for multiple labels. E.g., "(Astley et Morris, 2020 ; Morris et Astley, 2021)". Supplement for the corresponding label can be specified as an additional argument within the citation array. Example: `#mcite((<a>, 5), (<b>, "24-25"), (<c>,))`.
 
 # Configuration
 

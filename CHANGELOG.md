@@ -24,8 +24,8 @@
 ### Citations
 
 - Added specific functions to better handle how citations appear in slides: `#pcite(label, ..args)` and `#mcite(..args)`.
-  - `#pcite()` creates a citation with the format `[author] ([year])`. Page can be specified as an additional argument (str or int) to show as `[author] ([year]:[page])`. Example: `#pcite(<a>, 5)`.
-  - `#mcite()` takes an array of (author, page) arrays to show multiple authors with the format `[author], [year]:[page] ; [author], [year]:[page]`, etc. Page is optional. Example: `#mcite((<a>, 5), (<b>, "24-25"))`.
+  - `#pcite()` creates a citation with the format `[author] ([year])`. Supplement can be specified as an additional argument (str or int) to show as `[author] ([year]:[page])`. Example: `#pcite(<a>, 5)`.
+  - `#mcite()` takes an array of (author, page) arrays to display multiple citations with the format `[author], [year]:[page] ; [author], [year]:[page]`, etc. Like `#pcite()`, supplement is optional. Example: `#mcite((<a>, 5), (<b>, "24-25"))`.
 - It is recommended to use the corresponding `apa.csl` file (available in the `assets` folder) and specify it as the value of the `style` argument when invoking `#bibliography()` so that citations appear with the correct format.
 
 ### Admonitions
