@@ -117,7 +117,7 @@ Icon function definitions and character-to-string mapping in [src/icons.typ](src
 
 # Citations
 
-**touying-unistra-pristine** improves on the handling of citations for French users by adding functions that formats citations in accordance with standard academic styling (use of non-breaking space + semicolon to separate multiple citations; use of colon before page number; replacement of "&" with "et"). These should be used along the `assets/apa.csl` file, which should be specified as the value of the `style` argument when invoking `#bibliography()`. When using this style:
+**touying-unistra-pristine** improves on the handling of citations for French users by adding functions that format citations in accordance with standard academic styling (use of non-breaking space + semicolon to separate multiple citations; use of colon before page number; replacement of "&" with "et"). These should be used along the `assets/apa.csl` file, which should be specified as the value of the `style` argument when invoking `#bibliography()`. When using this style:
 - `@label` acts as a prose citation (e.g., "Astley et Morris (2020)"). Supplements are accepted and will show as "Astley et Morris (2020:[supplement]).
 - `#pcite(label, ..args)` acts as a parenthesis citation for a single label. E.g., "(Astley et Morris, 2020)". Supplement can be specified as an additional argument to the function. Example: `#pcite(<a>, 5)`.
 - `#mcite(..args)` acts as a parenthesis citation for multiple labels. E.g., "(Astley et Morris, 2020 ; Morris et Astley, 2021)". Supplement for the corresponding label can be specified as an additional argument within the citation array. Example: `#mcite((<a>, 5), (<b>, "24-25"), (<c>,))`.
