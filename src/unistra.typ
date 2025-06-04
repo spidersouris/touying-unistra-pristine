@@ -448,7 +448,7 @@
           grid(
             grid.cell(
               if (_is(icon)) {
-                move(text(size: icon-size)[#icon], dy: -0.3em)
+                text(size: icon-size)[#icon]
               },
               align: center + bottom,
             ),
@@ -468,8 +468,9 @@
               align: center + top,
             ),
             columns: 1fr,
-            rows: (40%, auto),
-            //row-gutter: 0.5em,
+            // add third auto row to allow automatic adjustement with longer text
+            rows: (1.1fr, auto, 1fr),
+            row-gutter: 0.43em,
             align: center + horizon,
           ),
         ),
