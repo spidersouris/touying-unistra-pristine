@@ -522,7 +522,9 @@
 ///
 /// - `numbering` (str): The numbering of the caption (figure). Default: none.
 ///
-/// - `rows` (list): The rows of the grid. Default: (1fr).
+/// - `columns` (int | relative | fraction | array): The columns of the grid. Default: (1fr).
+///
+/// - `rows` (int | relative | fraction | array): The rows of the grid. Default: (1fr).
 ///
 /// - `txt` (dict): The text to display next to the image, along with its style. Contains the following keys: text, enhanced, fill, align.
 ///   - `text` (content): The text to display. Default: none.
@@ -548,6 +550,7 @@
   caption: none,
   bold-caption: false,
   numbering: none,
+  columns: (1fr, 2fr),
   rows: 1fr,
   txt: (:),
   direction: "ltr",
@@ -622,7 +625,7 @@
   let create-grid(
     first-cell,
     second-cell,
-    columns: (1fr, 2fr),
+    columns: columns,
     rows: rows,
     column-gutter: auto,
     row-gutter: auto,
