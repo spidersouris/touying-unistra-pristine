@@ -117,10 +117,36 @@ Icon function definitions and character-to-string mapping in [src/icons.typ](src
 
 # Citations
 
-**touying-unistra-pristine** improves on the handling of citations for French users by adding functions that format citations in accordance with standard academic styling (use of non-breaking space + semicolon to separate multiple citations; use of colon before page number; replacement of "&" with "et"). These should be used along the `assets/apa.csl` file, which should be specified as the value of the `style` argument when invoking `#bibliography()`. When using this style:
-- `@label` acts as a prose citation (e.g., "Astley et Morris (2020)"). Supplements are accepted and will show as "Astley et Morris (2020:[supplement]).
-- `#pcite(label, ..args)` acts as a parenthesis citation for a single label. E.g., "(Astley et Morris, 2020)". Supplement can be specified as an additional argument to the function. Example: `#pcite(<a>, 5)`.
-- `#mcite(..args)` acts as a parenthesis citation for multiple labels. E.g., "(Astley et Morris, 2020 ; Morris et Astley, 2021)". Supplement for the corresponding label can be specified as an additional argument within the citation array. Example: `#mcite((<a>, 5), (<b>, "24-25"), (<c>,))`.
+**touying-unistra-pristine** improves on the handling of citations specifically for academic/research-focused slides. This is achieved by making prose citation the default for label reference, and providing language-specific (French and English/other) CSL files for the formatting of citations and bibliographies.
+
+## Language Specificities
+
+If you're using a bibliography for your slides, it is recommended to change the value of the `style` argument when invoking `#bibliography()` to one of the two provided CSL files: [apa.csl](assets/csl/apa.csl) (French) or [apa_en.csl](assets/csl/apa_en.csl) (English/other languages):
+
+```typst
+#bibliography(
+  "my_bib.bib",
+  style: "apa.csl",
+  title: none,
+) // https://typst.app/docs/reference/model/bibliography/
+```
+
+When doing so, make sure to properly set the language of your document:
+
+```typst
+#set text(lang: "fr") // https://typst.app/docs/reference/text/text/#parameters-lang
+```
+
+Specifically, for French users using `apa.csl`, this will:
+- separate multiple citations with a non-breaking space and a semicolon,
+- replace the ampersand (&) with "et" for two-author papers.
+
+## Syntax
+
+When using any of the provided CSL files described above:
+- `@label` acts as a prose citation (e.g., "Astley & Morris (2020)"). Supplements are accepted as `@label[supplement]` and will show as "Astley & Morris (2020:[supplement]).
+- `#pcite(label, ..args)` acts as a parenthesis citation for a single label. E.g., "(Astley & Morris, 2020)". Supplement can be specified as an additional argument to the function. Example: `#pcite(<a>, 5)`.
+- `#mcite(..args)` acts as a parenthesis citation for multiple labels. E.g., "(Astley & Morris, 2020 ; Morris & Astley, 2021)". Supplement for the corresponding label can be specified as an additional argument within the citation array. Example: `#mcite((<a>, 5), (<b>, "24-25"), (<c>,))`.
 
 # Configuration
 
