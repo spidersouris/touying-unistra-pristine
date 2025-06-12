@@ -19,7 +19,7 @@ This theme was partly created using components from [tud-slides](https://github.
 
 # Example
 
-See [example/example.pdf](example/example.pdf) for an example PDF output, and [example/example.typ](example/example.typ) for the corresponding Typst file.
+See [examples/basic.pdf](examples/basic.pdf) for an example PDF output, and [examples/basic.typ](examples/basic.typ) for the corresponding Typst file.
 
 # Installation
 
@@ -60,7 +60,7 @@ A slide with *important information*.
 
 ### 2. Import Touying and touying-unistra-pristine
 
-See [example/example.typ](example/example.typ) for a complete example with configuration.
+See [examples/basic.typ](examples/basic.typ) for a basic example with configuration.
 
 ```typst
 #import "@preview/touying:0.6.1": *
@@ -150,7 +150,7 @@ When using any of the provided CSL files described above:
 
 # Configuration
 
-The theme can be configured to your liking by adding the `config-store()` object when initializing `unistra-theme`. An example with the `quotes` setting can be found in [example/example.typ](example/example.typ).
+The theme can be configured to your liking by adding the `config-store()` object when initializing `unistra-theme`. An example with the `quotes` setting can be found in [examples/basic.typ](examples/basic.typ).
 
 A complete list of settings can be found below.
 
