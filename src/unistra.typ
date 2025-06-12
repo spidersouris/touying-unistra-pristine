@@ -509,6 +509,7 @@
 /// txt: (text: "Some text next to the image", enhanced: custom-enhance),
 /// direction: "rtl",
 /// )
+/// ```
 ///
 /// - `title` (str): The title of the slide. Default: none.
 ///
