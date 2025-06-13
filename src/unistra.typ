@@ -46,16 +46,6 @@
       date = none
     }
 
-    let has-title-and-subtitle(title, subtitle) = {
-      if (
-        _is(title) and _is(subtitle)
-      ) {
-        true
-      } else {
-        false
-      }
-    }
-
     set align(center + horizon)
     block(
       width: 101%,
@@ -68,11 +58,6 @@
         let title = self.info.title
         if (self.info.short-title != auto) {
           title = self.info.short-title
-        }
-
-        let subtitle = self.info.subtitle
-        if (self.info.short-subtitle != auto) {
-          subtitle = self.info.short-subtitle
         }
 
         let first-col-width = auto
@@ -448,7 +433,7 @@
           grid(
             grid.cell(
               if (_is(icon)) {
-                move(text(size: icon-size)[#icon], dy: -0.3em)
+                text(size: icon-size)[#icon]
               },
               align: center + bottom,
             ),
@@ -468,8 +453,9 @@
               align: center + top,
             ),
             columns: 1fr,
-            rows: (40%, auto),
-            //row-gutter: 0.5em,
+            // add third auto row to allow automatic adjustement with longer text
+            rows: (1.1fr, auto, 1fr),
+            row-gutter: 0.43em,
             align: center + horizon,
           ),
         ),
@@ -508,6 +494,7 @@
 /// txt: (text: "Some text next to the image", enhanced: custom-enhance),
 /// direction: "rtl",
 /// )
+/// ```
 ///
 /// - `title` (str): The title of the slide. Default: none.
 ///
@@ -521,7 +508,9 @@
 ///
 /// - `numbering` (str): The numbering of the caption (figure). Default: none.
 ///
-/// - `rows` (list): The rows of the grid. Default: (1fr).
+/// - `columns` (int | relative | fraction | array): The columns of the grid. Default: (1fr).
+///
+/// - `rows` (int | relative | fraction | array): The rows of the grid. Default: (1fr).
 ///
 /// - `txt` (dict): The text to display next to the image, along with its style. Contains the following keys: text, enhanced, fill, align.
 ///   - `text` (content): The text to display. Default: none.
@@ -547,6 +536,7 @@
   caption: none,
   bold-caption: false,
   numbering: none,
+  columns: (1fr, 2fr),
   rows: 1fr,
   txt: (:),
   direction: "ltr",
@@ -621,7 +611,7 @@
   let create-grid(
     first-cell,
     second-cell,
-    columns: (1fr, 2fr),
+    columns: columns,
     rows: rows,
     column-gutter: auto,
     row-gutter: auto,

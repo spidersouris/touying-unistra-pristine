@@ -1,3 +1,21 @@
+# v1.4.1 (2025-06-13)
+
+## General
+
+### Slides
+
+- **Hero Slides**
+  - Added the `columns` parameter to specify the number and size of grid columns. Default : (1fr, 2fr).
+
+### Citations
+
+- Added support for English documents.
+  - The "assets" folder now contains a new "csl" folder with an English-specific CSL file: `apa_en.csl`.
+
+## Fixes
+
+- Slightly adjusted layout for focus slides with icons.
+
 # v1.4.0 (2025-05-30)
 
 ## General
