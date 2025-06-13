@@ -34,7 +34,7 @@ These steps assume that you already have [Typst](https://typst.app/) installed a
 
 ```typst
 #import "@preview/touying:0.6.1": *
-#import "@preview/touying-unistra-pristine:1.4.0": *
+#import "@preview/touying-unistra-pristine:1.4.1": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",

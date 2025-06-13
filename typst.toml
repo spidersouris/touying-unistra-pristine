@@ -1,6 +1,6 @@
 [package]
 name = "touying-unistra-pristine"
-version = "1.4.0"
+version = "1.4.1"
 entrypoint = "src/lib.typ"
 authors = [
   "Enzo Doyen <https://edoyen.com/>"
