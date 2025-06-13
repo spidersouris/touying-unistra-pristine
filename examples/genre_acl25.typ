@@ -1,5 +1,5 @@
 #import "@preview/touying:0.6.1": *
-#import "@preview/touying-unistra-pristine:1.4.0": *
+#import "@preview/touying-unistra-pristine:1.4.1": *
 #import "@preview/theorion:0.3.3": *
 #import cosmos.clouds: *
 #show: show-theorion
@@ -12,7 +12,7 @@
     // If we wanted a separate title for the footer, we could have used the "short-title" parameter instead.
     title: [GeNRe: Automatic Gender Neutralization in French Using Collective Nouns],
     // The authors are normally shown both on the first slide and in the footer, like the title.
-    // However, here, because of the "footer-hide" parameter (l.34X), they will only
+    // However, here, because of the "footer-hide" parameter (l.34), they will only
     // be shown on the first slide.
     author: [Enzo Doyen & Amalia Todirascu],
     // Date. Shows both on the first slide and in the footer.
@@ -88,7 +88,7 @@
       dy: -0.5em,
     ),
     move(
-      image("../../_main_assets/lilpa.png", height: 60%),
+      image("assets/lilpa.png", height: 60%),
       dx: 5em,
       dy: 0.8em,
     ),
@@ -490,7 +490,7 @@ Our work uses *human collective nouns* #pcite(<lecolleNomsCollectifsHumains2019>
 // For correct formatting of #pcite(), #mcite() and @ labels,
 // make sure to define the associated style.
 #bibliography(
-  "genre_bib.bib",
-  style: "../../_main_assets/apa_en.csl",
+  "assets/genre_bib.bib",
+  style: "assets/apa_en.csl",
   title: none,
 )
