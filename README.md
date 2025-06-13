@@ -5,6 +5,9 @@
 
 **touying-unistra-pristine** is a [Touying](https://github.com/touying-typ/touying) theme for creating presentation slides in [Typst](https://github.com/typst/typst), adhering to the core principles of the [style guide of the University of Strasbourg, France](https://langagevisuel.unistra.fr) (French). It is an **unofficial** theme and it is **NOT** affiliated with the University of Strasbourg.
 
+> [!NOTE]
+> Even though this theme was originally intended for members of the University of Strasbourg, it is perfectly acceptable (and even encouraged!) to use this theme for your own (academic) presentations. You can easily customize and extend the theme to your liking, either by [configuring the theme](#Configuration) and using Typst's basic functions, or by forking the project and editing the source code directly. If you have ideas for improvements, feel free to [open an issue](https://github.com/spidersouris/touying-unistra-pristine/issues).
+
 This theme was partly created using components from [tud-slides](https://github.com/typst-tud/tud-slides).
 
 # Features
@@ -17,9 +20,11 @@ This theme was partly created using components from [tud-slides](https://github.
 - **Universally Toggleable Header/Footer** (see [Configuration](#Configuration)).
 - Subset of predefined colors taken from the [style guide of the University of Strasbourg](https://langagevisuel.unistra.fr/index.php?id=396) (see [colors.typ](src/colors.typ)).
 
-# Example
+# Examples
 
-See [examples/basic.pdf](examples/basic.pdf) for an example PDF output, and [examples/basic.typ](examples/basic.typ) for the corresponding Typst file.
+The [example folder](https://github.com/spidersouris/touying-unistra-pristine/tree/1.4.1-dev/example) contains two examples:
+- a **basic example** highlighting main features of the theme ([examples/basic.typ](examples/basic.typ); [examples/basic.pdf](examples/basic.pdf) for output),
+- an **extensively commented, real-usage example** of slides made for an academic presentation for the ACL 2025 conference ([examples/acl25.typ](examples/acl25.typ); [examples/acl25.pdf](examples/acl25.pdf) for output),
 
 # Installation
 
