@@ -46,16 +46,6 @@
       date = none
     }
 
-    let has-title-and-subtitle(title, subtitle) = {
-      if (
-        _is(title) and _is(subtitle)
-      ) {
-        true
-      } else {
-        false
-      }
-    }
-
     set align(center + horizon)
     block(
       width: 101%,
@@ -68,11 +58,6 @@
         let title = self.info.title
         if (self.info.short-title != auto) {
           title = self.info.short-title
-        }
-
-        let subtitle = self.info.subtitle
-        if (self.info.short-subtitle != auto) {
-          subtitle = self.info.short-subtitle
         }
 
         let first-col-width = auto
