@@ -80,7 +80,6 @@
   // Adding logos and moving them slightly with move().
   // Here, we have multiple logos, so we use the "logos" parameter.
   // There is also a singular "logo" parameter available when there is only one logo.
-  // todo: change paths
   logos: (
     move(
       image("assets/acl_logo.png"),
