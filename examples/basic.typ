@@ -1,11 +1,10 @@
 #import "@preview/touying:0.6.1": *
-#import "@preview/touying-unistra-pristine:1.4.0": *
+#import "@preview/touying-unistra-pristine:1.4.1": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
   config-info(
     title: [Title],
-    subtitle: [_Subtitle_],
     author: [Author],
     date: datetime.today().display("[month repr:long] [day], [year repr:full]"),
     logo: image("../assets/unistrafooter.svg"),

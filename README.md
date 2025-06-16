@@ -5,7 +5,10 @@
 
 **touying-unistra-pristine** is a [Touying](https://github.com/touying-typ/touying) theme for creating presentation slides in [Typst](https://github.com/typst/typst), adhering to the core principles of the [style guide of the University of Strasbourg, France](https://langagevisuel.unistra.fr) (French). It is an **unofficial** theme and it is **NOT** affiliated with the University of Strasbourg.
 
-This theme was partly created using components from [tud-slides](https://github.com/typst-tud/tud-slides) and [grape-suite](https://github.com/piepert/grape-suite).
+> [!NOTE]
+> Even though this theme was originally intended for members of the University of Strasbourg, it is perfectly acceptable (and even encouraged!) to use this theme for your own (academic) presentations. You can easily customize and extend the theme to your liking, either by [configuring the theme](#Configuration) and using Typst's basic functions, or by forking the project and editing the source code directly. If you have ideas for improvements, feel free to [open an issue](https://github.com/spidersouris/touying-unistra-pristine/issues).
+
+This theme was partly created using components from [tud-slides](https://github.com/typst-tud/tud-slides).
 
 # Features
 
@@ -17,9 +20,11 @@ This theme was partly created using components from [tud-slides](https://github.
 - **Universally Toggleable Header/Footer** (see [Configuration](#Configuration)).
 - Subset of predefined colors taken from the [style guide of the University of Strasbourg](https://langagevisuel.unistra.fr/index.php?id=396) (see [colors.typ](src/colors.typ)).
 
-# Example
+# Examples
 
-See [example/example.pdf](example/example.pdf) for an example PDF output, and [example/example.typ](example/example.typ) for the corresponding Typst file.
+The [example folder](https://github.com/spidersouris/touying-unistra-pristine/tree/1.4.1-dev/example) contains two examples:
+- a **basic example** highlighting main features of the theme ([examples/basic.typ](examples/basic.typ); [examples/basic.pdf](examples/basic.pdf) for output),
+- an **extensively commented, real-usage example** of slides made for an academic presentation for the ACL 2025 conference ([examples/acl25.typ](examples/acl25.typ); [examples/acl25.pdf](examples/acl25.pdf) for output),
 
 # Installation
 
@@ -29,7 +34,7 @@ These steps assume that you already have [Typst](https://typst.app/) installed a
 
 ```typst
 #import "@preview/touying:0.6.1": *
-#import "@preview/touying-unistra-pristine:1.4.0": *
+#import "@preview/touying-unistra-pristine:1.4.1": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -60,7 +65,7 @@ A slide with *important information*.
 
 ### 2. Import Touying and touying-unistra-pristine
 
-See [example/example.typ](example/example.typ) for a complete example with configuration.
+See [examples/basic.typ](examples/basic.typ) for a basic example with configuration.
 
 ```typst
 #import "@preview/touying:0.6.1": *
@@ -117,14 +122,40 @@ Icon function definitions and character-to-string mapping in [src/icons.typ](src
 
 # Citations
 
-**touying-unistra-pristine** improves on the handling of citations for French users by adding functions that format citations in accordance with standard academic styling (use of non-breaking space + semicolon to separate multiple citations; use of colon before page number; replacement of "&" with "et"). These should be used along the `assets/apa.csl` file, which should be specified as the value of the `style` argument when invoking `#bibliography()`. When using this style:
-- `@label` acts as a prose citation (e.g., "Astley et Morris (2020)"). Supplements are accepted and will show as "Astley et Morris (2020:[supplement]).
-- `#pcite(label, ..args)` acts as a parenthesis citation for a single label. E.g., "(Astley et Morris, 2020)". Supplement can be specified as an additional argument to the function. Example: `#pcite(<a>, 5)`.
-- `#mcite(..args)` acts as a parenthesis citation for multiple labels. E.g., "(Astley et Morris, 2020 ; Morris et Astley, 2021)". Supplement for the corresponding label can be specified as an additional argument within the citation array. Example: `#mcite((<a>, 5), (<b>, "24-25"), (<c>,))`.
+**touying-unistra-pristine** improves on the handling of citations specifically for academic/research-focused slides. This is achieved by making prose citation the default for label reference, and providing language-specific (French and English/other) CSL files for the formatting of citations and bibliographies.
+
+## Language Specificities
+
+If you're using a bibliography for your slides, it is recommended to change the value of the `style` argument when invoking `#bibliography()` to one of the two provided CSL files: [apa.csl](assets/csl/apa.csl) (French) or [apa_en.csl](assets/csl/apa_en.csl) (English/other languages):
+
+```typst
+#bibliography(
+  "my_bib.bib",
+  style: "apa.csl",
+  title: none,
+) // https://typst.app/docs/reference/model/bibliography/
+```
+
+When doing so, make sure to properly set the language of your document:
+
+```typst
+#set text(lang: "fr") // https://typst.app/docs/reference/text/text/#parameters-lang
+```
+
+Specifically, for French users using `apa.csl`, this will:
+- separate multiple citations with a non-breaking space and a semicolon,
+- replace the ampersand (&) with "et" for two-author papers.
+
+## Syntax
+
+When using any of the provided CSL files described above:
+- `@label` acts as a prose citation (e.g., "Astley & Morris (2020)"). Supplements are accepted as `@label[supplement]` and will show as "Astley & Morris (2020:[supplement]).
+- `#pcite(label, ..args)` acts as a parenthesis citation for a single label. E.g., "(Astley & Morris, 2020)". Supplement can be specified as an additional argument to the function. Example: `#pcite(<a>, 5)`.
+- `#mcite(..args)` acts as a parenthesis citation for multiple labels. E.g., "(Astley & Morris, 2020 ; Morris & Astley, 2021)". Supplement for the corresponding label can be specified as an additional argument within the citation array. Example: `#mcite((<a>, 5), (<b>, "24-25"), (<c>,))`.
 
 # Configuration
 
-The theme can be configured to your liking by adding the `config-store()` object when initializing `unistra-theme`. An example with the `quotes` setting can be found in [example/example.typ](example/example.typ).
+The theme can be configured to your liking by adding the `config-store()` object when initializing `unistra-theme`. An example with the `quotes` setting can be found in [examples/basic.typ](examples/basic.typ).
 
 A complete list of settings can be found below.
 
