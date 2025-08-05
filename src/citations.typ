@@ -1,7 +1,7 @@
 #let pcite(label, ..args) = {
   set text(weight: "bold", size: 0.8em)
   show cite: it => {
-    show "and": "et"
+    show "\band\b": "et"
     it
   }
 
@@ -18,7 +18,7 @@
 #let mcite(..args) = {
   set text(weight: "bold", size: 0.8em)
   show cite: it => {
-    show "and": "et"
+    show "\band\b": "et"
     it
   }
 

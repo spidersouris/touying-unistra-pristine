@@ -345,7 +345,7 @@
 ///
 /// - `text-size` (length): The size of the text. Default: 2em.
 ///
-/// - `theme` (str): The color theme to use. Themes are defined in src/colors.typ. Possible values: "lblue", "blue", "dblue", "yellow", "pink", "neon", "mandarine", "hazy", "smoke". Default: none.
+/// - `theme` (str | int): The color theme name or ID (1-18) to use. Themes are defined in src/colors.typ. Default: none.
 ///
 /// - `icon` (function): The icon to show above the text. Should be `us-icon()` or `nv-icon()`.
 ///
@@ -381,31 +381,48 @@
   let new-c2 = c2
 
   if (theme != none) {
+    let theme-colors = none
+    let theme-name = none
+
+    if (type(theme) == int) {
+      let theme-id-str = str(theme)
+      assert(
+        theme-id-str in self.store.colorthemes-ids,
+        message: "The theme ID "
+          + str(theme)
+          + " is not defined. Available theme IDs are: "
+          + self.store.colorthemes-ids.keys().join(", "),
+      )
+      theme-colors = self.store.colorthemes-ids.at(theme-id-str)
+    } else {
+      assert(
+        theme in self.store.colorthemes,
+        message: "The theme "
+          + theme
+          + " is not defined. Available themes are: "
+          + self.store.colorthemes.keys().join(", "),
+      )
+      theme-colors = self.store.colorthemes.at(theme)
+      theme-name = theme
+    }
+
     assert(
-      theme in self.store.colorthemes,
+      theme-colors.len() == 2 or theme-colors.len() == 3,
       message: "The theme "
-        + theme
-        + " is not defined. Available themes are: "
-        + self.store.colorthemes.keys().join(", "),
-    )
-    assert(
-      self.store.colorthemes.at(theme).len() != 2
-        or self.store.colorthemes.at(theme).len() != 3,
-      message: "The theme "
-        + theme
+        + (if theme-name != none { theme-name } else { str(theme) })
         + " is not a valid color theme. A valid color theme should have 2 or 3 colors.",
     )
 
-    let theme-has-text-color = self.store.colorthemes.at(theme).len() == 3
+    let theme-has-text-color = theme-colors.len() == 3
 
     if (text-color == none and not theme-has-text-color) {
       new-text-color = self.colors.white
-    } else {
-      new-text-color = self.store.colorthemes.at(theme).at(2)
+    } else if (theme-has-text-color) {
+      new-text-color = theme-colors.at(2)
     }
 
-    new-c1 = self.store.colorthemes.at(theme).at(0)
-    new-c2 = self.store.colorthemes.at(theme).at(1)
+    new-c1 = theme-colors.at(0)
+    new-c2 = theme-colors.at(1)
   }
 
   let body = {
@@ -878,6 +895,7 @@
     config-store(
       // colorthemes from colors.typ
       colorthemes: colorthemes,
+      colorthemes-ids: colorthemes-ids,
       show-header: false,
       show-footer: true,
       // footer first separator
