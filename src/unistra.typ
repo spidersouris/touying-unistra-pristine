@@ -922,6 +922,9 @@
 
       // init
       init: (self: none, body) => {
+        // states
+        let in-outline = state("in-outline", false)
+
         // sets
         set text(
           fill: black,
@@ -955,8 +958,16 @@
           self.store.quotes.at("outset"),
           self.store.quotes.at("margin-top"),
         )
-        show outline.entry: it => it.body() + linebreak()
-        show outline: it => block(inset: (x: 1em), it)
+        show outline.entry: it => (
+          // support links for outline entries
+          link(it.element.location(), it.body()) + linebreak()
+        )
+        show outline: it => context {
+          // state used to not color links in outline
+          in-outline.update(true)
+          block(inset: (x: 1em), it)
+          in-outline.update(false)
+        }
         // bibliography
         show bibliography: set text(size: 15pt)
         show bibliography: set par(spacing: 0.5em, leading: 0.4em)
