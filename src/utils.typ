@@ -68,9 +68,8 @@
       + rquote
       + if it.attribution != none {
         set text(size: 0.8em)
-        linebreak()
-        h(1fr)
-        (it.attribution)
+        v(-0.5em)
+        align(right, it.attribution)
       },
   )
 }
