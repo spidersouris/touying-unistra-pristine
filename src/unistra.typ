@@ -11,7 +11,7 @@
       components.mini-slides(
         display-section: true,
         display-subsection: false,
-      )
+      ),
     ),
     dy: -1.4em,
   )
@@ -47,87 +47,72 @@
     }
 
     set align(center + horizon)
-    block(
-      width: 101%,
-      height: -25%,
-      stroke: (top: 0.5pt + self.colors.black),
-      {
-        set text(size: 1.5em)
+    block(width: 101%, height: -25%, stroke: (top: 0.5pt + self.colors.black), {
+      set text(size: 1.5em)
 
-        // give priority to short, since long is also used in title slide
-        let title = self.info.title
-        if (self.info.short-title != auto) {
-          title = self.info.short-title
+      // give priority to short, since long is also used in title slide
+      let title = self.info.title
+      if (self.info.short-title != auto) {
+        title = self.info.short-title
+      }
+
+      let first-col-width = auto
+      let second-col-width = 75%
+      if self.info.logo.func() == image {
+        first-col-width = 19%
+        second-col-width = 71.5%
+      }
+
+      grid(
+        columns: (first-col-width, second-col-width, 8.5%),
+        rows: 0.5em,
+        stroke: (x: 1pt + self.colors.black),
+        cell(box(self.info.logo, height: 100%)),
+        cell(box(
+          width: 100%,
+          text(
+            title, // either title or short-title
+            weight: "bold",
+          )
+            + self.store.footer-first-sep
+            + if _is(author) { author }
+            + if _is(date) and _is(author) {
+              self.store.footer-second-sep
+            } else { "" }
+            + if _is(date) { date },
+        )),
+        cell(utils.call-or-display(self, context {
+          let current = int(utils.slide-counter.display())
+          let last = int(utils.last-slide-counter.display())
+          if current > last {
+            (
+              text(self.store.footer-appendix-label, style: "italic")
+                + str(current)
+            )
+          } else {
+            str(current)
+          }
         }
-
-        let first-col-width = auto
-        let second-col-width = 75%
-        if self.info.logo.func() == image {
-          first-col-width = 19%
-          second-col-width = 71.5%
-        }
-
-        grid(
-          columns: (first-col-width, second-col-width, 8.5%),
-          rows: 0.5em,
-          stroke: (x: 1pt + self.colors.black),
-          cell(box(self.info.logo, height: 100%)),
-          cell(
-            box(
-              width: 100%,
-              text(
-                title, // either title or short-title
-                weight: "bold",
-              )
-                + self.store.footer-first-sep
-                + if _is(author) { author }
-                + if _is(date) and _is(author) {
-                  self.store.footer-second-sep
-                } else { "" }
-                + if _is(date) { date },
-            ),
-          ),
-          cell(
-            utils.call-or-display(
-              self,
-              context {
-                let current = int(utils.slide-counter.display())
-                let last = int(utils.last-slide-counter.display())
-                if current > last {
-                  (
-                    text(self.store.footer-appendix-label, style: "italic")
-                      + str(current)
-                  )
-                } else {
-                  str(current)
-                }
-              }
-                + " / "
-                + utils.last-slide-number,
-            ),
-          ),
-        )
-      },
-    )
+          + " / "
+          + utils.last-slide-number)),
+      )
+    })
   }
 
-  let self = utils.merge-dicts(
-    self,
-    config-page(
-      header: if self.store.show-header {
-        unistra-nav-bar(self)
-      } else {
-        none
-      },
-      footer: if self.store.show-footer {
-        footer
-      } else {
-        none
-      },
-      // todo: change if no footer/header, etc.
-      margin: (x: 3em, y: 2em),
-    ),
-  )
+  let self = utils.merge-dicts(self, config-page(
+    header: if self.store.show-header {
+      unistra-nav-bar(self)
+    } else {
+      none
+    },
+    footer: if self.store.show-footer {
+      footer
+    } else {
+      none
+    },
+    // todo: change if no footer/header, etc.
+    margin: (x: 3em, y: 2em),
+  ))
 
   touying-slide(
     self: self,
@@ -271,25 +256,17 @@
           rows: (6em, 6em, 4em, 4em),
           logo-body,
           _cell([
-            #text(
-              size: 2em,
-              weight: "bold",
-              if (title != "") {
-                title
-              } else {
-                info.title
-              },
-            )
+            #text(size: 2em, weight: "bold", if (title != "") {
+              title
+            } else {
+              info.title
+            })
             #linebreak()
-            #text(
-              size: 1.7em,
-              weight: "regular",
-              if (subtitle != "") {
-                subtitle
-              } else {
-                info.subtitle
-              },
-            )
+            #text(size: 1.7em, weight: "regular", if (subtitle != "") {
+              subtitle
+            } else {
+              info.subtitle
+            })
           ]),
 
           _cell([
@@ -582,7 +559,9 @@
   )
 
   if (fig == none) {
-    panic("A hero slide requires an inline image such as image('path/to/image.jpg')")
+    panic(
+      "A hero slide requires an inline image such as image('path/to/image.jpg')",
+    )
   }
 
   let create-figure() = {
@@ -644,10 +623,7 @@
 
   let create-body() = {
     if (merged-txt.text == none) {
-      align(
-        center,
-        create-figure(),
-      )
+      align(center, create-figure())
     } else {
       if direction == "ltr" {
         create-grid(
@@ -721,10 +697,7 @@
     )
   }
 
-  let self = utils.merge-dicts(
-    self,
-    config-common(subslide-preamble: none),
-  )
+  let self = utils.merge-dicts(self, config-common(subslide-preamble: none))
 
   touying-slide(self: self, body)
 })
@@ -829,10 +802,7 @@
     heading-level: heading-level,
   )
 
-  let self = utils.merge-dicts(
-    self,
-    config-common(subslide-preamble: none),
-  )
+  let self = utils.merge-dicts(self, config-common(subslide-preamble: none))
 
   touying-slide(self: self, body)
 })
