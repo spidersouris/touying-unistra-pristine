@@ -913,6 +913,7 @@
       ),
       // elements to hide from footer ("author", "date")
       footer-hide: (),
+      link-icons: true,
     ),
 
     config-methods(
@@ -945,11 +946,35 @@
 
         show heading.where(level: 1): set text(size: 1.5em, weight: "bold")
         show heading.where(level: 2): set block(below: 1.5em)
-        // color links
-        show link: it => text(
-          link-color,
-          underline.with(offset: 3pt, extent: -1pt)(it),
-        )
+        // color and iconize links
+        show link: it => context {
+          // except for the outline slide
+          if in-outline.get() {
+            text(weight: "regular", it)
+          } else {
+            let dest = if type(it.dest) == str {
+              it.dest
+            } else {
+              str(it.dest)
+            }
+
+            let styled-link = text(
+              link-color,
+              underline.with(
+                offset: 3pt,
+                extent: -1pt,
+              )(it),
+            )
+
+            if self.store.link-icons {
+              if dest.ends-with(regex("\.(gif|mp4|avi|mov|webm|mkv)$")) {
+                [#styled-link #super(nv-icon("file-video"))]
+              } else {
+                styled-link
+              }
+            }
+          }
+        }
         // custom quote
         show quote: it => _custom-quote(
           it,
