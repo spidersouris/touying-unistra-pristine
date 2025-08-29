@@ -170,15 +170,15 @@
 
     v(title-margin)
 
+    // Retrieving focus slides titles, which have a specific heading level applied.
     let outline-content = outline(
       target: selector.or(..range(99, 100).map(l => heading.where(level: l))),
       ..args,
     )
 
-    text(
-      content-size,
-      outline-content,
-    )
+    // We're increasing the width of the outline content slightly to compensate for the lesser width applied to the titles of focus slides.
+    // Otherwise, the outline content would be too narrow and would linebreak prematurely.
+    text(content-size, box(outline-content, width: width * 1.1))
   }
 
   body = place(
@@ -450,10 +450,16 @@
                 level: 99,
                 outlined: outlined,
                 bookmarked: outlined,
-                if (count-label != none) {
-                  count-label
-                }
-                  + body,
+                // Setting a box with a width slightly smaller than 100% to create some margin and more space for the text.
+                // This avoids having to linebreak manually to achieve that, as the linebreak would appear in the outline slide.
+                box(
+                  width: 90%,
+                  if (count-label != none) {
+                    // bold does not change anything on the focus-slide; used only for the outline slide
+                    text(weight: "bold", count-label)
+                  }
+                    + body,
+                ),
               ),
               align: center + top,
             ),
