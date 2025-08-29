@@ -668,7 +668,7 @@
   if (title != none) {
     body = _title-and-sub(
       body,
-      title,
+      v(heading-level * -0.6em) + title,
       subtitle: subtitle,
       heading-level: heading-level,
     )
