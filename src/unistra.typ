@@ -757,7 +757,9 @@
   let figs = args.pos()
 
   if (figs == none) {
-    panic("A hero slide requires at least one inline image such as image('path/to/image.jpg')")
+    panic(
+      "A gallery slide requires at least one inline image such as image('path/to/image.jpg')",
+    )
   }
 
   let rows = (figs.len() / columns)
