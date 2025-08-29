@@ -971,6 +971,11 @@
         // bibliography
         show bibliography: set text(size: 15pt)
         show bibliography: set par(spacing: 0.5em, leading: 0.4em)
+        show bibliography: it => {
+          // fixes https://github.com/typst/hayagriva/issues/114
+          show "https://doi.org/": ""
+          it
+        }
 
         body
       },
