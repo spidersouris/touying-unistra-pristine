@@ -136,6 +136,8 @@
 ///
 /// - `title-size` (length): The size of the title. Default: 1.5em.
 ///
+/// - `title-margin` (length): The margin between the title and the content. Default: -0.5em.
+///
 /// - `content-size` (length): The size of the content. Default: 1.2em.
 ///
 /// - `fill` (color): The fill color of the outline block. Default: nblue.D.
@@ -150,6 +152,7 @@
 #let outline-slide(
   title: utils.i18n-outline-title,
   title-size: 1.5em,
+  title-margin: -0.5em,
   content-size: 1.2em,
   fill: nblue.D,
   outset: 30pt,
@@ -165,6 +168,7 @@
       title,
     )
 
+    v(title-margin)
 
     let outline-content = outline(
       target: selector.or(..range(99, 100).map(l => heading.where(level: l))),
