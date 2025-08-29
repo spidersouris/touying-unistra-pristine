@@ -192,7 +192,7 @@
   slide(body)
 }
 
-/// Creates a title slide with a logo, title, subtitle, author, and date.
+/// Creates a title slide with a logo, title, subtitle, author, email, and date.
 ///
 /// Example:
 ///
@@ -216,6 +216,7 @@
   subtitle: "",
   logo: "",
   logos: (),
+  hide: (),
   ..args,
 ) = touying-slide-wrapper(self => {
   let info = self.info + args.named()
@@ -275,11 +276,17 @@
             }
             #set text(size: 1.5em, fill: self.colors.white)
             #text(weight: "bold", info.author)
+            #if "email" in info {
+              linebreak()
+              text(info.email, size: 0.8em)
+            }
           ]),
-          _cell([
-            #set text(fill: self.colors.white.transparentize(25%))
-            #utils.display-info-date(self)
-          ]),
+          if "date" not in hide {
+            _cell([
+              #set text(fill: self.colors.white.transparentize(25%))
+              #utils.display-info-date(self)
+            ])
+          },
         ),
       ),
       c1: self.colors.nblue.E,
