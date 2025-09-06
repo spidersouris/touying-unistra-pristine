@@ -11,7 +11,7 @@
       components.mini-slides(
         display-section: true,
         display-subsection: false,
-      )
+      ),
     ),
     dy: -1.4em,
   )
@@ -47,87 +47,72 @@
     }
 
     set align(center + horizon)
-    block(
-      width: 101%,
-      height: -25%,
-      stroke: (top: 0.5pt + self.colors.black),
-      {
-        set text(size: 1.5em)
+    block(width: 101%, height: -25%, stroke: (top: 0.5pt + self.colors.black), {
+      set text(size: 1.5em)
 
-        // give priority to short, since long is also used in title slide
-        let title = self.info.title
-        if (self.info.short-title != auto) {
-          title = self.info.short-title
+      // give priority to short, since long is also used in title slide
+      let title = self.info.title
+      if (self.info.short-title != auto) {
+        title = self.info.short-title
+      }
+
+      let first-col-width = auto
+      let second-col-width = 75%
+      if self.info.logo.func() == image {
+        first-col-width = 19%
+        second-col-width = 71.5%
+      }
+
+      grid(
+        columns: (first-col-width, second-col-width, 8.5%),
+        rows: 0.5em,
+        stroke: (x: 1pt + self.colors.black),
+        cell(box(self.info.logo, height: 100%)),
+        cell(box(
+          width: 100%,
+          text(
+            title, // either title or short-title
+            weight: "bold",
+          )
+            + self.store.footer-first-sep
+            + if _is(author) { author }
+            + if _is(date) and _is(author) {
+              self.store.footer-second-sep
+            } else { "" }
+            + if _is(date) { date },
+        )),
+        cell(utils.call-or-display(self, context {
+          let current = int(utils.slide-counter.display())
+          let last = int(utils.last-slide-counter.display())
+          if current > last {
+            (
+              text(self.store.footer-appendix-label, style: "italic")
+                + str(current)
+            )
+          } else {
+            str(current)
+          }
         }
-
-        let first-col-width = auto
-        let second-col-width = 75%
-        if self.info.logo.func() == image {
-          first-col-width = 19%
-          second-col-width = 71.5%
-        }
-
-        grid(
-          columns: (first-col-width, second-col-width, 8.5%),
-          rows: 0.5em,
-          stroke: (x: 1pt + self.colors.black),
-          cell(box(self.info.logo, height: 100%)),
-          cell(
-            box(
-              width: 100%,
-              text(
-                title, // either title or short-title
-                weight: "bold",
-              )
-                + self.store.footer-first-sep
-                + if _is(author) { author }
-                + if _is(date) and _is(author) {
-                  self.store.footer-second-sep
-                } else { "" }
-                + if _is(date) { date },
-            ),
-          ),
-          cell(
-            utils.call-or-display(
-              self,
-              context {
-                let current = int(utils.slide-counter.display())
-                let last = int(utils.last-slide-counter.display())
-                if current > last {
-                  (
-                    text(self.store.footer-appendix-label, style: "italic")
-                      + str(current)
-                  )
-                } else {
-                  str(current)
-                }
-              }
-                + " / "
-                + utils.last-slide-number,
-            ),
-          ),
-        )
-      },
-    )
+          + " / "
+          + utils.last-slide-number)),
+      )
+    })
   }
 
-  let self = utils.merge-dicts(
-    self,
-    config-page(
-      header: if self.store.show-header {
-        unistra-nav-bar(self)
-      } else {
-        none
-      },
-      footer: if self.store.show-footer {
-        footer
-      } else {
-        none
-      },
-      // todo: change if no footer/header, etc.
-      margin: (x: 3em, y: 2em),
-    ),
-  )
+  let self = utils.merge-dicts(self, config-page(
+    header: if self.store.show-header {
+      unistra-nav-bar(self)
+    } else {
+      none
+    },
+    footer: if self.store.show-footer {
+      footer
+    } else {
+      none
+    },
+    // todo: change if no footer/header, etc.
+    margin: (x: 3em, y: 2em),
+  ))
 
   touying-slide(
     self: self,
@@ -151,6 +136,8 @@
 ///
 /// - `title-size` (length): The size of the title. Default: 1.5em.
 ///
+/// - `title-margin` (length): The margin between the title and the content. Default: -0.5em.
+///
 /// - `content-size` (length): The size of the content. Default: 1.2em.
 ///
 /// - `fill` (color): The fill color of the outline block. Default: nblue.D.
@@ -165,6 +152,7 @@
 #let outline-slide(
   title: utils.i18n-outline-title,
   title-size: 1.5em,
+  title-margin: -0.5em,
   content-size: 1.2em,
   fill: nblue.D,
   outset: 30pt,
@@ -180,16 +168,17 @@
       title,
     )
 
+    v(title-margin)
 
+    // Retrieving focus slides titles, which have a specific heading level applied.
     let outline-content = outline(
       target: selector.or(..range(99, 100).map(l => heading.where(level: l))),
       ..args,
     )
 
-    text(
-      content-size,
-      outline-content,
-    )
+    // We're increasing the width of the outline content slightly to compensate for the lesser width applied to the titles of focus slides.
+    // Otherwise, the outline content would be too narrow and would linebreak prematurely.
+    text(content-size, box(outline-content, width: width * 1.1))
   }
 
   body = place(
@@ -207,7 +196,7 @@
   slide(body)
 }
 
-/// Creates a title slide with a logo, title, subtitle, author, and date.
+/// Creates a title slide with a logo, title, subtitle, author, email, and date.
 ///
 /// Example:
 ///
@@ -231,6 +220,7 @@
   subtitle: "",
   logo: "",
   logos: (),
+  hide: (),
   ..args,
 ) = touying-slide-wrapper(self => {
   let info = self.info + args.named()
@@ -271,25 +261,17 @@
           rows: (6em, 6em, 4em, 4em),
           logo-body,
           _cell([
-            #text(
-              size: 2em,
-              weight: "bold",
-              if (title != "") {
-                title
-              } else {
-                info.title
-              },
-            )
+            #text(size: 2em, weight: "bold", if (title != "") {
+              title
+            } else {
+              info.title
+            })
             #linebreak()
-            #text(
-              size: 1.7em,
-              weight: "regular",
-              if (subtitle != "") {
-                subtitle
-              } else {
-                info.subtitle
-              },
-            )
+            #text(size: 1.7em, weight: "regular", if (subtitle != "") {
+              subtitle
+            } else {
+              info.subtitle
+            })
           ]),
 
           _cell([
@@ -298,11 +280,17 @@
             }
             #set text(size: 1.5em, fill: self.colors.white)
             #text(weight: "bold", info.author)
+            #if "email" in info {
+              linebreak()
+              text(info.email, size: 0.8em)
+            }
           ]),
-          _cell([
-            #set text(fill: self.colors.white.transparentize(25%))
-            #utils.display-info-date(self)
-          ]),
+          if "date" not in hide {
+            _cell([
+              #set text(fill: self.colors.white.transparentize(25%))
+              #utils.display-info-date(self)
+            ])
+          },
         ),
       ),
       c1: self.colors.nblue.E,
@@ -345,7 +333,7 @@
 ///
 /// - `text-size` (length): The size of the text. Default: 2em.
 ///
-/// - `theme` (str): The color theme to use. Themes are defined in src/colors.typ. Possible values: "lblue", "blue", "dblue", "yellow", "pink", "neon", "mandarine", "hazy", "smoke". Default: none.
+/// - `theme` (str | int): The color theme name or ID (1-18) to use. Themes are defined in src/colors.typ. Default: none.
 ///
 /// - `icon` (function): The icon to show above the text. Should be `us-icon()` or `nv-icon()`.
 ///
@@ -381,31 +369,48 @@
   let new-c2 = c2
 
   if (theme != none) {
+    let theme-colors = none
+    let theme-name = none
+
+    if (type(theme) == int) {
+      let theme-id-str = str(theme)
+      assert(
+        theme-id-str in self.store.colorthemes-ids,
+        message: "The theme ID "
+          + str(theme)
+          + " is not defined. Available theme IDs are: "
+          + self.store.colorthemes-ids.keys().join(", "),
+      )
+      theme-colors = self.store.colorthemes-ids.at(theme-id-str)
+    } else {
+      assert(
+        theme in self.store.colorthemes,
+        message: "The theme "
+          + theme
+          + " is not defined. Available themes are: "
+          + self.store.colorthemes.keys().join(", "),
+      )
+      theme-colors = self.store.colorthemes.at(theme)
+      theme-name = theme
+    }
+
     assert(
-      theme in self.store.colorthemes,
+      theme-colors.len() == 2 or theme-colors.len() == 3,
       message: "The theme "
-        + theme
-        + " is not defined. Available themes are: "
-        + self.store.colorthemes.keys().join(", "),
-    )
-    assert(
-      self.store.colorthemes.at(theme).len() != 2
-        or self.store.colorthemes.at(theme).len() != 3,
-      message: "The theme "
-        + theme
+        + (if theme-name != none { theme-name } else { str(theme) })
         + " is not a valid color theme. A valid color theme should have 2 or 3 colors.",
     )
 
-    let theme-has-text-color = self.store.colorthemes.at(theme).len() == 3
+    let theme-has-text-color = theme-colors.len() == 3
 
     if (text-color == none and not theme-has-text-color) {
       new-text-color = self.colors.white
-    } else {
-      new-text-color = self.store.colorthemes.at(theme).at(2)
+    } else if (theme-has-text-color) {
+      new-text-color = theme-colors.at(2)
     }
 
-    new-c1 = self.store.colorthemes.at(theme).at(0)
-    new-c2 = self.store.colorthemes.at(theme).at(1)
+    new-c1 = theme-colors.at(0)
+    new-c2 = theme-colors.at(1)
   }
 
   let body = {
@@ -445,10 +450,16 @@
                 level: 99,
                 outlined: outlined,
                 bookmarked: outlined,
-                if (count-label != none) {
-                  count-label
-                }
-                  + body,
+                // Setting a box with a width slightly smaller than 100% to create some margin and more space for the text.
+                // This avoids having to linebreak manually to achieve that, as the linebreak would appear in the outline slide.
+                box(
+                  width: 90%,
+                  if (count-label != none) {
+                    // bold does not change anything on the focus-slide; used only for the outline slide
+                    text(weight: "bold", count-label)
+                  }
+                    + body,
+                ),
               ),
               align: center + top,
             ),
@@ -565,7 +576,9 @@
   )
 
   if (fig == none) {
-    panic("A hero slide requires an inline image such as image('path/to/image.jpg')")
+    panic(
+      "A hero slide requires an inline image such as image('path/to/image.jpg')",
+    )
   }
 
   let create-figure() = {
@@ -627,10 +640,7 @@
 
   let create-body() = {
     if (merged-txt.text == none) {
-      align(
-        center,
-        create-figure(),
-      )
+      align(center, create-figure())
     } else {
       if direction == "ltr" {
         create-grid(
@@ -675,7 +685,7 @@
   if (title != none) {
     body = _title-and-sub(
       body,
-      title,
+      v(heading-level * -0.6em) + title,
       subtitle: subtitle,
       heading-level: heading-level,
     )
@@ -704,10 +714,7 @@
     )
   }
 
-  let self = utils.merge-dicts(
-    self,
-    config-common(subslide-preamble: none),
-  )
+  let self = utils.merge-dicts(self, config-common(subslide-preamble: none))
 
   touying-slide(self: self, body)
 })
@@ -767,7 +774,9 @@
   let figs = args.pos()
 
   if (figs == none) {
-    panic("A hero slide requires at least one inline image such as image('path/to/image.jpg')")
+    panic(
+      "A gallery slide requires at least one inline image such as image('path/to/image.jpg')",
+    )
   }
 
   let rows = (figs.len() / columns)
@@ -812,10 +821,7 @@
     heading-level: heading-level,
   )
 
-  let self = utils.merge-dicts(
-    self,
-    config-common(subslide-preamble: none),
-  )
+  let self = utils.merge-dicts(self, config-common(subslide-preamble: none))
 
   touying-slide(self: self, body)
 })
@@ -878,6 +884,7 @@
     config-store(
       // colorthemes from colors.typ
       colorthemes: colorthemes,
+      colorthemes-ids: colorthemes-ids,
       show-header: false,
       show-footer: true,
       // footer first separator
@@ -895,6 +902,33 @@
       ),
       // elements to hide from footer ("author", "date")
       footer-hide: (),
+      link-icons: (
+        "video": (
+          regex("\.(gif|mp4|avi|mov|webm|mkv)$"),
+          nv-icon("file-video"),
+        ),
+        "image": (
+          regex("\.(jpg|jpeg|png|bmp|svg|webp|tiff)$"),
+          nv-icon("picture-layer"),
+        ),
+        "audio": (regex("\.(mp3|wav|ogg|flac|m4a)$"), nv-icon("file-audio")),
+        "archive": (regex("\.(zip|tar|gz|bz2|xz)$"), nv-icon("folders")),
+        "code": (
+          regex(
+            "\.(css|html|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$",
+          ),
+          us-icon("code"),
+        ),
+        "facebook": (regex("(fb|facebook)\.com/"), nv-icon("facebook")),
+        "pinterest": (regex("pinterest\.com/"), nv-icon("pinterest")),
+        "tumblr": (regex("tumblr\.com/"), nv-icon("tumblr")),
+        // do not use Nova's "youtube" icon, too old
+        // icon "play" is the closest to current logo
+        "youtube": (
+          regex("(youtube\.com|youtu\.be)/"),
+          nv-icon("video-control-play"),
+        ),
+      ),
     ),
 
     config-methods(
@@ -904,6 +938,9 @@
 
       // init
       init: (self: none, body) => {
+        // states
+        let in-outline = state("in-outline", false)
+
         // sets
         set text(
           fill: black,
@@ -924,11 +961,45 @@
 
         show heading.where(level: 1): set text(size: 1.5em, weight: "bold")
         show heading.where(level: 2): set block(below: 1.5em)
-        // color links
-        show link: it => text(
-          link-color,
-          underline.with(offset: 3pt, extent: -1pt)(it),
-        )
+        // color and iconize links
+        show link: it => context {
+          // except for the outline slide
+          if in-outline.get() {
+            text(weight: "regular", it)
+          } else {
+            let dest = if type(it.dest) == str {
+              it.dest
+            } else {
+              str(it.dest)
+            }
+
+            let styled-link = text(
+              link-color,
+              underline.with(
+                offset: 3pt,
+                extent: -1pt,
+              )(it),
+            )
+
+            if self.store.link-icons.len() > 0 {
+              let found = none
+              for pair in self.store.link-icons.values() {
+                let (pattern, icon) = pair
+                if dest.matches(pattern).len() > 0 {
+                  found = icon
+                  break
+                }
+              }
+              if found != none {
+                [#styled-link #super(found)]
+              } else {
+                styled-link
+              }
+            } else {
+              styled-link
+            }
+          }
+        }
         // custom quote
         show quote: it => _custom-quote(
           it,
@@ -937,11 +1008,24 @@
           self.store.quotes.at("outset"),
           self.store.quotes.at("margin-top"),
         )
-        show outline.entry: it => it.body() + linebreak()
-        show outline: it => block(inset: (x: 1em), it)
+        show outline.entry: it => (
+          // support links for outline entries
+          link(it.element.location(), it.body()) + linebreak()
+        )
+        show outline: it => context {
+          // state used to not color links in outline
+          in-outline.update(true)
+          block(inset: (x: 1em), it)
+          in-outline.update(false)
+        }
         // bibliography
         show bibliography: set text(size: 15pt)
         show bibliography: set par(spacing: 0.5em, leading: 0.4em)
+        show bibliography: it => {
+          // fixes https://github.com/typst/hayagriva/issues/114
+          show "https://doi.org/": ""
+          it
+        }
 
         body
       },

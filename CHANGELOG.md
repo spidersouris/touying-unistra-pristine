@@ -1,3 +1,35 @@
+# v1.4.2 (2025-09-06)
+
+## General
+
+### Slides
+
+- **Focus Slides**
+  - Added color themes mapping to IDs. The `theme` parameters can now take an integer instead of a string as an argument. It makes it easier to specify a theme or cycle through the available options (no need to remember the name of each theme).
+- **Outline Slides**:
+  - Added support for links for outline entries.
+  - Added the `title-margin` (length) parameter to add margin between the title and the content. Default: -0.5em.
+- **Title Slides**:
+  - Added support for displaying email. Will use the `email` parameter in the `config-info()` object.
+  - Added the `hide` (array[str]) parameter to hide information appearing in both the title slide and the footer specifically from the title slide. Only supports "date" for now. Default: (). 
+
+### Icons
+
+- Added icon support for URLs.
+  - Icons from fonts _Unistra Symbol_ and _Nova Icons_ are now automatically appended to URLs matching regular expression rules specified in the new `link-icons` (dict[str, dict[regex, content]]) global setting.
+  - Currently, the following labels are supported: video, image, audio, archive, code, facebook, pinterest, tumblr, youtube.
+    - The specific regular expressions and icons associated to each label can be found in the [README](https://github.com/spidersouris/touying-unistra-pristine/?tab=readme-ov-file#link-icons).
+  - Link icons can be disabled by setting `link-icons` to `()`. Similarly, default labels can be overriden and new labels can be added by changing the setting values.
+
+## Fixes
+
+- Fixed "and" being replaced outside word boundaries in two-author citations when using the custom `pcite()` and `mcite()`` functions.
+- Fixed DOI links going over multiple lines in the bibliography (Typst issue: typst/hayagriva#114).
+- Fixed a gallery slide panic issue referring to "hero slide" instead of "gallery slide".
+- Fixed linebreaking issues with outline slides entries.
+- Slightly adjusted the custom quote function output layout.
+- Other minor layout fixes.
+
 # v1.4.1 (2025-06-13)
 
 ## General

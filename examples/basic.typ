@@ -1,5 +1,5 @@
 #import "@preview/touying:0.6.1": *
-#import "@preview/touying-unistra-pristine:1.4.1": *
+#import "@preview/touying-unistra-pristine:1.4.2": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -13,6 +13,12 @@
     quotes: (
       left: "‘",
       right: "’",
+    ),
+    icon-links: (
+      "image": (
+        regex("\.(jpg|jpeg|png|bmp|svg|webp|tiff)$"),
+        none,
+      ),
     ),
   ),
 )
@@ -126,3 +132,13 @@ This is #highlight(fill: blue.C)[highlighted in blue]. This is #highlight(fill: 
 ][
   Second column. #lorem(15)
 ]
+
+== Icon Links
+
+https://i.edoyen.com/ShareX/2025/07/ky3Hdt.gif
+
+#link("https://i.edoyen.com/ShareX/2025/07/ky3Hdt.gif")[with \#link]
+
+https://i.edoyen.com/ShareX/2025/07/ky3Hdt.gif
+
+https://i.edoyen.com/ShareX/2025/07/ky3Hdt.jpg

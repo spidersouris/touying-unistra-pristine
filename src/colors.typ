@@ -148,3 +148,24 @@
   lemon: (yellow.A, camo.E, black),
   wine: (maroon.A, brown.A, maroon.D),
 )
+
+#let colorthemes-ids = (
+  "1": colorthemes.lblue,
+  "2": colorthemes.blue,
+  "3": colorthemes.dblue,
+  "4": colorthemes.yellow,
+  "5": colorthemes.pink,
+  "6": colorthemes.neon,
+  "7": colorthemes.mandarine,
+  "8": colorthemes.hazy,
+  "9": colorthemes.smoke,
+  "10": colorthemes.forest,
+  "11": colorthemes.berry,
+  "12": colorthemes.ocean,
+  "13": colorthemes.lavender,
+  "14": colorthemes.moss,
+  "15": colorthemes.clay,
+  "16": colorthemes.mint,
+  "17": colorthemes.lemon,
+  "18": colorthemes.wine,
+)
