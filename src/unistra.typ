@@ -902,7 +902,33 @@
       ),
       // elements to hide from footer ("author", "date")
       footer-hide: (),
-      link-icons: true,
+      link-icons: (
+        "video": (
+          regex("\.(gif|mp4|avi|mov|webm|mkv)$"),
+          nv-icon("file-video"),
+        ),
+        "image": (
+          regex("\.(jpg|jpeg|png|bmp|svg|webp|tiff)$"),
+          nv-icon("picture-layer"),
+        ),
+        "audio": (regex("\.(mp3|wav|ogg|flac|m4a)$"), nv-icon("file-audio")),
+        "archive": (regex("\.(zip|tar|gz|bz2|xz)$"), nv-icon("folders")),
+        "code": (
+          regex(
+            "\.(css|html|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$",
+          ),
+          us-icon("code"),
+        ),
+        "facebook": (regex("(fb|facebook)\.com/"), nv-icon("facebook")),
+        "pinterest": (regex("pinterest\.com/"), nv-icon("pinterest")),
+        "tumblr": (regex("tumblr\.com/"), nv-icon("tumblr")),
+        // do not use Nova's "youtube" icon, too old
+        // icon "play" is the closest to current logo
+        "youtube": (
+          regex("(youtube\.com|youtu\.be)/"),
+          nv-icon("video-control-play"),
+        ),
+      ),
     ),
 
     config-methods(
@@ -955,12 +981,22 @@
               )(it),
             )
 
-            if self.store.link-icons {
-              if dest.ends-with(regex("\.(gif|mp4|avi|mov|webm|mkv)$")) {
-                [#styled-link #super(nv-icon("file-video"))]
+            if self.store.link-icons.len() > 0 {
+              let found = none
+              for pair in self.store.link-icons.values() {
+                let (pattern, icon) = pair
+                if dest.matches(pattern).len() > 0 {
+                  found = icon
+                  break
+                }
+              }
+              if found != none {
+                [#styled-link #super(found)]
               } else {
                 styled-link
               }
+            } else {
+              styled-link
             }
           }
         }
