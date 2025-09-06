@@ -124,18 +124,68 @@ Icon function definitions and character-to-string mapping in [src/icons.typ](src
 
 By default, icons are shown next to links ending or containing specific extensions or keywords (see an example on [p. 8 of examples/basic.typ](examples/basic.typ). This can be disabled by setting `link-icons` to `()`. Supported labels are specified in the table below.
 
-| Key       | Description                                 | Regular Expression                                                                                                                                    | Icon                          |
-|-----------|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|
-| video     | Links to video or animated image files.     | `\.(gif|mp4|avi|mov|webm|mkv)$`                                                                                                                        | `nv-icon("file-video")`       |
-| image     | Links to image files.                       | `\.(jpg|jpeg|png|bmp|svg|webp|tiff)$`                                                                                                                  | `nv-icon("picture-layer")`    |
-| audio     | Links to audio files.                       | `\.(mp3|wav|ogg|flac|m4a)$`                                                                                                                            | `nv-icon("file-audio")`       |
-| archive   | Links to compressed archive files.          | `\.(zip|tar|gz|bz2|xz)$`                                                                                                                               | `nv-icon("folders")`          |
-| code      | Links to source code or configuration files.| `\.(css|html|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$`                                               | `us-icon("code")`             |
-| facebook  | Links to Facebook.                          | `(fb|facebook)\.com/`                                                                                                                                  | `nv-icon("facebook")`         |
-| pinterest | Links to Pinterest.                         | `pinterest\.com/`                                                                                                                                      | `nv-icon("pinterest")`        |
-| tumblr    | Links to Tumblr.                            | `tumblr\.com/`                                                                                                                                         | `nv-icon("tumblr")`           |
-| youtube   | Links to YouTube videos.                    | `(youtube\.com|youtu\.be)/`                                                                                                                            | `nv-icon("video-control-play")` |
-
+<table>
+  <tr>
+    <th>Key</th>
+    <th>Description</th>
+    <th>Regular Expression</th>
+    <th>Icon</th>
+  </tr>
+  <tr>
+    <td>video</td>
+    <td>Links to video or animated image files.</td>
+    <td><code>\.(gif|mp4|avi|mov|webm|mkv)$</code></td>
+    <td><code>nv-icon("file-video")</code></td>
+  </tr>
+  <tr>
+    <td>image</td>
+    <td>Links to image files.</td>
+    <td><code>\.(jpg|jpeg|png|bmp|svg|webp|tiff)$</code></td>
+    <td><code>nv-icon("picture-layer")</code></td>
+  </tr>
+  <tr>
+    <td>audio</td>
+    <td>Links to audio files.</td>
+    <td><code>\.(mp3|wav|ogg|flac|m4a)$</code></td>
+    <td><code>nv-icon("file-audio")</code></td>
+  </tr>
+  <tr>
+    <td>archive</td>
+    <td>Links to compressed archive files.</td>
+    <td><code>\.(zip|tar|gz|bz2|xz)$</code></td>
+    <td><code>nv-icon("folders")</code></td>
+  </tr>
+  <tr>
+    <td>code</td>
+    <td>Links to source code or configuration files.</td>
+    <td><code>\.(css|html|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$</code></td>
+    <td><code>us-icon("code")</code></td>
+  </tr>
+  <tr>
+    <td>facebook</td>
+    <td>Links to Facebook.</td>
+    <td><code>(fb|facebook)\.com/</code></td>
+    <td><code>nv-icon("facebook")</code></td>
+  </tr>
+  <tr>
+    <td>pinterest</td>
+    <td>Links to Pinterest.</td>
+    <td><code>pinterest\.com/</code></td>
+    <td><code>nv-icon("pinterest")</code></td>
+  </tr>
+  <tr>
+    <td>tumblr</td>
+    <td>Links to Tumblr.</td>
+    <td><code>tumblr\.com/</code></td>
+    <td><code>nv-icon("tumblr")</code></td>
+  </tr>
+  <tr>
+    <td>youtube</td>
+    <td>Links to YouTube videos.</td>
+    <td><code>(youtube\.com|youtu\.be)/</code></td>
+    <td><code>nv-icon("video-control-play")</code></td>
+  </tr>
+</table>
 
 # Citations
 
