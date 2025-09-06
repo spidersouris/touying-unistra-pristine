@@ -103,7 +103,7 @@ A slide with *important information*.
 
 As an alternative, or in addition to these icons, you can also use _Nova Icons_, based on Font Awesome 4.7, which can be downloaded freely from [here](https://s3.unistra.fr/master/common/assets/fonts/nova-icons/1.0.1/fonts/novaicons.ttf?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&Signature=QzVHDIlE0dxe7NsiXplv969Bkuc%3D&Expires=1870941573&v=1.0.0) (.ttf format).
 
-The full list of _Unistra Symbol_ and _Nova Icons_ is available [here](https://di.pages.unistra.fr/pictogrammes/).
+The full list of icons from _Unistra Symbol_ and _Nova Icons_ is available [here](https://di.pages.unistra.fr/pictogrammes/).
 
 Once these fonts are installed in your environment, they can be used with the `us-icon()` (_Unistra Symbol_) and the `nv-icon()` (_Nova Icons_) functions. Both functions take the icon string ID (which can be found in the list linked above) without the prefix as an argument. For example:
 
@@ -119,6 +119,23 @@ Icons are also supported for focus slides. An icon can be defined using the `ico
 ```
 
 Icon function definitions and character-to-string mapping in [src/icons.typ](src/icons.typ) are generated automatically using [scripts/get_icons.py](scripts/get_icons.py).
+
+## Link Icons
+
+By default, icons are shown next to links ending or containing specific extensions or keywords (see an example on [p. 8 of examples/basic.typ](examples/basic.typ). This can be disabled by setting `link-icons` to `()`. Supported labels are specified in the table below.
+
+| Key       | Description                                 | Regular Expression                                                                                                                                    | Icon                          |
+|-----------|---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|
+| video     | Links to video or animated image files.     | `\.(gif|mp4|avi|mov|webm|mkv)$`                                                                                                                        | `nv-icon("file-video")`       |
+| image     | Links to image files.                       | `\.(jpg|jpeg|png|bmp|svg|webp|tiff)$`                                                                                                                  | `nv-icon("picture-layer")`    |
+| audio     | Links to audio files.                       | `\.(mp3|wav|ogg|flac|m4a)$`                                                                                                                            | `nv-icon("file-audio")`       |
+| archive   | Links to compressed archive files.          | `\.(zip|tar|gz|bz2|xz)$`                                                                                                                               | `nv-icon("folders")`          |
+| code      | Links to source code or configuration files.| `\.(css|html|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$`                                               | `us-icon("code")`             |
+| facebook  | Links to Facebook.                          | `(fb|facebook)\.com/`                                                                                                                                  | `nv-icon("facebook")`         |
+| pinterest | Links to Pinterest.                         | `pinterest\.com/`                                                                                                                                      | `nv-icon("pinterest")`        |
+| tumblr    | Links to Tumblr.                            | `tumblr\.com/`                                                                                                                                         | `nv-icon("tumblr")`           |
+| youtube   | Links to YouTube videos.                    | `(youtube\.com|youtu\.be)/`                                                                                                                            | `nv-icon("video-control-play")` |
+
 
 # Citations
 
@@ -157,15 +174,16 @@ When using any of the provided CSL files described above:
 
 The theme can be configured to your liking by adding the `config-store()` object when initializing `unistra-theme`. An example with the `quotes` setting can be found in [examples/basic.typ](examples/basic.typ).
 
-A complete list of settings can be found below.
+A complete list of settings is available below.
 
 |          Name         |                                                      Description                                                     |     Value Type    | Default                                                             |
 |:---------------------:|:--------------------------------------------------------------------------------------------------------------------:|:-----------------:|---------------------------------------------------------------------|
+| link-icons           | Icons (content) to be appended next to URLs matched by the regex.                                                                                          | dict[str, array[regex, content]]              | See list in [Link Icons](##Link%20Icons)                                                             |
 | show-header           | Whether to show the header.                                                                                          | bool              | `false`                                                             |
 | show-footer           | Whether to show the footer.                                                                                          | bool              | `true`                                                              |
 | footer-first-sep      | First separator in the footer.                                                                                       | str               | `" \| "`                                                            |
 | footer-second-sep     | Second separator in the footer.                                                                                      | str               | `" \| "`                                                            |
 | footer-appendix-label | Label to be shown before slide number in the Appendix.                                                               | str               | `"A-"`                                                              |
 | font                  | Font to be used.                                                                                                     | str \| array[str] | `("Unistra A", "Segoe UI", "Roboto")`                               |
-| quotes                | Settings to be used for the custom `#quote()` element. Dict with parameters `left`, `right`, `outset`, `margin-top`. | dict[str \| length]  | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
+| quotes                | Settings to be used for the custom `#quote()` element. Dict with keys `left`, `right`, `outset`, `margin-top`. | dict[str, length]  | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
 | footer-hide           | Elements from the footer to hide (can include "author" or "date").                                                   | array[str]        | `()`                                                                |
