@@ -126,7 +126,7 @@ By default, icons are shown next to links ending or containing specific extensio
 
 <table>
   <tr>
-    <th>Key</th>
+    <th>Label</th>
     <th>Description</th>
     <th>Regular Expression</th>
     <th>Icon</th>
