@@ -15,7 +15,7 @@ This theme was partly created using components from [tud-slides](https://github.
 - **Focus Slides**, with predefined themes and custom colors support.
 - **Hero Slides**.
 - **Gallery Slides**.
-- **Icons** (see [Icons](#Icons)).
+- **Icons** and **Link Icons** (see [Icons](#Icons)).
 - **Better Citations** (see [Citations](#Citations)).
 - **Universally Toggleable Header/Footer** (see [Configuration](#Configuration)).
 - Subset of predefined colors taken from the [style guide of the University of Strasbourg](https://langagevisuel.unistra.fr/index.php?id=396) (see [colors.typ](src/colors.typ)).
@@ -122,7 +122,7 @@ Icon function definitions and character-to-string mapping in [src/icons.typ](src
 
 ## Link Icons
 
-By default, icons are shown next to links ending or containing specific extensions or keywords (see an example on [p. 8 of examples/basic.typ](examples/basic.typ). This can be disabled by setting `link-icons` to `()`. Supported labels are specified in the table below.
+By default, icons are shown next to links ending or containing specific extensions or keywords (see an example on [p. 8 of examples/basic.pdf](examples/basic.pdf). This can be disabled by setting `link-icons` to `()`. Similarly, default labels can be overriden and new labels can be added by changing the setting values. Default supported labels are specified in the table below.
 
 <table>
   <tr>
@@ -181,7 +181,7 @@ By default, icons are shown next to links ending or containing specific extensio
   </tr>
   <tr>
     <td>youtube</td>
-    <td>Links to YouTube videos.</td>
+    <td>Links to YouTube.</td>
     <td><code>(youtube\.com|youtu\.be)/</code></td>
     <td><code>nv-icon("video-control-play")</code></td>
   </tr>
@@ -228,7 +228,7 @@ A complete list of settings is available below.
 
 |          Name         |                                                      Description                                                     |     Value Type    | Default                                                             |
 |:---------------------:|:--------------------------------------------------------------------------------------------------------------------:|:-----------------:|---------------------------------------------------------------------|
-| link-icons           | Icons (content) to be appended next to URLs matched by the regex.                                                                                          | dict[str, array[regex, content]]              | See list in [Link Icons](##Link%20Icons)                                                             |
+| link-icons           | Icons (content) to be appended next to URLs matched by the regex.                                                                                          | dict[str, dict[regex, content]]              | See list in [Link Icons](##Link%20Icons)                                                             |
 | show-header           | Whether to show the header.                                                                                          | bool              | `false`                                                             |
 | show-footer           | Whether to show the footer.                                                                                          | bool              | `true`                                                              |
 | footer-first-sep      | First separator in the footer.                                                                                       | str               | `" \| "`                                                            |
