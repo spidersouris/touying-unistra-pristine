@@ -915,7 +915,7 @@
         "archive": (regex("\.(zip|tar|gz|bz2|xz)$"), nv-icon("folders")),
         "code": (
           regex(
-            "\.(css|html|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$",
+            "\.(css|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$",
           ),
           us-icon("code"),
         ),
