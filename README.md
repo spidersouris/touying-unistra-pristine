@@ -23,6 +23,7 @@ This theme was partly created using components from [tud-slides](https://github.
 # Examples
 
 The [examples folder](https://github.com/spidersouris/touying-unistra-pristine/tree/main/examples) contains two examples:
+
 - a **basic example** highlighting main features of the theme ([examples/basic.typ](examples/basic.typ); [examples/basic.pdf](examples/basic.pdf) for output),
 - an **extensively commented, real-usage example** of slides made for an academic presentation for the ACL 2025 conference ([examples/acl25.typ](examples/acl25.typ); [examples/acl25.pdf](examples/acl25.pdf) for output),
 
@@ -158,7 +159,7 @@ By default, icons are shown next to links ending or containing specific extensio
   <tr>
     <td>code</td>
     <td>Links to source code or configuration files.</td>
-    <td><code>\.(css|html|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$</code></td>
+    <td><code>\.(css|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$</code></td>
     <td><code>us-icon("code")</code></td>
   </tr>
   <tr>
@@ -210,12 +211,14 @@ When doing so, make sure to properly set the language of your document:
 ```
 
 Specifically, for French users using `apa.csl`, this will:
+
 - separate multiple citations with a non-breaking space and a semicolon,
 - replace the ampersand (&) with "et" for two-author papers.
 
 ## Syntax
 
 When using any of the provided CSL files described above:
+
 - `@label` acts as a prose citation (e.g., "Astley & Morris (2020)"). Supplements are accepted as `@label[supplement]` and will show as "Astley & Morris (2020:[supplement]).
 - `#pcite(label, ..args)` acts as a parenthesis citation for a single label. E.g., "(Astley & Morris, 2020)". Supplement can be specified as an additional argument to the function. Example: `#pcite(<a>, 5)`.
 - `#mcite(..args)` acts as a parenthesis citation for multiple labels. E.g., "(Astley & Morris, 2020 ; Morris & Astley, 2021)". Supplement for the corresponding label can be specified as an additional argument within the citation array. Example: `#mcite((<a>, 5), (<b>, "24-25"), (<c>,))`.
@@ -226,14 +229,14 @@ The theme can be configured to your liking by adding the `config-store()` object
 
 A complete list of settings is available below.
 
-|          Name         |                                                      Description                                                     |     Value Type    | Default                                                             |
-|:---------------------:|:--------------------------------------------------------------------------------------------------------------------:|:-----------------:|---------------------------------------------------------------------|
-| link-icons           | Icons (content) to be appended next to URLs matched by the regex.                                                                                          | dict[str, dict[regex, content]]              | See list in [Link Icons](##Link%20Icons)                                                             |
-| show-header           | Whether to show the header.                                                                                          | bool              | `false`                                                             |
-| show-footer           | Whether to show the footer.                                                                                          | bool              | `true`                                                              |
-| footer-first-sep      | First separator in the footer.                                                                                       | str               | `" \| "`                                                            |
-| footer-second-sep     | Second separator in the footer.                                                                                      | str               | `" \| "`                                                            |
-| footer-appendix-label | Label to be shown before slide number in the Appendix.                                                               | str               | `"A-"`                                                              |
-| font                  | Font to be used.                                                                                                     | str \| array[str] | `("Unistra A", "Segoe UI", "Roboto")`                               |
-| quotes                | Settings to be used for the custom `#quote()` element. Dict with keys `left`, `right`, `outset`, `margin-top`. | dict[str, length]  | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
-| footer-hide           | Elements from the footer to hide (can include "author" or "date").                                                   | array[str]        | `()`                                                                |
+|         Name          |                                                  Description                                                   |           Value Type            | Default                                                     |
+| :-------------------: | :------------------------------------------------------------------------------------------------------------: | :-----------------------------: | ----------------------------------------------------------- |
+|      link-icons       |                       Icons (content) to be appended next to URLs matched by the regex.                        | dict[str, dict[regex, content]] | See list in [Link Icons](##Link%20Icons)                    |
+|      show-header      |                                          Whether to show the header.                                           |              bool               | `false`                                                     |
+|      show-footer      |                                          Whether to show the footer.                                           |              bool               | `true`                                                      |
+|   footer-first-sep    |                                         First separator in the footer.                                         |               str               | `" \| "`                                                    |
+|   footer-second-sep   |                                        Second separator in the footer.                                         |               str               | `" \| "`                                                    |
+| footer-appendix-label |                             Label to be shown before slide number in the Appendix.                             |               str               | `"A-"`                                                      |
+|         font          |                                                Font to be used.                                                |        str \| array[str]        | `("Unistra A", "Segoe UI", "Roboto")`                       |
+|        quotes         | Settings to be used for the custom `#quote()` element. Dict with keys `left`, `right`, `outset`, `margin-top`. |        dict[str, length]        | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
+|      footer-hide      |                       Elements from the footer to hide (can include "author" or "date").                       |           array[str]            | `()`                                                        |

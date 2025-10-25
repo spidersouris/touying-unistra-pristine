@@ -1,4 +1,5 @@
 #import "@preview/touying:0.6.1": *
+#import "@preview/fontawesome:0.5.0": fa-icon
 #import "colors.typ": *
 #import "icons.typ": *
 #import "utils.typ": *
@@ -915,11 +916,12 @@
         "archive": (regex("\.(zip|tar|gz|bz2|xz)$"), nv-icon("folders")),
         "code": (
           regex(
-            "\.(css|html|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$",
+            "\.(css|js|ts|tsx|json|xml|yml|toml|ini|cfg|bat|sh|ps1|py|java|c|cpp|h|hpp|rs|go|php|rb|pl|swift)$",
           ),
           us-icon("code"),
         ),
         "facebook": (regex("(fb|facebook)\.com/"), nv-icon("facebook")),
+        "fa-github": (regex("github\.com/"), fa-icon("github")),
         "pinterest": (regex("pinterest\.com/"), nv-icon("pinterest")),
         "tumblr": (regex("tumblr\.com/"), nv-icon("tumblr")),
         // do not use Nova's "youtube" icon, too old
@@ -929,6 +931,7 @@
           nv-icon("video-control-play"),
         ),
       ),
+      link-icons-fa: true,
     ),
 
     config-methods(
@@ -981,9 +984,26 @@
               )(it),
             )
 
-            if self.store.link-icons.len() > 0 {
+            let active-link-icons = if self.store.link-icons-fa {
+              self.store.link-icons
+            } else {
+              // only include non-fa icons
+              self
+                .store
+                .link-icons
+                .pairs()
+                .filter(pair => {
+                  let (key, value) = pair
+                  (
+                    not key.starts-with("fa")
+                  )
+                })
+                .to-dict()
+            }
+
+            if active-link-icons.len() > 0 {
               let found = none
-              for pair in self.store.link-icons.values() {
+              for pair in active-link-icons.values() {
                 let (pattern, icon) = pair
                 if dest.matches(pattern).len() > 0 {
                   found = icon
