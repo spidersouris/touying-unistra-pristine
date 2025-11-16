@@ -122,7 +122,7 @@ Icon function definitions and character-to-string mapping in [src/icons.typ](src
 
 ## Link Icons
 
-By default, icons are shown next to links ending or containing specific extensions or keywords (see an example on [p. 8 of examples/basic.pdf](examples/basic.pdf). This can be disabled by setting `link-icons` to `()`. Similarly, default labels can be overriden and new labels can be added by changing the setting values. Default supported labels are specified in the table below.
+By default, icons are shown next to links ending or containing specific extensions or keywords (see an example on [p. 8 of examples/basic.pdf](examples/basic.pdf)). This can be disabled by setting `link-icons` to `()`. Similarly, default labels can be overriden and new labels can be added by changing the setting values. Default supported labels are specified in the table below.
 
 <table>
   <tr>
