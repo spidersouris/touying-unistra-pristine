@@ -239,7 +239,7 @@ A complete list of settings is available below.
 
 |         Name          |                                                  Description                                                   |           Value Type            | Default                                                     |
 | :-------------------: | :------------------------------------------------------------------------------------------------------------: | :-----------------------------: | ----------------------------------------------------------- |
-|      link-icons       |                       Icons (content) to be appended next to URLs matched by the regex.                        | dict[str, dict[regex, content]] | See list in [Link Icons](##Link%20Icons)                    |
+|      link-icons       |                       Icons (content) to be appended next to URLs matched by the regex.                        | dict[str, dict[regex, content]] | See list in [Link Icons](#link-icons)                    |
 |     link-icons-fa     |                               Whether to use Font Awesome icons for link icons.                                |              bool               | `true`                                                      |
 |      show-header      |                                          Whether to show the header.                                           |              bool               | `false`                                                     |
 |      show-footer      |                                          Whether to show the footer.                                           |              bool               | `true`                                                      |
