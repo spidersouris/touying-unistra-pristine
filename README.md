@@ -96,7 +96,7 @@ A slide with *important information*.
 ```
 
 > [!NOTE]
-> The default font used by touying-unistra-pristine is "Unistra A", a font that can only be downloaded by students and staff from the University of Strasbourg from [here](https://langagevisuel.unistra.fr/index.php?id=402). If the font is not installed on your computer, Segoe UI or Roboto will be used as a fallback, in that specific order. You can change that behavior in the [settings](#Configuration).
+> The default font used by touying-unistra-pristine is "Unistra A", a font that can only be downloaded by students and staff from the University of Strasbourg from [here](https://langagevisuel.unistra.fr/index.php?id=402). If the font is not installed on your computer, Segoe UI or Roboto will be used as a fallback, in that specific order. You can change that behavior in the [configuration](#Configuration).
 
 # Icons
 
@@ -186,7 +186,15 @@ By default, icons are shown next to links ending or containing specific extensio
     <td><code>(youtube\.com|youtu\.be)/</code></td>
     <td><code>nv-icon("video-control-play")</code></td>
   </tr>
+  <tr>
+    <td>github</td>
+    <td>Links to GitHub. Uses a Font Awesome icon.</td>
+    <td><code>github\.com//</code></td>
+    <td><code>fa-icon("github")</code></td>
+  </tr>
 </table>
+
+Note that some icons (for example, the GitHub icon) come from the [Font Awesome](https://fontawesome.com/) suite and are embedded using the [fontawesome Typst package](https://typst.app/universe/package/fontawesome/). This requires Font Awesome to be installed for the icons to show. Font Awesome icons can be disabled by setting `link-icons-fa` to `false` in the [configuration](#Configuration).
 
 # Citations
 
@@ -229,14 +237,15 @@ The theme can be configured to your liking by adding the `config-store()` object
 
 A complete list of settings is available below.
 
-|          Name         |                                                      Description                                                     |     Value Type    | Default                                                             |
-|:---------------------:|:--------------------------------------------------------------------------------------------------------------------:|:-----------------:|---------------------------------------------------------------------|
-| link-icons           | Icons (content) to be appended next to URLs matched by the regex.                                                                                          | dict[str, dict[regex, content]]              | See list in [Link Icons](#link-icons)                                                             |
-| show-header           | Whether to show the header.                                                                                          | bool              | `false`                                                             |
-| show-footer           | Whether to show the footer.                                                                                          | bool              | `true`                                                              |
-| footer-first-sep      | First separator in the footer.                                                                                       | str               | `" \| "`                                                            |
-| footer-second-sep     | Second separator in the footer.                                                                                      | str               | `" \| "`                                                            |
-| footer-appendix-label | Label to be shown before slide number in the Appendix.                                                               | str               | `"A-"`                                                              |
-| font                  | Font to be used.                                                                                                     | str \| array[str] | `("Unistra A", "Segoe UI", "Roboto")`                               |
-| quotes                | Settings to be used for the custom `#quote()` element. Dict with keys `left`, `right`, `outset`, `margin-top`. | dict[str, length]  | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
-| footer-hide           | Elements from the footer to hide (can include "author" or "date").                                                   | array[str]        | `()`                                                                |
+|         Name          |                                                  Description                                                   |           Value Type            | Default                                                     |
+| :-------------------: | :------------------------------------------------------------------------------------------------------------: | :-----------------------------: | ----------------------------------------------------------- |
+|      link-icons       |                       Icons (content) to be appended next to URLs matched by the regex.                        | dict[str, dict[regex, content]] | See list in [Link Icons](##Link%20Icons)                    |
+|     link-icons-fa     |                               Whether to use Font Awesome icons for link icons.                                |              bool               | `true`                                                      |
+|      show-header      |                                          Whether to show the header.                                           |              bool               | `false`                                                     |
+|      show-footer      |                                          Whether to show the footer.                                           |              bool               | `true`                                                      |
+|   footer-first-sep    |                                         First separator in the footer.                                         |               str               | `" \| "`                                                    |
+|   footer-second-sep   |                                        Second separator in the footer.                                         |               str               | `" \| "`                                                    |
+| footer-appendix-label |                             Label to be shown before slide number in the Appendix.                             |               str               | `"A-"`                                                      |
+|         font          |                                                Font to be used.                                                |        str \| array[str]        | `("Unistra A", "Segoe UI", "Roboto")`                       |
+|        quotes         | Settings to be used for the custom `#quote()` element. Dict with keys `left`, `right`, `outset`, `margin-top`. |        dict[str, length]        | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
+|      footer-hide      |                       Elements from the footer to hide (can include "author" or "date").                       |           array[str]            | `()`                                                        |
