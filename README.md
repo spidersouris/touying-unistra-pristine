@@ -123,7 +123,7 @@ Icon function definitions and character-to-string mapping in [src/icons.typ](src
 
 ## Link Icons
 
-By default, icons are shown next to links ending or containing specific extensions or keywords (see an example on [p. 8 of examples/basic.pdf](examples/basic.pdf). This can be disabled by setting `link-icons` to `()`. Similarly, default labels can be overriden and new labels can be added by changing the setting values. Default supported labels are specified in the table below.
+By default, icons are shown next to links ending or containing specific extensions or keywords (see an example on [p. 8 of examples/basic.pdf](examples/basic.pdf)). This can be disabled by setting `link-icons` to `()`. Similarly, default labels can be overriden and new labels can be added by changing the setting values. Default supported labels are specified in the table below.
 
 <table>
   <tr>
@@ -229,14 +229,14 @@ The theme can be configured to your liking by adding the `config-store()` object
 
 A complete list of settings is available below.
 
-|         Name          |                                                  Description                                                   |           Value Type            | Default                                                     |
-| :-------------------: | :------------------------------------------------------------------------------------------------------------: | :-----------------------------: | ----------------------------------------------------------- |
-|      link-icons       |                       Icons (content) to be appended next to URLs matched by the regex.                        | dict[str, dict[regex, content]] | See list in [Link Icons](##Link%20Icons)                    |
-|      show-header      |                                          Whether to show the header.                                           |              bool               | `false`                                                     |
-|      show-footer      |                                          Whether to show the footer.                                           |              bool               | `true`                                                      |
-|   footer-first-sep    |                                         First separator in the footer.                                         |               str               | `" \| "`                                                    |
-|   footer-second-sep   |                                        Second separator in the footer.                                         |               str               | `" \| "`                                                    |
-| footer-appendix-label |                             Label to be shown before slide number in the Appendix.                             |               str               | `"A-"`                                                      |
-|         font          |                                                Font to be used.                                                |        str \| array[str]        | `("Unistra A", "Segoe UI", "Roboto")`                       |
-|        quotes         | Settings to be used for the custom `#quote()` element. Dict with keys `left`, `right`, `outset`, `margin-top`. |        dict[str, length]        | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
-|      footer-hide      |                       Elements from the footer to hide (can include "author" or "date").                       |           array[str]            | `()`                                                        |
+|          Name         |                                                      Description                                                     |     Value Type    | Default                                                             |
+|:---------------------:|:--------------------------------------------------------------------------------------------------------------------:|:-----------------:|---------------------------------------------------------------------|
+| link-icons           | Icons (content) to be appended next to URLs matched by the regex.                                                                                          | dict[str, dict[regex, content]]              | See list in [Link Icons](#link-icons)                                                             |
+| show-header           | Whether to show the header.                                                                                          | bool              | `false`                                                             |
+| show-footer           | Whether to show the footer.                                                                                          | bool              | `true`                                                              |
+| footer-first-sep      | First separator in the footer.                                                                                       | str               | `" \| "`                                                            |
+| footer-second-sep     | Second separator in the footer.                                                                                      | str               | `" \| "`                                                            |
+| footer-appendix-label | Label to be shown before slide number in the Appendix.                                                               | str               | `"A-"`                                                              |
+| font                  | Font to be used.                                                                                                     | str \| array[str] | `("Unistra A", "Segoe UI", "Roboto")`                               |
+| quotes                | Settings to be used for the custom `#quote()` element. Dict with keys `left`, `right`, `outset`, `margin-top`. | dict[str, length]  | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
+| footer-hide           | Elements from the footer to hide (can include "author" or "date").                                                   | array[str]        | `()`                                                                |
