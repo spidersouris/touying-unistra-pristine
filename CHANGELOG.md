@@ -1,3 +1,17 @@
+# v1.4.3 (2026-03-06)
+
+## General
+
+- Updated to Typst 0.14.2.
+- Updated to Touying 0.6.2.
+
+### Icons
+
+- Added Font Awesome icon support for URLs via the [fontawesome Typst package](https://typst.app/universe/package/fontawesome/).
+  - Added Font Awesome icon for GitHub URLs by default.
+  - Font Awesome link icons can be disabled by setting `link-icons-fa` to `false`.
+- Removed "HTML" from the "code" icon regex.
+
 # v1.4.2 (2025-09-06)
 
 ## General
