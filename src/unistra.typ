@@ -1,4 +1,4 @@
-#import "@preview/touying:0.6.1": *
+#import "@preview/touying:0.6.2": *
 #import "@preview/fontawesome:0.5.0": fa-icon
 #import "colors.typ": *
 #import "icons.typ": *

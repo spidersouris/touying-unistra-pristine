@@ -34,8 +34,8 @@ These steps assume that you already have [Typst](https://typst.app/) installed a
 ## Import from Typst Universe
 
 ```typst
-#import "@preview/touying:0.6.1": *
-#import "@preview/touying-unistra-pristine:1.4.2": *
+#import "@preview/touying:0.6.2": *
+#import "@preview/touying-unistra-pristine:1.4.3": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -69,7 +69,7 @@ A slide with *important information*.
 See [examples/basic.typ](examples/basic.typ) for a basic example with configuration.
 
 ```typst
-#import "@preview/touying:0.6.1": *
+#import "@preview/touying:0.6.2": *
 #import "src/unistra.typ": *
 #import "src/colors.typ": *
 #import "src/icons.typ": *
