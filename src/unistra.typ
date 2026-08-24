@@ -866,7 +866,7 @@
     config-page(
       paper: "presentation-" + aspect-ratio,
       footer-descent: 0em,
-      header-ascent: 1em,
+      header-ascent: 0.5em,
     ),
 
     config-common(
