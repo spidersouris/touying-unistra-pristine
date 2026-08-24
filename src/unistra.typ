@@ -970,12 +970,6 @@
           if in-outline.get() {
             text(weight: "regular", it)
           } else {
-            let dest = if type(it.dest) == str {
-              it.dest
-            } else {
-              str(it.dest)
-            }
-
             let styled-link = text(
               link-color,
               underline.with(
@@ -1005,7 +999,7 @@
               let found = none
               for pair in active-link-icons.values() {
                 let (pattern, icon) = pair
-                if dest.matches(pattern).len() > 0 {
+                if type(it.dest) == str and it.dest.matches(pattern).len() > 0 {
                   found = icon
                   break
                 }
