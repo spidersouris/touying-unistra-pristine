@@ -960,7 +960,7 @@
     ),
 
     config-methods(
-      alert: utils.alert-with-primary-color,
+      //alert: utils.alert-with-primary-color,
       smaller: smaller,
       smallest: smallest,
 
