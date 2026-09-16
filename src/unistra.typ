@@ -18,6 +18,102 @@
   )
 }
 
+#let unistra-footer(self) = {
+  let cell(body) = rect(
+    width: 100%,
+    height: 100%,
+    inset: 0mm,
+    outset: 0mm,
+    fill: none,
+    stroke: none,
+    text(size: 0.5em, fill: self.colors.black, body),
+  )
+
+  let author = self.info.author
+  let date = self.info.date
+  if self.store.footer-hide.contains("author") {
+    author = none
+  }
+
+  if self.store.footer-hide.contains("date") {
+    date = none
+  }
+
+  set align(center + horizon)
+  block(width: 101%, height: -25%, stroke: (top: 0.5pt + self.colors.black), {
+    set text(size: 1.5em)
+
+    if self.store.footer-progress-style != none {
+      let progress-style = self.store.footer-progress-style
+      let progress-height = none
+      let progress-dy = none
+
+      if progress-style == "line" {
+        progress-height = 2pt
+        progress-dy = 0.15em
+      } else if progress-style == "block" {
+        progress-height = 0.55em
+        progress-dy = 0.4em
+      } else {
+        panic("unknown footer-progress-style, expected 'line', 'block'")
+      }
+
+      place(dy: progress-dy, utils.touying-progress(ratio => rect(
+        width: ratio * 100%,
+        height: progress-height,
+        fill: self.store.footer-progress-fill,
+      )))
+    }
+
+    // give priority to short, since long is also used in title slide
+    let title = self.info.title
+    if (self.info.short-title != auto) {
+      title = self.info.short-title
+    }
+
+    let first-col-width = auto
+    let second-col-width = 75%
+    if self.info.logo.func() == image {
+      first-col-width = 19%
+      second-col-width = 71.5%
+    }
+
+    grid(
+      columns: (first-col-width, second-col-width, 8.5%),
+      rows: 0.5em,
+      stroke: (x: 1pt + self.colors.black),
+      cell(box(self.info.logo, height: 100%)),
+      cell(box(
+        width: 100%,
+        text(
+          title, // either title or short-title
+          weight: "bold",
+        )
+          + self.store.footer-first-sep
+          + if _is(author) { author }
+          + if _is(date) and _is(author) {
+            self.store.footer-second-sep
+          } else { "" }
+          + if _is(date) { date },
+      )),
+      cell(utils.call-or-display(self, context {
+        let current = int(utils.slide-counter.display())
+        let last = int(utils.last-slide-counter.display())
+        if current > last {
+          (
+            text(self.store.footer-appendix-label, style: "italic")
+              + str(current)
+          )
+        } else {
+          str(current)
+        }
+      }
+        + " / "
+        + utils.last-slide-number)),
+    )
+  })
+}
+
 /// Creates a normal slide with a title and body
 #let slide(
   config: (:),
@@ -26,80 +122,6 @@
   composer: auto,
   ..bodies,
 ) = touying-slide-wrapper(self => {
-  let footer(self) = {
-    let cell(body) = rect(
-      width: 100%,
-      height: 100%,
-      inset: 0mm,
-      outset: 0mm,
-      fill: none,
-      stroke: none,
-      text(size: 0.5em, fill: self.colors.black, body),
-    )
-
-    let author = self.info.author
-    let date = self.info.date
-    if self.store.footer-hide.contains("author") {
-      author = none
-    }
-
-    if self.store.footer-hide.contains("date") {
-      date = none
-    }
-
-    set align(center + horizon)
-    block(width: 101%, height: -25%, stroke: (top: 0.5pt + self.colors.black), {
-      set text(size: 1.5em)
-
-      // give priority to short, since long is also used in title slide
-      let title = self.info.title
-      if (self.info.short-title != auto) {
-        title = self.info.short-title
-      }
-
-      let first-col-width = auto
-      let second-col-width = 75%
-      if self.info.logo.func() == image {
-        first-col-width = 19%
-        second-col-width = 71.5%
-      }
-
-      grid(
-        columns: (first-col-width, second-col-width, 8.5%),
-        rows: 0.5em,
-        stroke: (x: 1pt + self.colors.black),
-        cell(box(self.info.logo, height: 100%)),
-        cell(box(
-          width: 100%,
-          text(
-            title, // either title or short-title
-            weight: "bold",
-          )
-            + self.store.footer-first-sep
-            + if _is(author) { author }
-            + if _is(date) and _is(author) {
-              self.store.footer-second-sep
-            } else { "" }
-            + if _is(date) { date },
-        )),
-        cell(utils.call-or-display(self, context {
-          let current = int(utils.slide-counter.display())
-          let last = int(utils.last-slide-counter.display())
-          if current > last {
-            (
-              text(self.store.footer-appendix-label, style: "italic")
-                + str(current)
-            )
-          } else {
-            str(current)
-          }
-        }
-          + " / "
-          + utils.last-slide-number)),
-      )
-    })
-  }
-
   let self = utils.merge-dicts(self, config-page(
     header: if self.store.show-header {
       unistra-nav-bar(self)
@@ -107,7 +129,7 @@
       none
     },
     footer: if self.store.show-footer {
-      footer
+      unistra-footer
     } else {
       none
     },
@@ -893,6 +915,9 @@
       // footer second separator
       footer-second-sep: " | ",
       footer-appendix-label: "A-",
+      // fill the footer background from left to right as the slides progress
+      footer-progress-style: "line",
+      footer-progress-fill: nblue.E,
       font: ("Unistra A", "Segoe UI", "Roboto"),
       // type of left/right quote to use for the custom "Quote" element
       quotes: (
