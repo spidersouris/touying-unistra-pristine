@@ -1,5 +1,5 @@
-#import "@preview/touying:0.6.2": *
-#import "@preview/touying-unistra-pristine:1.4.3": *
+#import "@preview/touying:0.7.4": *
+#import "@preview/touying-unistra-pristine:1.5.0": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -14,6 +14,7 @@
       left: "‘",
       right: "’",
     ),
+    show-header: true,
     icon-links: (
       "image": (
         regex("\.(jpg|jpeg|png|bmp|svg|webp|tiff)$"),
@@ -24,8 +25,6 @@
 )
 
 #title-slide(logo: image("../assets/unistra.svg"))
-
-= Example Section Title
 
 == Example Slide
 
@@ -75,24 +74,27 @@ This is #highlight(fill: blue.C)[highlighted in blue]. This is #highlight(fill: 
 #focus-slide(
   theme: "smoke",
   [
-    This is a focus slide \ with theme "smoke"
+    This is a focus slide \ with theme "smoke" \ (alias: short-title-1)
   ],
+  short-title: "short-title-1"
 )
 
 #focus-slide(
   theme: "neon",
   icon: nv-icon("text-undo"),
   [
-    This is a focus slide \ with theme "neon" and Nova icon "text-undo"
+    This is a focus slide \ with theme "neon" and Nova icon "text-undo" \ (alias: short-title-2)
   ],
+  short-title: "short-title-2"
 )
 
 #focus-slide(
   theme: "yellow",
   icon: us-icon("book-open"),
   [
-    This is a focus slide \ with theme "yellow" and Unistra icon "book-open"
+    This is a focus slide \ with theme "yellow" and Unistra icon "book-open" \ (alias: short-title-3)
   ],
+  short-title: "short-title-3"
 )
 
 #focus-slide(
@@ -101,16 +103,11 @@ This is #highlight(fill: blue.C)[highlighted in blue]. This is #highlight(fill: 
   icon: us-icon("plant"),
   [
     This is a focus slide \ with custom colors \ and Unistra icon "plant"
-    \ Next: Section 2
+    \ Next: Section 2 \ (alias: short-title-4)
   ],
   text-color: yellow.D,
+  short-title: "short-title-4"
 )
-
-= Section 2
-
-== Hey! New Section!
-
-#lorem(30)
 
 === Heading 3
 

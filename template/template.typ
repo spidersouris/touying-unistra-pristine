@@ -1,5 +1,5 @@
-#import "@preview/touying:0.6.2": *
-#import "@preview/touying-unistra-pristine:1.4.3": *
+#import "@preview/touying:0.7.4": *
+#import "@preview/touying-unistra-pristine:1.5.0": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
