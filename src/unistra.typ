@@ -4,17 +4,99 @@
 #import "icons.typ": *
 #import "utils.typ": *
 
-#let unistra-nav-bar(self) = {
-  show: block.with(inset: (x: 5em))
-  set text(size: 1.4em)
-  place(
-    grid(
-      components.mini-slides(
-        display-section: true,
-        display-subsection: false,
-      ),
-    ),
-    dy: -1.4em,
+#let unistra-header(self) = {
+  set align(center)
+  set text(size: 0.6em, fill: self.colors.black)
+  // convert linebreaks in titles to spaces
+  show linebreak: it => [ ]
+  block(
+    width: 100%,
+    inset: (x: 1em, bottom: 0.3em),
+    stroke: (bottom: 0.5pt + self.colors.black),
+    context {
+      let pages = ()
+      let appendix-page = calc.inf
+      for it in query(<unistra-slide>) {
+        if it.value {
+          pages.push(it.location().page())
+        } else {
+          appendix-page = it.location().page()
+          break
+        }
+      }
+
+      // sections are focus slides, or level 1 headings if there are none
+      let sections = query(<unistra-section>).map(it => (
+        title: it.value,
+        page: it.location().page(),
+        // the focus slide itself is not part of the section
+        first: it.location().page() + 1,
+      ))
+      if sections == () {
+        sections = query(heading.where(level: 1))
+          .filter(it => it.outlined)
+          .map(it => (
+            title: it.body,
+            page: it.location().page(),
+            first: it.location().page(),
+          ))
+      }
+      sections = sections.filter(it => it.page < appendix-page)
+      if sections == () {
+        return
+      }
+
+      let current-page = here().page()
+      let current = if current-page < appendix-page {
+        sections.filter(it => it.page <= current-page).len() - 1
+      } else {
+        -1
+      }
+
+      let cols = ()
+      let k = 0
+      for (i, section) in sections.enumerate() {
+        let next-page = if i + 1 < sections.len() {
+          sections.at(i + 1).page
+        } else {
+          calc.inf
+        }
+        let dots = []
+        while k < pages.len() and pages.at(k) < next-page {
+          let page = pages.at(k)
+          let next-slide-page = pages.at(k + 1, default: appendix-page)
+          k += 1
+          if page < section.first {
+            continue
+          }
+          let dot = if page <= current-page and current-page < next-slide-page {
+            sym.circle.filled
+          } else {
+            sym.circle.small
+          }
+          // only dots from the current section are clickable
+          // otherwise, making all dots clickable from everywhere
+          // creates performance issues
+          dots += if i == current {
+            [#link((page: page, x: 0pt, y: 0pt), dot)<touying-link>]
+          } else {
+            dot
+          }
+        }
+        cols.push({
+          set text(fill: if i == current {
+            self.store.header-fill
+          } else {
+            utils.update-alpha(self.store.header-fill, self.store.header-alpha)
+          })
+          [#link(
+            (page: section.page, x: 0pt, y: 0pt),
+            section.title + if self.store.header-dots { h(0.5em) + dots },
+          )<touying-link>]
+        })
+      }
+      cols.map(box).join(h(1fr))
+    },
   )
 }
 
@@ -114,6 +196,24 @@
   })
 }
 
+#let _slide-page(self) = config-page(
+  header: if self.store.show-header {
+    unistra-header
+  } else {
+    none
+  },
+  footer: if self.store.show-footer {
+    unistra-footer
+  } else {
+    none
+  },
+  margin: (
+    x: 3em,
+    top: 2em,
+    bottom: 2em,
+  ),
+)
+
 /// Creates a normal slide with a title and body
 #let slide(
   config: (:),
@@ -122,20 +222,7 @@
   composer: auto,
   ..bodies,
 ) = touying-slide-wrapper(self => {
-  let self = utils.merge-dicts(self, config-page(
-    header: if self.store.show-header {
-      unistra-nav-bar(self)
-    } else {
-      none
-    },
-    footer: if self.store.show-footer {
-      unistra-footer
-    } else {
-      none
-    },
-    // todo: change if no footer/header, etc.
-    margin: (x: 3em, y: 2em),
-  ))
+  let self = utils.merge-dicts(self, _slide-page(self))
 
   touying-slide(
     self: self,
@@ -183,7 +270,7 @@
   width: 100%,
   radius: 7%,
   ..args,
-) = {
+) = touying-slide-wrapper(self => {
   let body = {
     text(
       title-size,
@@ -213,11 +300,14 @@
       width: width,
       radius: radius,
     ),
-    dy: -0.5em,
+    // flush with the top of the page, or below the header
+    dy: if self.store.show-header { 0.9em } else { -0.5em },
   )
 
-  slide(body)
-}
+  self = utils.merge-dicts(self, _slide-page(self))
+
+  touying-slide(self: self, body)
+})
 
 /// Creates a title slide with a logo, title, subtitle, author, email, and date.
 ///
@@ -368,6 +458,8 @@
 ///
 /// - `outlined` (bool): Whether to outline the heading and make it appear in an outline slide. Default: true.
 ///
+/// - `short-title` (content): Title to show in the header instead of the body. Default: none.
+///
 /// - `body` (content): Content of the slide.
 #let focus-slide(
   c1: none,
@@ -380,6 +472,7 @@
   counter: counter("focus-slide"),
   show-counter: true,
   outlined: true,
+  short-title: none,
   body,
 ) = touying-slide-wrapper(self => {
   assert(
@@ -452,6 +545,16 @@
       let count-label = none
       if (show-counter) {
         count-label = counter.display("I") + ". "
+      }
+      if (outlined) {
+        [#metadata(
+          count-label
+            + if short-title != none {
+              short-title
+            } else {
+              body
+            },
+        )<unistra-section>]
       }
       _gradientize(
         self,
@@ -902,6 +1005,13 @@
         weight: "bold",
         utils.display-current-heading(depth: self.slide-level) + "\n",
       ),
+      // marks new slides for the header, and whether they are in the appendix
+      page-preamble: self => if (
+        (self.handout and not self.at("_handout-secondary", default: false))
+          or self.subslide == 1
+      ) {
+        [#metadata(not self.at("appendix", default: false))<unistra-slide>]
+      },
     ),
 
     config-store(
@@ -909,6 +1019,12 @@
       colorthemes: colorthemes,
       colorthemes-ids: colorthemes-ids,
       show-header: false,
+      // color of the current section in the header
+      header-fill: nblue.C,
+      // fade level of non-current sections in the header
+      header-alpha: 50%,
+      // show a dot per slide next to each section in the header
+      header-dots: true,
       show-footer: true,
       // footer first separator
       footer-first-sep: " | ",
@@ -990,52 +1106,59 @@
         show heading.where(level: 1): set text(size: 1.5em, weight: "bold")
         show heading.where(level: 2): set block(below: 1.5em)
         // color and iconize links
-        show link: it => context {
-          // except for the outline slide
-          if in-outline.get() {
-            text(weight: "regular", it)
-          } else {
-            let styled-link = text(
-              link-color,
-              underline.with(
-                offset: 3pt,
-                extent: -1pt,
-              )(it),
-            )
-
-            let active-link-icons = if self.store.link-icons-fa {
-              self.store.link-icons
+        // except for the header navigation
+        show link: it => if it.at("label", default: none) == <touying-link> {
+          it
+        } else {
+          context {
+            // except for the outline slide
+            if in-outline.get() {
+              text(weight: "regular", it)
             } else {
-              // only include non-fa icons
-              self
-                .store
-                .link-icons
-                .pairs()
-                .filter(pair => {
-                  let (key, value) = pair
-                  (
-                    not key.starts-with("fa")
-                  )
-                })
-                .to-dict()
-            }
+              let styled-link = text(
+                link-color,
+                underline.with(
+                  offset: 3pt,
+                  extent: -1pt,
+                )(it),
+              )
 
-            if active-link-icons.len() > 0 {
-              let found = none
-              for pair in active-link-icons.values() {
-                let (pattern, icon) = pair
-                if type(it.dest) == str and it.dest.matches(pattern).len() > 0 {
-                  found = icon
-                  break
-                }
+              let active-link-icons = if self.store.link-icons-fa {
+                self.store.link-icons
+              } else {
+                // only include non-fa icons
+                self
+                  .store
+                  .link-icons
+                  .pairs()
+                  .filter(pair => {
+                    let (key, value) = pair
+                    (
+                      not key.starts-with("fa")
+                    )
+                  })
+                  .to-dict()
               }
-              if found != none {
-                [#styled-link #super(found)]
+
+              if active-link-icons.len() > 0 {
+                let found = none
+                for pair in active-link-icons.values() {
+                  let (pattern, icon) = pair
+                  if (
+                    type(it.dest) == str and it.dest.matches(pattern).len() > 0
+                  ) {
+                    found = icon
+                    break
+                  }
+                }
+                if found != none {
+                  [#styled-link #super(found)]
+                } else {
+                  styled-link
+                }
               } else {
                 styled-link
               }
-            } else {
-              styled-link
             }
           }
         }
