@@ -129,24 +129,30 @@
 // ----
 
 #let colorthemes = (
-  lblue: (blue.E, cyan.E),
+  lblue: (blue.C, nblue.C, nblue.A),
   blue: (nblue.E, cyan.E),
   dblue: (nblue.E, blue.E),
-  yellow: (yellow.B, yellow.C, black),
-  pink: (pink.E, pink.B),
+  yellow: (yellow.A, yellow.B, black),
+  pink: (pink.A, purple.B),
   neon: (violet.E, pink.E),
   mandarine: (orange.E, brown.E),
   hazy: (maroon.E, grey.E),
   smoke: (grey.E, black),
-  forest: (green.A, camo.E),
+  forest: (green.A, camo.A),
   berry: (pink.A, purple.A),
   ocean: (cyan.A, blue.B, blue.D),
   lavender: (purple.C, violet.C, black),
   moss: (ngreen.C, grey.B, black),
-  clay: (brown.B, maroon.C),
-  mint: (ngreen.E, cyan.C, black),
-  lemon: (yellow.A, camo.E, black),
+  clay: (brown.B, maroon.C, black),
+  mint: (green.C, cyan.C, ngreen.A),
+  lemon: (camo.B, yellow.C, black),
   wine: (maroon.A, brown.A, maroon.D),
+  slate: (nblue.A, grey.A),
+  plum: (purple.A, violet.A),
+  ember: (red.A, orange.A),
+  teal: (ngreen.A, cyan.A),
+  sand: (brown.C, yellow.C, brown.A),
+  frost: (grey.C, blue.D, nblue.A),
 )
 
 #let colorthemes-ids = (
@@ -168,4 +174,10 @@
   "16": colorthemes.mint,
   "17": colorthemes.lemon,
   "18": colorthemes.wine,
+  "19": colorthemes.slate,
+  "20": colorthemes.plum,
+  "21": colorthemes.ember,
+  "22": colorthemes.teal,
+  "23": colorthemes.sand,
+  "24": colorthemes.frost,
 )

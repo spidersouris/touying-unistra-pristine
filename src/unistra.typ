@@ -1,22 +1,305 @@
-#import "@preview/touying:0.6.2": *
-#import "@preview/fontawesome:0.6.0": fa-icon
+#import "@preview/touying:0.8.0": *
+#import "@preview/fontawesome:0.5.0": fa-icon
 #import "colors.typ": *
 #import "icons.typ": *
 #import "utils.typ": *
 
-#let unistra-nav-bar(self) = {
-  show: block.with(inset: (x: 5em))
-  set text(size: 1.4em)
-  place(
-    grid(
-      components.mini-slides(
-        display-section: true,
-        display-subsection: false,
-      ),
-    ),
-    dy: -1.4em,
+//todo: 1. separate both types of headers and add to config
+//todo: 2. add option for colors, panic if len(colors) != sections OR use section colors?
+#let unistra-header(self) = {
+  // no header on outline and appendix slides
+  if (
+    self.at("appendix", default: false) or self.at("is-outline", default: false)
+  ) {
+    return
+  }
+  set align(center)
+  set text(size: 0.6em, fill: self.colors.black)
+  // convert linebreaks to spaces
+  show linebreak: it => [ ]
+  let header-style-simple = self.store.header-style == "simple"
+  (
+    block(
+      width: 100%,
+      inset: if header-style-simple {
+        (x: 1em, bottom: 0.3em)
+      } else { (x: 0em, y: 0em) },
+      stroke: if header-style-simple {
+        (bottom: 0.5pt + self.colors.black)
+        // no need for a stroke if using header-blocks
+        // as the backgrounds already act as separators
+      } else { none },
+      context {
+        let pages = ()
+        let appendix-page = calc.inf
+        for it in query(<unistra-slide>) {
+          if it.value {
+            pages.push(it.location().page())
+          } else {
+            appendix-page = it.location().page()
+            break
+          }
+        }
+
+        // sections are focus slides, or level 1 headings if there are none
+        let sections = query(<unistra-section>).map(it => (
+          title: it.value.at("body"),
+          count-label: it.value.at("count-label"),
+          color: it.value.at("color"),
+          icon: it.value.at("icon"),
+          fill: it.value.at("fill"),
+          page: it.location().page(),
+        ))
+        if sections == () {
+          sections = query(heading.where(level: 1))
+            .filter(it => it.outlined)
+            .map(it => (
+              title: it.body,
+              page: it.location().page(),
+            ))
+        }
+        sections = sections.filter(it => it.page < appendix-page)
+        if sections == () {
+          return
+        }
+
+        let current-page = here().page()
+        // appendix slides have no header, so current-page < appendix-page
+        let current = sections.filter(it => it.page <= current-page).len() - 1
+
+        let cols = ()
+        let k = 0
+        let bg-colors = none
+        if (
+          _is(self.store.header-block-colors) and not header-style-simple
+        ) {
+          bg-colors = self.store.header-block-colors
+          // cycle through color array if its length
+          // is less than sections.len()
+          // source: https://github.com/ludwig-austermann/typst-funarray/blob/da5e3966535743b005aaa30507823eb0d7d8a22f/funarray-unsafe.typ#L40
+          if bg-colors.len() < sections.len() {
+            let q = calc.quo(sections.len(), bg-colors.len())
+            let r = calc.rem(sections.len(), bg-colors.len())
+            bg-colors = bg-colors * q + bg-colors.slice(0, r)
+          }
+        }
+
+        // dots logic
+        for (i, section) in sections.enumerate() {
+          let dots = []
+          if self.store.header-dots {
+            let next-page = if i + 1 < sections.len() {
+              sections.at(i + 1).page
+            } else {
+              calc.inf
+            }
+            while k < pages.len() and pages.at(k) < next-page {
+              let page = pages.at(k)
+              let next-slide-page = pages.at(k + 1, default: appendix-page)
+              k += 1
+              if page < section.page + 1 {
+                continue
+              }
+              let dot = if (
+                page <= current-page and current-page < next-slide-page
+              ) {
+                sym.circle.filled
+              } else {
+                sym.circle.small
+              }
+              // only dots from the current section are clickable
+              // otherwise, making all dots clickable from everywhere
+              // creates performance issues
+              dots += if i == current {
+                [#link((page: page, x: 0pt, y: 0pt), dot)<touying-link>]
+              } else {
+                dot
+              }
+            }
+          }
+
+          let header-content = if header-style-simple {
+            let section-title = section.title.replace("\n", " ")
+            [#link(
+              (page: section.page, x: 0pt, y: 0pt),
+              section-title
+                + if self.store.header-dots { h(0.5em) + dots + h(0.5em) },
+            )<touying-link>]
+          } else if (self.store.header-style == "block" and _is(bg-colors)) {
+            let header-text = [#section.icon  #section.count-label #section.title]
+            box(
+              //fill: bg-colors.at(i),
+              //fill: section.color,
+              // section backgrounds show up without lighten/alpha
+              // until the first section slide appears
+              fill: if current-page < sections.first().page {
+                section.color
+              } else if i == current {
+                section.color.lighten(10%)
+              } else {
+                utils.update-alpha(
+                  section.color,
+                  self.store.header-alpha,
+                )
+              },
+              inset: 10pt,
+              width: 100% / sections.len(),
+              height: 100%, // removes white top margin
+            )[#align(horizon)[#link(
+              (page: section.page, x: 0pt, y: 0pt),
+              text(
+                fill: if current-page < sections.first().page {
+                  section.fill
+                } else if i == current {
+                  section.fill.lighten(10%)
+                } else {
+                  utils.update-alpha(
+                    section.fill,
+                    self.store.header-alpha,
+                  )
+                },
+                header-text,
+              ),
+            )<touying-link>]]
+          } else {
+            panic("unknown header-style")
+          }
+
+          cols.push({
+            set text(fill: if i == current {
+              self.store.header-fill
+            } else {
+              utils.update-alpha(
+                self.store.header-fill,
+                self.store.header-alpha,
+              )
+            })
+            header-content
+          })
+        }
+        if header-style-simple {
+          cols.map(box).join()
+        } else {
+          stack(dir: ltr, ..cols)
+        }
+      },
+    )
   )
 }
+
+#let unistra-footer(self) = {
+  let cell(body) = rect(
+    width: 100%,
+    height: 100%,
+    inset: 0mm,
+    outset: 0mm,
+    fill: none,
+    stroke: none,
+    text(size: 0.5em, fill: self.colors.black, body),
+  )
+
+  let author = self.info.author
+  let date = self.info.date
+  if self.store.footer-hide.contains("author") {
+    author = none
+  }
+
+  if self.store.footer-hide.contains("date") {
+    date = none
+  }
+
+  set align(center + horizon)
+  block(width: 101%, height: -25%, stroke: (top: 0.5pt + self.colors.black), {
+    set text(size: 1.5em)
+
+    if self.store.footer-progress-style != none {
+      let progress-style = self.store.footer-progress-style
+      let progress-height = none
+      let progress-dy = none
+
+      if progress-style == "line" {
+        progress-height = 2pt
+        progress-dy = 0.15em
+      } else if progress-style == "block" {
+        progress-height = 0.55em
+        progress-dy = 0.4em
+      } else {
+        panic("unknown footer-progress-style, expected 'line', 'block'")
+      }
+
+      place(dy: progress-dy, utils.touying-progress(ratio => rect(
+        width: ratio * 100%,
+        height: progress-height,
+        fill: self.store.footer-progress-fill,
+      )))
+    }
+
+    // give priority to short, since long is also used in title slide
+    let title = self.info.title
+    if (self.info.short-title != auto) {
+      title = self.info.short-title
+    }
+
+    let first-col-width = auto
+    let second-col-width = 75%
+    if self.info.logo.func() == image {
+      first-col-width = 19%
+      second-col-width = 71.5%
+    }
+
+    grid(
+      columns: (first-col-width, second-col-width, 8.5%),
+      rows: 0.5em,
+      stroke: (x: 1pt + self.colors.black),
+      cell(box(self.info.logo, height: 100%)),
+      cell(box(
+        width: 100%,
+        text(
+          title, // either title or short-title
+          weight: "bold",
+        )
+          + self.store.footer-first-sep
+          + if _is(author) { author }
+          + if _is(date) and _is(author) {
+            self.store.footer-second-sep
+          } else { "" }
+          + if _is(date) { date },
+      )),
+      cell(utils.call-or-display(self, context {
+        let current = int(utils.slide-counter.display())
+        let last = int(utils.last-slide-counter.display())
+        if current > last {
+          (
+            text(self.store.footer-appendix-label, style: "italic")
+              + str(current)
+          )
+        } else {
+          str(current)
+        }
+      }
+        + " / "
+        + utils.last-slide-number)),
+    )
+  })
+}
+
+#let _slide-page(self) = config-page(
+  header: if self.store.show-header {
+    unistra-header
+  } else {
+    none
+  },
+  footer: if self.store.show-footer {
+    unistra-footer
+  } else {
+    none
+  },
+  margin: (
+    x: 3em,
+    top: 2em,
+    bottom: 2em,
+  ),
+)
 
 /// Creates a normal slide with a title and body
 #let slide(
@@ -26,94 +309,7 @@
   composer: auto,
   ..bodies,
 ) = touying-slide-wrapper(self => {
-  let footer(self) = {
-    let cell(body) = rect(
-      width: 100%,
-      height: 100%,
-      inset: 0mm,
-      outset: 0mm,
-      fill: none,
-      stroke: none,
-      text(size: 0.5em, fill: self.colors.black, body),
-    )
-
-    let author = self.info.author
-    let date = self.info.date
-    if self.store.footer-hide.contains("author") {
-      author = none
-    }
-
-    if self.store.footer-hide.contains("date") {
-      date = none
-    }
-
-    set align(center + horizon)
-    block(width: 101%, height: -25%, stroke: (top: 0.5pt + self.colors.black), {
-      set text(size: 1.5em)
-
-      // give priority to short, since long is also used in title slide
-      let title = self.info.title
-      if (self.info.short-title != auto) {
-        title = self.info.short-title
-      }
-
-      let first-col-width = auto
-      let second-col-width = 75%
-      if self.info.logo.func() == image {
-        first-col-width = 19%
-        second-col-width = 71.5%
-      }
-
-      grid(
-        columns: (first-col-width, second-col-width, 8.5%),
-        rows: 0.5em,
-        stroke: (x: 1pt + self.colors.black),
-        cell(box(self.info.logo, height: 100%)),
-        cell(box(
-          width: 100%,
-          text(
-            title, // either title or short-title
-            weight: "bold",
-          )
-            + self.store.footer-first-sep
-            + if _is(author) { author }
-            + if _is(date) and _is(author) {
-              self.store.footer-second-sep
-            } else { "" }
-            + if _is(date) { date },
-        )),
-        cell(utils.call-or-display(self, context {
-          let current = int(utils.slide-counter.display())
-          let last = int(utils.last-slide-counter.display())
-          if current > last {
-            (
-              text(self.store.footer-appendix-label, style: "italic")
-                + str(current)
-            )
-          } else {
-            str(current)
-          }
-        }
-          + " / "
-          + utils.last-slide-number)),
-      )
-    })
-  }
-
-  let self = utils.merge-dicts(self, config-page(
-    header: if self.store.show-header {
-      unistra-nav-bar(self)
-    } else {
-      none
-    },
-    footer: if self.store.show-footer {
-      footer
-    } else {
-      none
-    },
-    // todo: change if no footer/header, etc.
-    margin: (x: 3em, y: 2em),
-  ))
+  let self = utils.merge-dicts(self, _slide-page(self))
 
   touying-slide(
     self: self,
@@ -161,8 +357,9 @@
   width: 100%,
   radius: 7%,
   ..args,
-) = {
+) = touying-slide-wrapper(self => {
   let body = {
+    show "\n": [ ]
     text(
       title-size,
       weight: "bold",
@@ -191,11 +388,16 @@
       width: width,
       radius: radius,
     ),
+    // flush with the top of the page, as the header is hidden
     dy: -0.5em,
   )
 
-  slide(body)
-}
+  // hides the header (see unistra-header)
+  self.is-outline = true
+  self = utils.merge-dicts(self, _slide-page(self))
+
+  touying-slide(self: self, body)
+})
 
 /// Creates a title slide with a logo, title, subtitle, author, email, and date.
 ///
@@ -346,6 +548,8 @@
 ///
 /// - `outlined` (bool): Whether to outline the heading and make it appear in an outline slide. Default: true.
 ///
+/// - `short-title` (content): Title to show in the header instead of the body. Default: none.
+///
 /// - `body` (content): Content of the slide.
 #let focus-slide(
   c1: none,
@@ -358,6 +562,7 @@
   counter: counter("focus-slide"),
   show-counter: true,
   outlined: true,
+  short-title: none,
   body,
 ) = touying-slide-wrapper(self => {
   assert(
@@ -430,6 +635,18 @@
       let count-label = none
       if (show-counter) {
         count-label = counter.display("I") + ". "
+      }
+      if (outlined) {
+        [#metadata(
+          (
+            //todo: add option to use c1/c2
+            color: new-c1,
+            fill: new-text-color,
+            icon: icon,
+            count-label: count-label,
+            body: if short-title != none { short-title } else { body },
+          ),
+        )<unistra-section>]
       }
       _gradientize(
         self,
@@ -827,6 +1044,133 @@
   touying-slide(self: self, body)
 })
 
+#let notes(self: none, ..args) = {
+  let accent = self.colors.primary // nblue.E
+  let accent-soft = self.colors.nblue.D
+  let accent-dark = self.colors.nblue.A
+
+  // drop vertical spacing (e.g. #v(-1em)) from a title before reusing it
+  // while this is often done in slides to save some space for content,
+  // we have enough space here
+  // the below works by walking through the tree, removing vertical spacing
+  // and returning the content
+  // func: function or list of functions
+  let _strip(it, func) = {
+    if type(func) == array {
+      for f in func {
+        // retrieve the new stripped it and assign
+        it = _strip(it, f)
+      }
+
+      it
+    } else if type(func) == function {
+      if type(it) != content { return it }
+      if it.func() == func { return [] }
+      // [].func() → sequence
+      // that is, check if it is a sequence
+      if it.func() == [].func() {
+        return it.children.map(it => _strip(it, func)).join()
+      }
+      // in case strong/emph is in the title
+      if it.func() in (strong, emph) {
+        return (it.func())(_strip(it.body, func))
+      }
+
+      // else, keep content unchanged
+      it
+    } else {
+      panic("unknown type for func", type(func))
+    }
+  }
+
+  touying-notes(
+    self: self,
+    header: self => {
+      set text(fill: self.colors.white, size: 18pt)
+      show linebreak: it => [ ]
+      pad(x: 32pt, top: 14pt, grid(
+        columns: (1fr, auto),
+        align: (left + horizon, right + horizon),
+        column-gutter: 1em,
+        {
+          // current section (from focus slides)
+          context {
+            let sections = query(selector(<unistra-section>).before(here()))
+            if sections.len() > 0 {
+              let s = sections.last().value
+              block(below: 1em, text(
+                size: 0.7em,
+                tracking: 0.04em,
+                fill: self.colors.white.transparentize(30%),
+                upper[#s.count-label#s.body],
+              ))
+            }
+          }
+          text(weight: "bold", size: 1.15em, utils.display-current-heading(
+            depth: self.slide-level,
+            style: current-heading => _strip(current-heading.body, (
+              v,
+              h,
+            )),
+          ))
+        },
+      ))
+      // footer-like progress line
+      if self.store.footer-progress-style != none {
+        utils.touying-progress(ratio => rect(
+          width: ratio * 100%,
+          height: 3pt,
+          fill: self.store.header-fill,
+        ))
+      }
+    },
+    header-fill: accent,
+
+    // another color than black to make notes distinct
+    fill: self.colors.grey.D,
+
+    note-setting: body => {
+      set text(font: self.store.font, size: 22pt, fill: self.colors.black)
+      set par(leading: 0.75em, spacing: 1.1em, justify: false)
+      // same settings as regular slides
+      set list(marker: (text(fill: accent)[•], text(fill: accent)[--]))
+      set enum(numbering: n => text(fill: accent, weight: "bold")[#n.])
+      show strong: self.methods.alert.with(self: self)
+      show emph: it => highlight(fill: accent-soft, extent: 2pt, it.body)
+      show link: set text(fill: link-color)
+      // cue
+      show <cue>: it => box(
+        fill: accent-soft,
+        stroke: 0.5pt + accent,
+        radius: 3pt,
+        inset: (x: 0.45em, y: 0.15em),
+        text(
+          size: 0.7em,
+          weight: "bold",
+          tracking: 0.06em,
+          fill: accent-dark,
+          upper(it),
+        ),
+      )
+      pad(x: 32pt, top: 18pt, bottom: 16pt, body)
+    },
+
+    // presenter view
+    preview-setting: preview => place(
+      bottom + right,
+      dx: -24pt,
+      dy: -20pt,
+      block(stroke: 0.5pt + self.colors.black, clip: true, scale(
+        25%,
+        reflow: true,
+        preview,
+      )),
+    ),
+
+    ..args,
+  )
+}
+
 /// Registers the Unistra theme.
 #let unistra-theme(
   aspect-ratio: "16-9",
@@ -866,11 +1210,12 @@
     config-page(
       paper: "presentation-" + aspect-ratio,
       footer-descent: 0em,
-      header-ascent: 1em,
+      header-ascent: 0.7em,
     ),
 
     config-common(
       slide-fn: slide,
+      notes-fn: notes,
       title-slide: title-slide,
       focus-slide: focus-slide,
       gallery: gallery,
@@ -880,6 +1225,15 @@
         weight: "bold",
         utils.display-current-heading(depth: self.slide-level) + "\n",
       ),
+      // marks new slides for the header, and whether they are in the appendix
+      page-preamble: self => if (
+        (self.handout and not self.at("_handout-secondary", default: false))
+          or self.subslide == 1
+      ) {
+        [#metadata(
+          not self.at("appendix", default: false),
+        )<unistra-slide>]
+      },
     ),
 
     config-store(
@@ -887,12 +1241,28 @@
       colorthemes: colorthemes,
       colorthemes-ids: colorthemes-ids,
       show-header: false,
+      header-style: "simple",
+      // color of the current section in the header
+      header-fill: nblue.C,
+      // fade level of non-current sections in the header
+      header-alpha: 50%,
+      // show a dot per slide next to each section in the header
+      header-dots: true,
+      header-block-colors: (black, black, red.A, blue.C),
+      //todo: one single header-block-colors which defaults to section colors? + rename to header-block-bg? to have fill param
+      //todo: header-block-use-c1 (bool), only if header-block-colors is null
+      //todo: header-block-section-colors-opacity
+      //todo: header-blocks-icons
+      //todo: header-blocks-count
       show-footer: true,
       // footer first separator
       footer-first-sep: " | ",
       // footer second separator
       footer-second-sep: " | ",
       footer-appendix-label: "A-",
+      // fill the footer background from left to right as the slides progress
+      footer-progress-style: "line",
+      footer-progress-fill: nblue.E,
       font: ("Unistra A", "Segoe UI", "Roboto"),
       // type of left/right quote to use for the custom "Quote" element
       quotes: (
@@ -935,7 +1305,7 @@
     ),
 
     config-methods(
-      alert: utils.alert-with-primary-color,
+      //alert: utils.alert-with-primary-color,
       smaller: smaller,
       smallest: smallest,
 
@@ -965,58 +1335,59 @@
         show heading.where(level: 1): set text(size: 1.5em, weight: "bold")
         show heading.where(level: 2): set block(below: 1.5em)
         // color and iconize links
-        show link: it => context {
-          // except for the outline slide
-          if in-outline.get() {
-            text(weight: "regular", it)
-          } else {
-            let dest = if type(it.dest) == str {
-              it.dest
+        // except for the header navigation
+        show link: it => if it.at("label", default: none) == <touying-link> {
+          it
+        } else {
+          context {
+            // except for the outline slide
+            if in-outline.get() {
+              text(weight: "regular", it)
             } else {
-              str(it.dest)
-            }
+              let styled-link = text(
+                link-color,
+                underline.with(
+                  offset: 3pt,
+                  extent: -1pt,
+                )(it),
+              )
 
-            let styled-link = text(
-              link-color,
-              underline.with(
-                offset: 3pt,
-                extent: -1pt,
-              )(it),
-            )
-
-            let active-link-icons = if self.store.link-icons-fa {
-              self.store.link-icons
-            } else {
-              // only include non-fa icons
-              self
-                .store
-                .link-icons
-                .pairs()
-                .filter(pair => {
-                  let (key, value) = pair
-                  (
-                    not key.starts-with("fa")
-                  )
-                })
-                .to-dict()
-            }
-
-            if active-link-icons.len() > 0 {
-              let found = none
-              for pair in active-link-icons.values() {
-                let (pattern, icon) = pair
-                if dest.matches(pattern).len() > 0 {
-                  found = icon
-                  break
-                }
+              let active-link-icons = if self.store.link-icons-fa {
+                self.store.link-icons
+              } else {
+                // only include non-fa icons
+                self
+                  .store
+                  .link-icons
+                  .pairs()
+                  .filter(pair => {
+                    let (key, value) = pair
+                    (
+                      not key.starts-with("fa")
+                    )
+                  })
+                  .to-dict()
               }
-              if found != none {
-                [#styled-link #super(found)]
+
+              if active-link-icons.len() > 0 {
+                let found = none
+                for pair in active-link-icons.values() {
+                  let (pattern, icon) = pair
+                  if (
+                    type(it.dest) == str and it.dest.matches(pattern).len() > 0
+                  ) {
+                    found = icon
+                    break
+                  }
+                }
+                if found != none {
+                  [#styled-link #super(found)]
+                } else {
+                  styled-link
+                }
               } else {
                 styled-link
               }
-            } else {
-              styled-link
             }
           }
         }

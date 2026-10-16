@@ -34,8 +34,8 @@ These steps assume that you already have [Typst](https://typst.app/) installed a
 ## Import from Typst Universe
 
 ```typst
-#import "@preview/touying:0.6.2": *
-#import "@preview/touying-unistra-pristine:1.4.3": *
+#import "@preview/touying:0.7.4": *
+#import "@preview/touying-unistra-pristine:1.5.0": *
 
 #show: unistra-theme.with(
   aspect-ratio: "16-9",
@@ -69,7 +69,7 @@ A slide with *important information*.
 See [examples/basic.typ](examples/basic.typ) for a basic example with configuration.
 
 ```typst
-#import "@preview/touying:0.6.2": *
+#import "@preview/touying:0.7.4": *
 #import "src/unistra.typ": *
 #import "src/colors.typ": *
 #import "src/icons.typ": *
@@ -242,10 +242,15 @@ A complete list of settings is available below.
 |      link-icons       |                       Icons (content) to be appended next to URLs matched by the regex.                        | dict[str, dict[regex, content]] | See list in [Link Icons](#link-icons)                    |
 |     link-icons-fa     |                               Whether to use Font Awesome icons for link icons.                                |              bool               | `true`                                                      |
 |      show-header      |                                          Whether to show the header.                                           |              bool               | `false`                                                     |
+|      header-fill      |                Color of the current section in the header. Other sections are faded with `header-alpha`.                |              color              | `nblue.E`                                                   |
+|     header-alpha      |                                 Opacity of the non-current sections in the header.                                 |              ratio              | `50%`                                                       |
+|     header-slides     |                Whether to show a dot for each slide next to its section in the header (filled for the current slide).                |              bool               | `true`                                                      |
 |      show-footer      |                                          Whether to show the footer.                                           |              bool               | `true`                                                      |
 |   footer-first-sep    |                                         First separator in the footer.                                         |               str               | `" \| "`                                                    |
 |   footer-second-sep   |                                        Second separator in the footer.                                         |               str               | `" \| "`                                                    |
 | footer-appendix-label |                             Label to be shown before slide number in the Appendix.                             |               str               | `"A-"`                                                      |
+|    footer-progress    |                Whether to fill the footer background from left to right as the slides progress.                |              bool               | `true`                                                      |
+| footer-progress-fill  |                                     Fill color of the footer progress bar.                                     |        color \| gradient        | `nblue.C`                                                   |
 |         font          |                                                Font to be used.                                                |        str \| array[str]        | `("Unistra A", "Segoe UI", "Roboto")`                       |
 |        quotes         | Settings to be used for the custom `#quote()` element. Dict with keys `left`, `right`, `outset`, `margin-top`. |        dict[str, length]        | `(left: "« ", right: " »", outset: 0.5em, margin-top: 0em)` |
 |      footer-hide      |                       Elements from the footer to hide (can include "author" or "date").                       |           array[str]            | `()`                                                        |
