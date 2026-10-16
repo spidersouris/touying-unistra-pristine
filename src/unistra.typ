@@ -4,99 +4,186 @@
 #import "icons.typ": *
 #import "utils.typ": *
 
+//todo: 1. separate both types of headers and add to config
+//todo: 2. add option for colors, panic if len(colors) != sections OR use section colors?
 #let unistra-header(self) = {
+  // no header on outline and appendix slides
+  if (
+    self.at("appendix", default: false) or self.at("is-outline", default: false)
+  ) {
+    return
+  }
   set align(center)
   set text(size: 0.6em, fill: self.colors.black)
-  // convert linebreaks in titles to spaces
+  // convert linebreaks to spaces
   show linebreak: it => [ ]
-  block(
-    width: 100%,
-    inset: (x: 1em, bottom: 0.3em),
-    stroke: (bottom: 0.5pt + self.colors.black),
-    context {
-      let pages = ()
-      let appendix-page = calc.inf
-      for it in query(<unistra-slide>) {
-        if it.value {
-          pages.push(it.location().page())
-        } else {
-          appendix-page = it.location().page()
-          break
-        }
-      }
-
-      // sections are focus slides, or level 1 headings if there are none
-      let sections = query(<unistra-section>).map(it => (
-        title: it.value,
-        page: it.location().page(),
-        // the focus slide itself is not part of the section
-        first: it.location().page() + 1,
-      ))
-      if sections == () {
-        sections = query(heading.where(level: 1))
-          .filter(it => it.outlined)
-          .map(it => (
-            title: it.body,
-            page: it.location().page(),
-            first: it.location().page(),
-          ))
-      }
-      sections = sections.filter(it => it.page < appendix-page)
-      if sections == () {
-        return
-      }
-
-      let current-page = here().page()
-      let current = if current-page < appendix-page {
-        sections.filter(it => it.page <= current-page).len() - 1
-      } else {
-        -1
-      }
-
-      let cols = ()
-      let k = 0
-      for (i, section) in sections.enumerate() {
-        let next-page = if i + 1 < sections.len() {
-          sections.at(i + 1).page
-        } else {
-          calc.inf
-        }
-        let dots = []
-        while k < pages.len() and pages.at(k) < next-page {
-          let page = pages.at(k)
-          let next-slide-page = pages.at(k + 1, default: appendix-page)
-          k += 1
-          if page < section.first {
-            continue
-          }
-          let dot = if page <= current-page and current-page < next-slide-page {
-            sym.circle.filled
+  let header-style-simple = self.store.header-style == "simple"
+  (
+    block(
+      width: 100%,
+      inset: if header-style-simple {
+        (x: 1em, bottom: 0.3em)
+      } else { (x: 0em, y: 0em) },
+      stroke: if header-style-simple {
+        (bottom: 0.5pt + self.colors.black)
+        // no need for a stroke if using header-blocks
+        // as the backgrounds already act as separators
+      } else { none },
+      context {
+        let pages = ()
+        let appendix-page = calc.inf
+        for it in query(<unistra-slide>) {
+          if it.value {
+            pages.push(it.location().page())
           } else {
-            sym.circle.small
-          }
-          // only dots from the current section are clickable
-          // otherwise, making all dots clickable from everywhere
-          // creates performance issues
-          dots += if i == current {
-            [#link((page: page, x: 0pt, y: 0pt), dot)<touying-link>]
-          } else {
-            dot
+            appendix-page = it.location().page()
+            break
           }
         }
-        cols.push({
-          set text(fill: if i == current {
-            self.store.header-fill
+
+        // sections are focus slides, or level 1 headings if there are none
+        let sections = query(<unistra-section>).map(it => (
+          title: it.value.at("body"),
+          count-label: it.value.at("count-label"),
+          color: it.value.at("color"),
+          icon: it.value.at("icon"),
+          fill: it.value.at("fill"),
+          page: it.location().page(),
+        ))
+        if sections == () {
+          sections = query(heading.where(level: 1))
+            .filter(it => it.outlined)
+            .map(it => (
+              title: it.body,
+              page: it.location().page(),
+            ))
+        }
+        sections = sections.filter(it => it.page < appendix-page)
+        if sections == () {
+          return
+        }
+
+        let current-page = here().page()
+        // appendix slides have no header, so current-page < appendix-page
+        let current = sections.filter(it => it.page <= current-page).len() - 1
+
+        let cols = ()
+        let k = 0
+        let bg-colors = none
+        if (
+          _is(self.store.header-block-colors) and not header-style-simple
+        ) {
+          bg-colors = self.store.header-block-colors
+          // cycle through color array if its length
+          // is less than sections.len()
+          // source: https://github.com/ludwig-austermann/typst-funarray/blob/da5e3966535743b005aaa30507823eb0d7d8a22f/funarray-unsafe.typ#L40
+          if bg-colors.len() < sections.len() {
+            let q = calc.quo(sections.len(), bg-colors.len())
+            let r = calc.rem(sections.len(), bg-colors.len())
+            bg-colors = bg-colors * q + bg-colors.slice(0, r)
+          }
+        }
+
+        // dots logic
+        for (i, section) in sections.enumerate() {
+          let dots = []
+          if self.store.header-dots {
+            let next-page = if i + 1 < sections.len() {
+              sections.at(i + 1).page
+            } else {
+              calc.inf
+            }
+            while k < pages.len() and pages.at(k) < next-page {
+              let page = pages.at(k)
+              let next-slide-page = pages.at(k + 1, default: appendix-page)
+              k += 1
+              if page < section.page + 1 {
+                continue
+              }
+              let dot = if (
+                page <= current-page and current-page < next-slide-page
+              ) {
+                sym.circle.filled
+              } else {
+                sym.circle.small
+              }
+              // only dots from the current section are clickable
+              // otherwise, making all dots clickable from everywhere
+              // creates performance issues
+              dots += if i == current {
+                [#link((page: page, x: 0pt, y: 0pt), dot)<touying-link>]
+              } else {
+                dot
+              }
+            }
+          }
+
+          let header-content = if header-style-simple {
+            let section-title = section.title.replace("\n", " ")
+            [#link(
+              (page: section.page, x: 0pt, y: 0pt),
+              section-title
+                + if self.store.header-dots { h(0.5em) + dots + h(0.5em) },
+            )<touying-link>]
+          } else if (self.store.header-style == "block" and _is(bg-colors)) {
+            let header-text = [#section.icon  #section.count-label #section.title]
+            box(
+              //fill: bg-colors.at(i),
+              //fill: section.color,
+              // section backgrounds show up without lighten/alpha
+              // until the first section slide appears
+              fill: if current-page < sections.first().page {
+                section.color
+              } else if i == current {
+                section.color.lighten(10%)
+              } else {
+                utils.update-alpha(
+                  section.color,
+                  self.store.header-alpha,
+                )
+              },
+              inset: 10pt,
+              width: 100% / sections.len(),
+              height: 100%, // removes white top margin
+            )[#align(horizon)[#link(
+              (page: section.page, x: 0pt, y: 0pt),
+              text(
+                fill: if current-page < sections.first().page {
+                  section.fill
+                } else if i == current {
+                  section.fill.lighten(10%)
+                } else {
+                  utils.update-alpha(
+                    section.fill,
+                    self.store.header-alpha,
+                  )
+                },
+                header-text,
+              ),
+            )<touying-link>]]
           } else {
-            utils.update-alpha(self.store.header-fill, self.store.header-alpha)
+            panic("unknown header-style")
+          }
+
+          cols.push({
+            set text(fill: if i == current {
+              self.store.header-fill
+            } else {
+              utils.update-alpha(
+                self.store.header-fill,
+                self.store.header-alpha,
+              )
+            })
+            header-content
           })
-          [#link(
-            (page: section.page, x: 0pt, y: 0pt),
-            section.title + if self.store.header-dots { h(0.5em) + dots },
-          )<touying-link>]
-        })
-      }
-      cols.map(box).join(h(1fr))
-    },
+        }
+        if header-style-simple {
+          cols.map(box).join()
+        } else {
+          stack(dir: ltr, ..cols)
+        }
+      },
+    )
   )
 }
 
@@ -272,6 +359,7 @@
   ..args,
 ) = touying-slide-wrapper(self => {
   let body = {
+    show "\n": [ ]
     text(
       title-size,
       weight: "bold",
@@ -300,10 +388,12 @@
       width: width,
       radius: radius,
     ),
-    // flush with the top of the page, or below the header
-    dy: if self.store.show-header { 0.9em } else { -0.5em },
+    // flush with the top of the page, as the header is hidden
+    dy: -0.5em,
   )
 
+  // hides the header (see unistra-header)
+  self.is-outline = true
   self = utils.merge-dicts(self, _slide-page(self))
 
   touying-slide(self: self, body)
@@ -548,12 +638,14 @@
       }
       if (outlined) {
         [#metadata(
-          count-label
-            + if short-title != none {
-              short-title
-            } else {
-              body
-            },
+          (
+            //todo: add option to use c1/c2
+            color: new-c1,
+            fill: new-text-color,
+            icon: icon,
+            count-label: count-label,
+            body: if short-title != none { short-title } else { body },
+          ),
         )<unistra-section>]
       }
       _gradientize(
@@ -1118,7 +1210,7 @@
     config-page(
       paper: "presentation-" + aspect-ratio,
       footer-descent: 0em,
-      header-ascent: 0.5em,
+      header-ascent: 0.7em,
     ),
 
     config-common(
@@ -1138,7 +1230,9 @@
         (self.handout and not self.at("_handout-secondary", default: false))
           or self.subslide == 1
       ) {
-        [#metadata(not self.at("appendix", default: false))<unistra-slide>]
+        [#metadata(
+          not self.at("appendix", default: false),
+        )<unistra-slide>]
       },
     ),
 
@@ -1147,12 +1241,19 @@
       colorthemes: colorthemes,
       colorthemes-ids: colorthemes-ids,
       show-header: false,
+      header-style: "simple",
       // color of the current section in the header
       header-fill: nblue.C,
       // fade level of non-current sections in the header
       header-alpha: 50%,
       // show a dot per slide next to each section in the header
       header-dots: true,
+      header-block-colors: (black, black, red.A, blue.C),
+      //todo: one single header-block-colors which defaults to section colors? + rename to header-block-bg? to have fill param
+      //todo: header-block-use-c1 (bool), only if header-block-colors is null
+      //todo: header-block-section-colors-opacity
+      //todo: header-blocks-icons
+      //todo: header-blocks-count
       show-footer: true,
       // footer first separator
       footer-first-sep: " | ",
