@@ -952,6 +952,133 @@
   touying-slide(self: self, body)
 })
 
+#let notes(self: none, ..args) = {
+  let accent = self.colors.primary // nblue.E
+  let accent-soft = self.colors.nblue.D
+  let accent-dark = self.colors.nblue.A
+
+  // drop vertical spacing (e.g. #v(-1em)) from a title before reusing it
+  // while this is often done in slides to save some space for content,
+  // we have enough space here
+  // the below works by walking through the tree, removing vertical spacing
+  // and returning the content
+  // func: function or list of functions
+  let _strip(it, func) = {
+    if type(func) == array {
+      for f in func {
+        // retrieve the new stripped it and assign
+        it = _strip(it, f)
+      }
+
+      it
+    } else if type(func) == function {
+      if type(it) != content { return it }
+      if it.func() == func { return [] }
+      // [].func() → sequence
+      // that is, check if it is a sequence
+      if it.func() == [].func() {
+        return it.children.map(it => _strip(it, func)).join()
+      }
+      // in case strong/emph is in the title
+      if it.func() in (strong, emph) {
+        return (it.func())(_strip(it.body, func))
+      }
+
+      // else, keep content unchanged
+      it
+    } else {
+      panic("unknown type for func", type(func))
+    }
+  }
+
+  touying-notes(
+    self: self,
+    header: self => {
+      set text(fill: self.colors.white, size: 18pt)
+      show linebreak: it => [ ]
+      pad(x: 32pt, top: 14pt, grid(
+        columns: (1fr, auto),
+        align: (left + horizon, right + horizon),
+        column-gutter: 1em,
+        {
+          // current section (from focus slides)
+          context {
+            let sections = query(selector(<unistra-section>).before(here()))
+            if sections.len() > 0 {
+              let s = sections.last().value
+              block(below: 1em, text(
+                size: 0.7em,
+                tracking: 0.04em,
+                fill: self.colors.white.transparentize(30%),
+                upper[#s.count-label#s.body],
+              ))
+            }
+          }
+          text(weight: "bold", size: 1.15em, utils.display-current-heading(
+            depth: self.slide-level,
+            style: current-heading => _strip(current-heading.body, (
+              v,
+              h,
+            )),
+          ))
+        },
+      ))
+      // footer-like progress line
+      if self.store.footer-progress-style != none {
+        utils.touying-progress(ratio => rect(
+          width: ratio * 100%,
+          height: 3pt,
+          fill: self.store.header-fill,
+        ))
+      }
+    },
+    header-fill: accent,
+
+    // another color than black to make notes distinct
+    fill: self.colors.grey.D,
+
+    note-setting: body => {
+      set text(font: self.store.font, size: 22pt, fill: self.colors.black)
+      set par(leading: 0.75em, spacing: 1.1em, justify: false)
+      // same settings as regular slides
+      set list(marker: (text(fill: accent)[•], text(fill: accent)[--]))
+      set enum(numbering: n => text(fill: accent, weight: "bold")[#n.])
+      show strong: self.methods.alert.with(self: self)
+      show emph: it => highlight(fill: accent-soft, extent: 2pt, it.body)
+      show link: set text(fill: link-color)
+      // cue
+      show <cue>: it => box(
+        fill: accent-soft,
+        stroke: 0.5pt + accent,
+        radius: 3pt,
+        inset: (x: 0.45em, y: 0.15em),
+        text(
+          size: 0.7em,
+          weight: "bold",
+          tracking: 0.06em,
+          fill: accent-dark,
+          upper(it),
+        ),
+      )
+      pad(x: 32pt, top: 18pt, bottom: 16pt, body)
+    },
+
+    // presenter view
+    preview-setting: preview => place(
+      bottom + right,
+      dx: -24pt,
+      dy: -20pt,
+      block(stroke: 0.5pt + self.colors.black, clip: true, scale(
+        25%,
+        reflow: true,
+        preview,
+      )),
+    ),
+
+    ..args,
+  )
+}
+
 /// Registers the Unistra theme.
 #let unistra-theme(
   aspect-ratio: "16-9",
@@ -996,6 +1123,7 @@
 
     config-common(
       slide-fn: slide,
+      notes-fn: notes,
       title-slide: title-slide,
       focus-slide: focus-slide,
       gallery: gallery,
